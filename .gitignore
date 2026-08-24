@@ -42,3 +42,9 @@ next-env.d.ts
 
 
 notes/
+/app/generated/prisma
+
+.agents/
+.claude/
+.windsurf/
+skills-lock.json

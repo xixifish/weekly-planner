@@ -28,11 +28,11 @@ Each row has the day name and a "N/M done" count on the left, and the task cards
 
 A task has: text, the days it falls on, a repeat flag, an optional due date, and an optional label colour.
 
-**Text is the only required field.** A task cannot be saved without it. Days, repeat, due date and label are all optional.
+**Text and at least one day are required.** A task cannot be saved without both. Repeat, due date and label are optional.
 
 **Text.** One line on the card, cut off with "…" when it is too long. Hovering the card shows the full text. The edit box shows all of it.
 
-**Days.** Pick any days of the week. "Daily" is only a shortcut for picking all seven — it lights up if you pick all seven by hand.
+**Days.** Pick at least one day of the week. A task with no day has nowhere to appear, so none is not a valid state — the database enforces it too. "Daily" is only a shortcut for picking all seven — it lights up if you pick all seven by hand.
 
 **Due date.** Optional, a single date. A stopwatch icon appears on the card, and turns red once the date has passed.
 
@@ -48,26 +48,34 @@ Ticking "repeat in future weeks" on a task created in week 20 with Wed and Fri m
 
 Because "every week after week 20" never ends, the app cannot create rows in advance. So:
 
-- **One row per task rule** — text, days, start week, repeat flag, optional end week, due date, label.
+- **One row per task rule** — text, days, start date, repeat flag, optional end date, due date, label.
 - **The week's cards are worked out when you open the week**, from those rules.
-- **A separate exceptions table** holds anything that only applies to one week.
+- **A separate skips table** holds the single cards the user has removed.
 - **A one-off task is the same rule with repeat off.** One table covers both.
 
-Deleting all future weeks from week N does not delete the rule. It sets the rule's end week to N-1, so weeks 20 to N-1 still show it.
+Deleting from a card onward does not delete the rule. It sets the rule's end date to the day before that card, so every earlier card still shows.
 
-**Ticking a task done is per week.** Done in week 20 does not tick it in week 21.
+**The unit is the card, not the week.** A card is one task on one date. Ticking and deleting act on one card. Editing always acts on this card and every one after it.
+
+**Ticking is per card.** Ticking Wednesday does not tick Friday in the same week, and week 20 does not tick week 21.
 
 ---
 
 ## 4. Editing and deleting
 
-Because a repeat task lives in many weeks, changing one is ambiguous. So both editing and deleting ask the same question:
+A repeat task lives in many weeks. Deleting one card is ambiguous, so delete asks. Save does not.
 
-> This week only, or this and all future weeks?
+The dialog has four buttons: **Cancel**, **Save**, **Delete this one**, and **Delete this and all future**.
 
-"This week only" writes an exception. "This and all future" changes the rule.
+**Save always applies from this card onward.** There is no "save this one only". Text, days, due date and label all describe the series, not one card. One save button, one meaning, nothing to answer.
 
-**Deleting a task has no confirm box.** It deletes, and an Undo bar appears for about five seconds. A confirm box costs a click every single time, which fights the whole point of the app being quick. The this-week/all-future choice already provides a pause for the risky case.
+**Save splits the rule in two.** The old rule ends the day before this card. A new rule starts at this card with the new values. Earlier weeks are untouched — last week still shows what it showed. A task edited a few times leaves a short trail of rules, one per shape it has had.
+
+**Delete this one** writes a skip row for that card. The rule is untouched, so every other week still shows it.
+
+**Delete this and all future** ends the rule the day before this card. No new rule is made. Earlier cards stay.
+
+**Deleting a task has no confirm box.** It deletes, and an Undo bar appears for about five seconds. A confirm box costs a click every single time, which fights the whole point of the app being quick. Having two delete buttons already makes the user pick, which is pause enough.
 
 **Deleting your account is the exception. It does get a real confirm**, because it cannot be undone.
 
@@ -92,7 +100,7 @@ States: plain, has a due date, overdue, done, hover.
 
 The dialog has: the task text, the day picker, the repeat toggle, the due date picker, and the label colours.
 
-**The text input is a box, not a single line.** It has a fixed height and scrolls when the text is long, so the dialog can never grow past the screen. There is no character limit shown to the user — a limit would only be treating the symptom. Enter saves; a task title does not have line breaks. Save stays off until there is text — no error message needed, the button simply is not available. Spaces alone do not count as text. The database keeps a quiet 500-character cap as a backstop.
+**The text input is a box, not a single line.** It has a fixed height and scrolls when the text is long, so the dialog can never grow past the screen. There is no character limit shown to the user — a limit would only be treating the symptom. Enter saves; a task title does not have line breaks. Save stays off until there is text and at least one day — no error message needed, the button simply is not available. Spaces alone do not count as text. The database keeps a quiet 1000-character cap as a backstop.
 
 ---
 
@@ -115,8 +123,10 @@ Four, not one, because social sign-in means you need to see *which* account you 
 | Cut | Why |
 |---|---|
 | Phone layout | Below 1024px is a different design, not a smaller one. v1 is desktop. |
-| Drag a card to another day | The edit dialog already moves a task by changing its days. Drag is polish. It is also a different action — dragging one card changes one week, changing days changes every week. |
-| Label names | Colours are enough to group things. Labels are still stored with an id, so names can be added later without a migration. |
+| Drag a card to another day | Drag moves one card. The day picker moves every week. They are different actions, and v1 has neither for a single card. |
+| Move one card to another day | "Working late this Monday, so gym moves to Tuesday." For now: delete that card, add a one-off on Tuesday. Doing it properly needs a moved-to date on the exception, plus drag as the gesture. That is one nullable column, so it can wait. |
+| Label names | Colours are enough to group things. Labels are stored as named values, so names can be added later in code. |
+| Reword a single card | Would mean a second kind of save, and a dialog that behaves differently depending on which field was touched. Not worth it for a rare edit. Change the text for all future weeks instead. |
 | Carry unfinished tasks forward | A paper planner does not do it, and it hides the fact you did not do the thing. |
 | Settings page | The four dropdown items cover everything a settings page would hold. |
 | Clickable Figma prototype | A prototype exists to show an idea to someone before it is built. I am both the designer and the builder, and the live app is the demo. |
