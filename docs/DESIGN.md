@@ -2,7 +2,7 @@
 
 A planner for one week at a time. Seven day rows, one per day. Tasks are small cards you add, tick off, and repeat.
 
-Design finished **23 August 2026**, before any code was written.
+Initial design finished **23 August 2026**. Recurrence rules were revised **6 September 2026**.
 
 Figma file: https://www.figma.com/design/PMOiVwojpmtcMso4lWKBma/weekly-planner
 
@@ -26,15 +26,15 @@ Each row has the day name and a "N/M done" count on the left, and the task cards
 
 ## 2. What a task is
 
-A task has: text, the days it falls on, a repeat flag, an optional due date, and an optional label colour.
+A task has text, one or more days, a repeat flag, a due date, and an optional label colour.
 
-**Text and at least one day are required.** A task cannot be saved without both. Repeat, due date and label are optional.
+**Text and at least one day are required.** Repeat and label are optional. A due date is optional for a one-off task and required for a repeating task.
 
 **Text.** One line on the card, cut off with "…" when it is too long. Hovering the card shows the full text. The edit box shows all of it.
 
 **Days.** Pick at least one day of the week. A task with no day has nowhere to appear, so none is not a valid state — the database enforces it too. "Daily" is only a shortcut for picking all seven — it lights up if you pick all seven by hand.
 
-**Due date.** Optional, a single date. A stopwatch icon appears on the card, and turns red once the date has passed.
+**Due date.** For a repeating task, this is also the last date on which it can appear. The date is inclusive. A stopwatch appears on the card and turns red once the due date has passed.
 
 **Label.** Colour only in v1, no names. Six colours, or none.
 
@@ -44,14 +44,16 @@ A task has: text, the days it falls on, a repeat flag, an optional due date, and
 
 This is the part most planners skip, and the part worth getting right.
 
-Ticking "repeat in future weeks" on a task created in week 20 with Wed and Fri means: the task shows on Wed and Fri of week 20, **and every week after that, with no end date.**
+Ticking "repeat weekly until due date" on a task created in week 20 with Wed and Fri means: the task shows on Wed and Fri of week 20, and on those days in each following week **up to its due date.** A repeating task cannot be saved without a due date.
 
-Because "every week after week 20" never ends, the app cannot create rows in advance. So:
+Repeated tasks are bounded, but their cards are still worked out when a week is opened rather than stored in advance. So:
 
-- **One row per task rule** — text, days, start date, repeat flag, optional end date, due date, label.
+- **One row per task rule** — text, days, start date, repeat flag, due date, optional earlier end date, label.
 - **The week's cards are worked out when you open the week**, from those rules.
 - **A separate skips table** holds the single cards the user has removed.
 - **A one-off task is the same rule with repeat off.** One table covers both.
+
+For a repeating task, the due date is its planned final date. Editing or deleting the series can give it an earlier effective end date without changing what its original deadline meant.
 
 Deleting from a card onward does not delete the rule. It sets the rule's end date to the day before that card, so every earlier card still shows.
 
@@ -63,19 +65,17 @@ Deleting from a card onward does not delete the rule. It sets the rule's end dat
 
 ## 4. Editing and deleting
 
-A repeat task lives in many weeks. Deleting one card is ambiguous, so delete asks. Save does not.
+A repeating task lives on many dates, so its edit dialog must make the scope of every action explicit.
 
-The dialog has four buttons: **Cancel**, **Save**, **Delete this one**, and **Delete this and all future**.
+**Save applies from the selected card onward.** The dialog says this clearly, and the save button identifies the scope. There is no single-card save.
 
-**Save always applies from this card onward.** There is no "save this one only". Text, days, due date and label all describe the series, not one card. One save button, one meaning, nothing to answer.
+Saving splits the rule: the old rule ends the day before the card, and a new rule starts on the card with the edited values. Earlier cards stay unchanged.
 
-**Save splits the rule in two.** The old rule ends the day before this card. A new rule starts at this card with the new values. Earlier weeks are untouched — last week still shows what it showed. A task edited a few times leaves a short trail of rules, one per shape it has had.
+**Delete this occurrence** writes a skip for that card. The rest of the series is untouched.
 
-**Delete this one** writes a skip row for that card. The rule is untouched, so every other week still shows it.
+**End the series from this date** ends the rule the day before the card. Earlier cards stay.
 
-**Delete this and all future** ends the rule the day before this card. No new rule is made. Earlier cards stay.
-
-**Deleting a task has no confirm box.** It deletes, and an Undo bar appears for about five seconds. A confirm box costs a click every single time, which fights the whole point of the app being quick. Having two delete buttons already makes the user pick, which is pause enough.
+Task deletion has no confirmation box. An Undo bar appears for about five seconds in the task area of the day where the deletion began. Its message distinguishes one deleted occurrence from the end of the series. Counts and progress update immediately and revert on Undo.
 
 **Deleting your account is the exception. It does get a real confirm**, because it cannot be undone.
 
@@ -92,15 +92,24 @@ States: plain, has a due date, overdue, done, hover.
 - **Hover**: the tick button appears straight away. Its space is reserved in the resting card, so the text does not shift when you hover.
 - **Hover, after about 400ms**: the full text appears above the card, but only when the text is actually cut off. The delay stops it flashing as the mouse crosses a row. It is at most 280px wide, ignores the mouse, and flips sides near the edge of the window.
 
-**A due date on a repeating task belongs to the rule.** It shows in every week, and stays red once the date has passed. To get rid of it, edit the task and remove the due date. This keeps one rule instead of a special case, and the way out is one click.
+**A due date on a repeating task belongs to the rule.** It shows on every occurrence, and no new cards appear after it. Once the date has passed, the stopwatch turns red on earlier unfinished cards. The due date cannot be removed while repeat is on; turn repeat off to make it optional.
 
 ---
 
 ## 6. Adding and editing a task
 
-The dialog has: the task text, the day picker, the repeat toggle, the due date picker, and the label colours.
+The dialog title shows the action and the date, such as **Add Task · Tuesday, 12 May**. Opening it from a day preselects that day.
 
-**The text input is a box, not a single line.** It has a fixed height and scrolls when the text is long, so the dialog can never grow past the screen. There is no character limit shown to the user — a limit would only be treating the symptom. Enter saves; a task title does not have line breaks. Save stays off until there is text and at least one day — no error message needed, the button simply is not available. Spaces alone do not count as text. The database keeps a quiet 1000-character cap as a backstop.
+The dialog contains the task text, **Days**, a **Repeating Task** option, an optional label colour, and—when repeating is on—an optional **End Date**.
+
+- A task that is not repeating has exactly one selected day.
+- A repeating task may have one or more weekdays. Its occurrences can be within the current week, later weeks, or both.
+- Turning repeating on keeps the selected day and allows more days. To turn it off, the user must first leave only one day selected. If they try sooner, the option stays on and the dialog asks them to choose one day.
+- No end date means the task repeats indefinitely. An end date is inclusive and cannot be before the task starts. Removing it returns the task to indefinite repetition.
+- Text and a day are required; label and end date are optional. Save stays disabled until the required fields are valid.
+- The text box scrolls for long text. Titles contain no line breaks, spaces alone are invalid, and text is limited to 1000 characters.
+
+Creating a task and editing a non-repeating task use a direct **Save** action. When editing a repeating task, **Save** and **Delete** each open a menu with two scopes: **This Task Only** and **This and Future Tasks**.
 
 ---
 
@@ -132,23 +141,3 @@ Four, not one, because social sign-in means you need to see *which* account you 
 | Clickable Figma prototype | A prototype exists to show an idea to someone before it is built. I am both the designer and the builder, and the live app is the demo. |
 
 ---
-
-## 9. Numbers and colours
-
-**Layout.** Header 60px · week title bar 121px · card 220x44 with a 6px coloured left bar · column pitch 232px · day row 100px, +61px per extra line · add button 72px, bottom right.
-
-**Colours.** blue `#0084d9` · orange `#ff7700` · text dark `#303741` · text grey `#999999` · text grey-blue `#99a7bd` · card border `#f2f2f2` · area border `#ececec` · today `#fffcf5` · done green `#06ad06`.
-
-**Labels.** red `#ff7778` · purple `#e283f5` · blue `#77afff` · yellow `#f5dd8e`, plus green and orange. Six, plus none.
-
----
-
-## 10. A note on the drawings
-
-The numbers in the Figma frames are placeholders. The day counts and the progress bar are there to show the layout, not to add up. The rules behind them are written above — those are what gets built.
-
----
-
-## Not in this document
-
-The stack, the database schema and the build order. Those go in the build notes. The direction is settled — one rules table plus one exceptions table — but the rest is a build decision, not a design one.

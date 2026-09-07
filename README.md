@@ -1,4 +1,18 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Weekly Planner
+
+A desktop-first planner for organising, completing, and repeating tasks across one week at a time. Product and interaction rules are documented in [`docs/DESIGN.md`](docs/DESIGN.md).
+
+## Tech stack
+
+- [Next.js 16.3.2](https://nextjs.org) with the App Router
+- [React 19.2.8](https://react.dev)
+- [TypeScript 5.9](https://www.typescriptlang.org) with strict type checking
+- [Tailwind CSS 4](https://tailwindcss.com)
+- [Prisma ORM 7.9.1](https://www.prisma.io/orm)
+- [PostgreSQL](https://www.postgresql.org)
+- Node.js 24 LTS and npm
+
+Authentication and testing tools have not been selected yet.
 
 ## Getting Started
 
