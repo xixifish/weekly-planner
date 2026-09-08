@@ -21,7 +21,7 @@ model User {
 }
 
 enum LabelColour {
-  RED
+  PINK
   PURPLE
   BLUE
   YELLOW
@@ -29,23 +29,44 @@ enum LabelColour {
   ORANGE
 }
 
+enum Weekday {
+  MON
+  TUE
+  WED
+  THU
+  FRI
+  SAT
+  SUN
+}
+
 model Task {
-  id          String          @id @default(cuid())
-  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          String         @id @default(cuid())
   userId      String
-  text        String          @db.VarChar(1000)
-  days        Int[]
-  repeats     Boolean         @default(false)
-  startDate   DateTime        @db.Date
-  endDate     DateTime?       @db.Date
-  dueDate     DateTime?       @db.Date
-  label       LabelColour?
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime       @default(now())
+  rules       TaskRule[]
   completions Completion[]
   skips       TaskSkip[]
+  deletedFrom DateTime?      @db.Date
+  overrides   TaskOverride[]
 
   @@index([userId])
+}
+
+model TaskRule {
+  id            String       @id @default(cuid())
+  taskId        String
+  task          Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  text          String       @db.VarChar(1000)
+  days          Weekday[]
+  repeating     Boolean      @default(false)
+  effectiveFrom DateTime     @db.Date
+  effectiveTo   DateTime?    @db.Date
+  endDate       DateTime?    @db.Date
+  label         LabelColour?
+  createdAt     DateTime     @default(now())
+
+  @@unique([taskId, effectiveFrom])
 }
 
 model Completion {
@@ -58,10 +79,21 @@ model Completion {
 }
 
 model TaskSkip {
-  id      String   @id @default(cuid())
-  task    Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  taskId  String
-  date    DateTime @db.Date
+  id     String   @id @default(cuid())
+  task   Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  taskId String
+  date   DateTime @db.Date
+
+  @@unique([taskId, date])
+}
+
+model TaskOverride {
+  id     String       @id @default(cuid())
+  taskId String
+  task   Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  date   DateTime     @db.Date
+  text   String       @db.VarChar(1000)
+  label  LabelColour?
 
   @@unique([taskId, date])
 }
