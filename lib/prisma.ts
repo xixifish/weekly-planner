@@ -1,6 +1,6 @@
-import "server-only";
-
-import { PrismaPg } from "@prisma/adapter-pg"
+// `PrismaPg` knows how to communicate with PostgreSQL
+import { PrismaPg } from "@prisma/adapter-pg";
+// `PrismaClient` knows about your generated models and queries
 import { PrismaClient } from "@/app/generated/prisma/client";
 
 const globalForPrisma = globalThis as unknown as {
