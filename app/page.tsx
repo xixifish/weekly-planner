@@ -7,8 +7,19 @@ import { createTask } from "./actions/tasks";
 import { SignInButton } from "@/app/sign-in-button";
 import { SignOutButton } from "./sign-out-button";
 
+import { Weekday } from "./generated/prisma/enums";
+import { getWeekOccurrences } from "@/lib/tasks/get-week-occurrences";
+
+// `async` because reading and validating the session takes time
 export default async function Home() {
-  // `async` because reading and validating the session takes time
+  const weekStart = new Date("2026-09-14T00:00:00.000Z");
+  const occurrences = await getWeekOccurrences(weekStart);
+
+  const weekDates = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(weekStart);
+    date.setUTCDate(weekStart.getUTCDate() + index);
+    return date;
+  });
 
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -32,6 +43,16 @@ export default async function Home() {
       })
     : [];
 
+  const weekdayOptions = [
+    { value: Weekday.MON, label: "Mon" },
+    { value: Weekday.TUE, label: "Tue" },
+    { value: Weekday.WED, label: "Wed" },
+    { value: Weekday.THU, label: "Thu" },
+    { value: Weekday.FRI, label: "Fri" },
+    { value: Weekday.SAT, label: "Sat" },
+    { value: Weekday.SUN, label: "Sun" },
+  ];
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-zinc-50 px-6">
       <h1 className="text-3xl font-semibold text-zinc-900">Weekly Planner</h1>
@@ -48,12 +69,29 @@ export default async function Home() {
               maxLength={1000}
               className="rounded-md border border-zinc-300 px-3 py-2 text-zinc-900"
             />
-            <label htmlFor="date">Date</label>
+            {weekdayOptions.map((day) => (
+              <label key={day.value}>
+                <input type="checkbox" name="days" value={day.value} />
+                {day.label}
+              </label>
+            ))}
+            <label>
+              <input type="checkbox" name="repeating" value="true" />
+              Repeating task
+            </label>
+            <label htmlFor="date">Start Date</label>
             <input
               id="date"
               name="date"
               type="date"
               required
+              className="rounded-md border border-zinc-300 px-3 py-2 text-zinc-900"
+            />
+            <label htmlFor="endDate">End Date</label>
+            <input
+              id="endDate"
+              name="endDate"
+              type="date"
               className="rounded-md border border-zinc-300 px-3 py-2 text-zinc-900"
             />
             <button
@@ -76,6 +114,30 @@ export default async function Home() {
               <p className="text-zinc-900">No tasks yet.</p>
             )}
           </div>
+          <br />
+          {weekDates.map((date) => {
+            const dayOccurrences = occurrences.filter(
+              (occurrence) => occurrence.date.getTime() === date.getTime(),
+            );
+            return (
+              <section key={date.toISOString()}>
+                <h2>
+                  {date.toLocaleDateString("en-AU", {
+                    weekday: "short",
+                    day: "numeric",
+                    timeZone: "UTC",
+                  })}
+                </h2>
+                {dayOccurrences.map((occurrence) => (
+                  <p
+                    key={`${occurrence.ruleId}-${occurrence.date.toISOString()}`}
+                  >
+                    {occurrence.text}
+                  </p>
+                ))}
+              </section>
+            );
+          })}
         </div>
       ) : (
         <SignInButton />
