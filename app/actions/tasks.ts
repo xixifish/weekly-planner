@@ -1,5 +1,4 @@
 // Creates the Task and its initial TaskRule together
-
 "use server";
 
 import { revalidatePath } from "next/cache";
@@ -45,6 +44,11 @@ export async function createTask(formData: FormData) {
 
   if (selectedDays.length === 0) {
     throw new Error("Choose a day");
+  }
+
+  // Reject duplicated weekdays in the submitted FormData
+  if (new Set(selectedDays).size !== selectedDays.length) {
+    throw new Error("Each day can only be selected once");
   }
 
   const date = new Date(`${dateValue}T00:00:00.000Z`);

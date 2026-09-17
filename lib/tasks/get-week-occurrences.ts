@@ -1,30 +1,33 @@
-"use server";
-
 import { requireCurrentUser } from "../current-user";
 import { prisma } from "@/lib/prisma";
 
 import { Weekday } from "@/app/generated/prisma/enums";
 
-export async function getWeekOccurrences(weekStart: Date) {
-  const weekdays = [
-    Weekday.SUN,
-    Weekday.MON,
-    Weekday.TUE,
-    Weekday.WED,
-    Weekday.THU,
-    Weekday.FRI,
-    Weekday.SAT,
-  ];
+import { getWeekDates } from "../dates/get-week-dates";
 
+const WEEKDAYS = [
+  Weekday.SUN,
+  Weekday.MON,
+  Weekday.TUE,
+  Weekday.WED,
+  Weekday.THU,
+  Weekday.FRI,
+  Weekday.SAT,
+];
+
+export type TaskOccurrence = {
+  taskId: string;
+  ruleId: string;
+  date: Date;
+  text: string;
+};
+
+export async function getWeekOccurrences(weekStart: Date) {
   // 1. Get the authenticated user
   const user = await requireCurrentUser();
 
   // 2. Get the current week's dates
-  const weekDates = Array.from({ length: 7 }, (_, index) => {
-    const date = new Date(weekStart);
-    date.setUTCDate(weekStart.getUTCDate() + index);
-    return date;
-  });
+  const weekDates = getWeekDates(weekStart);
 
   // 3. Load that user's relevant task rules
   const weekEnd = weekDates.at(-1);
@@ -61,12 +64,6 @@ export async function getWeekOccurrences(weekStart: Date) {
   });
 
   // 4. Generate occurrences for the seven dates
-  type TaskOccurrence = {
-    taskId: string;
-    ruleId: string;
-    date: Date;
-    text: string;
-  };
 
   const occurrences: TaskOccurrence[] = [];
 
@@ -74,25 +71,24 @@ export async function getWeekOccurrences(weekStart: Date) {
     for (const rule of task.rules) {
       for (const date of weekDates) {
         // Does this rule create a card on this date?
-
         // Not start yet
         if (date < rule.effectiveFrom) continue;
 
-        // Ends already
+        // The rule version or repeating series has ended
         if (rule.effectiveTo && date > rule.effectiveTo) continue;
         if (rule.endDate && date > rule.endDate) continue;
 
-        // Has deleted
+        // The task was deleted from this date onward
         if (task.deletedFrom && date >= task.deletedFrom) continue;
 
         // If repeating task
         if (rule.repeating) {
           // Get weekday of the current date
-          const weekday = weekdays[date.getUTCDay()];
+          const weekday = WEEKDAYS[date.getUTCDay()];
           // If not repeat on this weekday
           if (weekday === undefined || !rule.days.includes(weekday)) continue;
         } else {
-          // Non-repeating task only appears on one weekday
+          // A one-off task appears only on its effective date
           if (date.getTime() !== rule.effectiveFrom.getTime()) continue;
         }
 

@@ -1,6 +1,5 @@
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 
 import { createTask } from "./actions/tasks";
 
@@ -9,39 +8,19 @@ import { SignOutButton } from "./sign-out-button";
 
 import { Weekday } from "./generated/prisma/enums";
 import { getWeekOccurrences } from "@/lib/tasks/get-week-occurrences";
+import { getWeekDates } from "@/lib/dates/get-week-dates";
 
-// `async` because reading and validating the session takes time
 export default async function Home() {
-  const weekStart = new Date("2026-09-14T00:00:00.000Z");
-  const occurrences = await getWeekOccurrences(weekStart);
-
-  const weekDates = Array.from({ length: 7 }, (_, index) => {
-    const date = new Date(weekStart);
-    date.setUTCDate(weekStart.getUTCDate() + index);
-    return date;
-  });
-
+  // Read and validate the session takes time
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
-  const tasks = session
-    ? await prisma.task.findMany({
-        where: {
-          userId: session.user.id,
-        },
-        include: {
-          rules: {
-            orderBy: {
-              effectiveFrom: "desc",
-            },
-          },
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      })
-    : [];
+  // Get the start of the current week for the occurrences
+  const weekStart = new Date("2026-09-14T00:00:00.000Z");
+  const occurrences = session ? await getWeekOccurrences(weekStart) : [];
+
+  const weekDates = getWeekDates(weekStart);
 
   const weekdayOptions = [
     { value: Weekday.MON, label: "Mon" },
@@ -102,16 +81,8 @@ export default async function Home() {
             </button>
           </form>
           <div>
-            {tasks.length > 0 ? (
-              <ul>
-                {tasks.map((task) => (
-                  <li key={task.id} className="text-zinc-900">
-                    {task.rules[0]?.text ?? "The task unexpectedly has no text"}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-zinc-900">No tasks yet.</p>
+            {occurrences.length === 0 && (
+              <p className="text-zinc-900">No tasks this week.</p>
             )}
           </div>
           <br />
