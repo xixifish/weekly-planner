@@ -20,6 +20,7 @@ export type TaskOccurrence = {
   ruleId: string;
   date: Date;
   text: string;
+  completed: boolean;
 };
 
 export async function getWeekOccurrences(weekStart: Date) {
@@ -60,11 +61,22 @@ export async function getWeekOccurrences(weekStart: Date) {
           effectiveFrom: "asc",
         },
       },
+      // Add loading completions
+      completions: {
+        where: {
+          date: {
+            gte: weekStart,
+            lte: weekEnd,
+          },
+        },
+        select: {
+          date: true,
+        },
+      },
     },
   });
 
   // 4. Generate occurrences for the seven dates
-
   const occurrences: TaskOccurrence[] = [];
 
   for (const task of tasks) {
@@ -92,12 +104,18 @@ export async function getWeekOccurrences(weekStart: Date) {
           if (date.getTime() !== rule.effectiveFrom.getTime()) continue;
         }
 
+        // Check whether the current task on this date has completion
+        const completed = task.completions.some(
+          (completion) => completion.date.getTime() === date.getTime(),
+        );
+
         // One occurrence
         occurrences.push({
           taskId: task.id,
           ruleId: rule.id,
           date,
           text: rule.text,
+          completed,
         });
       }
     }

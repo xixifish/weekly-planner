@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 
 import { createTask } from "./actions/tasks";
+import { toggleTaskCompletion } from "./actions/completions";
 
 import { SignInButton } from "@/app/sign-in-button";
 import { SignOutButton } from "./sign-out-button";
@@ -17,7 +18,7 @@ export default async function Home() {
   });
 
   // Get the start of the current week for the occurrences
-  const weekStart = new Date("2026-09-14T00:00:00.000Z");
+  const weekStart = new Date("2026-09-28T00:00:00.000Z");
   const occurrences = session ? await getWeekOccurrences(weekStart) : [];
 
   const weekDates = getWeekDates(weekStart);
@@ -39,6 +40,10 @@ export default async function Home() {
         <div>
           <p className="text-zinc-900">Signed in as {session.user.email}</p>
           <SignOutButton />
+          <p>
+            <br />
+            Create a task
+          </p>
           <form action={createTask} className="flex flex-col gap-3">
             <input
               id="description"
@@ -100,11 +105,29 @@ export default async function Home() {
                   })}
                 </h2>
                 {dayOccurrences.map((occurrence) => (
-                  <p
+                  <div
                     key={`${occurrence.ruleId}-${occurrence.date.toISOString()}`}
                   >
-                    {occurrence.text}
-                  </p>
+                    <span>{occurrence.text}</span>
+                    <form action={toggleTaskCompletion}>
+                      <input
+                        type="hidden"
+                        name="taskId"
+                        value={occurrence.taskId}
+                      />
+                      <input
+                        type="hidden"
+                        name="date"
+                        value={occurrence.date.toISOString().slice(0, 10)}
+                      />
+                      <button
+                        type="submit"
+                        className="rounded-md border border-zinc-300"
+                      >
+                        {occurrence.completed ? "Completed" : "Not completed"}
+                      </button>
+                    </form>
+                  </div>
                 ))}
               </section>
             );
