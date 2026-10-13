@@ -18,6 +18,7 @@ Each row has the day name and a "N/M done" count on the left, and the task cards
 - A row grows taller when its cards wrap: 100px by default, plus 61px for each extra line.
 - Today's row has an orange left edge, a pale yellow background, and an orange day name.
 - A weekly progress bar sits top right, with a done/total count.
+- Arrows next to the week's dates move to the previous or next week. **Today** returns to the current week.
 - Minimum width is 1024px. Below that is phone territory, which v1 does not cover.
 
 **Old undone tasks stay in their past week.** Nothing rolls forward. This works like a paper planner — last week stays last week.
@@ -42,7 +43,7 @@ A task has text, selected days, a repeating flag, an optional end date, and an o
 
 ## 3. Repeats
 
-Turning on **Repeating Task** makes the selected weekdays a repeating pattern starting from the task date. Dates before the start are never created. The optional end date is the last date on which an occurrence may appear.
+Turning on **Repeating Task** makes the selected weekdays a repeating pattern. A new repeating task starts on the Monday of the week it is added to. For example, adding a Mon/Wed/Fri task on Wednesday also shows it on that week's Monday, which has already passed. The user plans the whole week, not just the days left in it. Dates before the start are never created. The optional end date is the last date on which an occurrence may appear.
 
 Occurrences are worked out when a week is opened rather than stored in advance. Changes to a single occurrence are stored separately from the repeating rule.
 
@@ -95,7 +96,9 @@ The end date controls recurrence only. It is not a deadline and does not create 
 
 ## 6. Adding and editing a task
 
-The dialog title shows the action and the date, such as **Add Task · Tuesday, 12 May**. Opening it from a day preselects that day.
+Tasks are added with the floating **+** button at the bottom right. The dialog adds to the week being viewed: its title shows that week, such as **Add Task · 31 Aug – 6 Sep**, and the selected day sets the date within it. No day is preselected; the user chooses one.
+
+When editing, the title shows the card's own date, such as **Edit Task · Tue 1 Sep**, because **This Task Only** applies to that date.
 
 The dialog contains the task text, **Days**, a **Repeating Task** option, an optional label colour, and—when repeating is on—an optional **End Date**.
 
