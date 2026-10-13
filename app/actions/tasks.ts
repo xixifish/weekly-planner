@@ -59,3 +59,93 @@ export async function deleteThisAndFutureTasks(formData: FormData) {
   // Reload the weekly data
   revalidatePath("/");
 }
+
+export async function saveThisAndFutureTasks(formData: FormData) {
+  const { task, date } = await requireOwnedOccurrence(formData);
+  const { text, days, repeating, endDate } = parseTaskForm(formData);
+
+  if (!repeating) {
+    throw new Error("Turning off repeating is not supported yet");
+  }
+
+  // Find the rule active on the date
+  const taskRule = await prisma.taskRule.findFirst({
+    where: {
+      taskId: task.id,
+      effectiveFrom: {
+        lte: date,
+      },
+      OR: [
+        {
+          effectiveTo: {
+            gte: date,
+          },
+        },
+        {
+          effectiveTo: null,
+        },
+      ],
+    },
+    select: {
+      id: true,
+      effectiveFrom: true,
+    },
+  });
+
+  if (!taskRule) {
+    throw new Error("No rule found for this date");
+  }
+
+  // The day before the selected card closes the old rule
+  const dayBefore = new Date(date);
+  dayBefore.setUTCDate(date.getUTCDate() - 1);
+
+  await prisma.$transaction(async (tx) => {
+    // a. Remove later rule versions; the new values replace them
+    await tx.taskRule.deleteMany({
+      where: {
+        taskId: task.id,
+        effectiveFrom: { gt: date },
+      },
+    });
+
+    if (taskRule.effectiveFrom.getTime() === date.getTime()) {
+      // b1. The rule starts on this card: change it in place
+      await tx.taskRule.update({
+        where: {
+          id: taskRule.id,
+        },
+        data: {
+          text,
+          days,
+          repeating,
+          endDate,
+          effectiveTo: null,
+        },
+      });
+    } else {
+      // b2. Close the old rule the day before
+      await tx.taskRule.update({
+        where: {
+          id: taskRule.id,
+        },
+        data: {
+          effectiveTo: dayBefore,
+        },
+      });
+      // b3. Start a new rule
+      await tx.taskRule.create({
+        data: {
+          taskId: task.id,
+          text,
+          days,
+          repeating,
+          endDate,
+          effectiveFrom: date,
+        },
+      });
+    }
+  });
+
+  revalidatePath("/");
+}

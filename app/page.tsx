@@ -1,7 +1,11 @@
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 
-import { createTask, deleteThisAndFutureTasks } from "./actions/tasks";
+import {
+  createTask,
+  deleteThisAndFutureTasks,
+  saveThisAndFutureTasks,
+} from "./actions/tasks";
 import { toggleTaskCompletion } from "./actions/completions";
 import { deleteThisTaskOnly } from "./actions/skips";
 import { saveThisTaskOnly } from "./actions/overrides";
@@ -239,6 +243,79 @@ export default async function Home() {
                                   className="rounded-md border border-zinc-300 px-3 py-1 text-sm hover:bg-zinc-50"
                                 >
                                   Save This Task
+                                </button>
+                              </form>
+                            </details>
+                            {/* Temporary: test Save This and Future Tasks */}
+                            <details className="mt-1">
+                              <summary className="cursor-pointer text-sm text-zinc-500">
+                                Edit This and Future Tasks
+                              </summary>
+                              <form
+                                action={saveThisAndFutureTasks}
+                                className="mt-2 flex flex-col gap-2"
+                              >
+                                <input
+                                  type="hidden"
+                                  name="taskId"
+                                  value={occurrence.taskId}
+                                />
+                                <input
+                                  type="hidden"
+                                  name="date"
+                                  value={occurrence.date
+                                    .toISOString()
+                                    .slice(0, 10)}
+                                />
+
+                                <input
+                                  name="description"
+                                  defaultValue={occurrence.text}
+                                  required
+                                  maxLength={1000}
+                                  className="rounded-md border border-zinc-300 px-2 py-1 text-sm"
+                                />
+
+                                <div className="flex flex-wrap gap-1">
+                                  {weekdayOptions.map((day) => (
+                                    <label
+                                      key={day.value}
+                                      className="flex items-center gap-1 rounded-md border border-zinc-300 px-2 py-0.5 text-xs has-checked:border-blue-600 has-checked:bg-blue-50"
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        name="days"
+                                        value={day.value}
+                                      />
+                                      {day.label}
+                                    </label>
+                                  ))}
+                                </div>
+
+                                <label className="flex items-center gap-2 text-sm">
+                                  <input
+                                    type="checkbox"
+                                    name="repeating"
+                                    value="true"
+                                    defaultChecked
+                                  />
+                                  Repeating task
+                                </label>
+
+                                <label className="flex items-center gap-2 text-sm">
+                                  End date
+                                  <input
+                                    name="endDate"
+                                    type="date"
+                                    className="rounded-md border border-zinc-300 px-2 py-1 text-sm"
+                                  />
+                                </label>
+
+                                <button
+                                  type="submit"
+                                  className="self-start rounded-md border border-zinc-300 px-3 py-1 text-sm hover:bg-zinc-50"
+                                >
+                                  Save This and Future Tasks
                                 </button>
                               </form>
                             </details>
