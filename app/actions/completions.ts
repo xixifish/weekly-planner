@@ -1,4 +1,4 @@
-// Reads taskId and date from FormData
+// Ticks or unticks one task occurrence by adding or removing its Completion
 "use server";
 
 import { revalidatePath } from "next/cache";
