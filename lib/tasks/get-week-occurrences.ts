@@ -85,6 +85,20 @@ export async function getWeekOccurrences(weekStart: Date) {
           date: true,
         },
       },
+      // Add loading this week's overrides
+      overrides: {
+        where: {
+          date: {
+            gte: weekStart,
+            lte: weekEnd,
+          },
+        },
+        select: {
+          date: true,
+          text: true,
+          label: true,
+        },
+      },
     },
   });
 
@@ -127,12 +141,17 @@ export async function getWeekOccurrences(weekStart: Date) {
           (completion) => completion.date.getTime() === date.getTime(),
         );
 
+        // Look for this card's override (undefined if there is none)
+        const override = task.overrides.find(
+          (taskOverride) => taskOverride.date.getTime() === date.getTime(),
+        );
+
         // One occurrence
         occurrences.push({
           taskId: task.id,
           ruleId: rule.id,
           date,
-          text: rule.text,
+          text: override ? override.text : rule.text,
           completed,
         });
       }
