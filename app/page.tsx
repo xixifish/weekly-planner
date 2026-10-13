@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 
-import { createTask } from "./actions/tasks";
+import { createTask, deleteThisAndFutureTasks } from "./actions/tasks";
 import { toggleTaskCompletion } from "./actions/completions";
 import { deleteThisTaskOnly } from "./actions/skips";
 
@@ -251,6 +251,26 @@ export default async function Home() {
                                 className="rounded-md border border-zinc-300 px-3 py-1 text-sm hover:bg-zinc-50"
                               >
                                 Delete
+                              </button>
+                            </form>
+                            <form action={deleteThisAndFutureTasks}>
+                              <input
+                                type="hidden"
+                                name="taskId"
+                                value={occurrence.taskId}
+                              />
+                              <input
+                                type="hidden"
+                                name="date"
+                                value={occurrence.date
+                                  .toISOString()
+                                  .slice(0, 10)}
+                              />
+                              <button
+                                type="submit"
+                                className="rounded-md border border-zinc-300 px-3 py-1 text-sm hover:bg-zinc-50"
+                              >
+                                Delete All After
                               </button>
                             </form>
                           </div>
