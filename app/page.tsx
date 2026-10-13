@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { createTask, deleteThisAndFutureTasks } from "./actions/tasks";
 import { toggleTaskCompletion } from "./actions/completions";
 import { deleteThisTaskOnly } from "./actions/skips";
+import { saveThisTaskOnly } from "./actions/overrides";
 
 import { SignInButton } from "@/app/sign-in-button";
 import { SignOutButton } from "./sign-out-button";
@@ -205,6 +206,42 @@ export default async function Home() {
                             <p className="font-mono text-xs text-zinc-400">
                               task {occurrence.taskId}
                             </p>
+                            {/* Temporary: test Save This Task Only */}
+                            <details className="mt-1">
+                              <summary className="cursor-pointer text-sm text-zinc-500">
+                                Edit This Task
+                              </summary>
+                              <form
+                                action={saveThisTaskOnly}
+                                className="mt-2 flex gap-2"
+                              >
+                                <input
+                                  type="hidden"
+                                  name="taskId"
+                                  value={occurrence.taskId}
+                                />
+                                <input
+                                  type="hidden"
+                                  name="date"
+                                  value={occurrence.date
+                                    .toISOString()
+                                    .slice(0, 10)}
+                                />
+                                <input
+                                  name="description"
+                                  defaultValue={occurrence.text}
+                                  required
+                                  maxLength={1000}
+                                  className="rounded-md border border-zinc-300 px-2 py-1 text-sm"
+                                />
+                                <button
+                                  type="submit"
+                                  className="rounded-md border border-zinc-300 px-3 py-1 text-sm hover:bg-zinc-50"
+                                >
+                                  Save This Task
+                                </button>
+                              </form>
+                            </details>
                           </div>
 
                           {/* Actions */}
