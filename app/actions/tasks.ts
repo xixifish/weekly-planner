@@ -4,7 +4,7 @@
 import { revalidatePath } from "next/cache";
 
 import { parseTaskForm } from "@/lib/tasks/parse-task-form";
-
+import { requireOwnedOccurrence } from "@/lib/tasks/require-owned-occurrence";
 import { requireCurrentUser } from "@/lib/current-user";
 import { prisma } from "@/lib/prisma";
 
@@ -32,48 +32,20 @@ export async function createTask(formData: FormData) {
 }
 
 export async function deleteThisAndFutureTasks(formData: FormData) {
-  // 1. Authenticate the user
-  const user = await requireCurrentUser();
+  const { task, date } = await requireOwnedOccurrence(formData);
 
-  // 2. Read the submitted taskId and the starting date to delete
-  const taskId = formData.get("taskId");
-  const dateValue = formData.get("date");
-
-  // 3. Validate taskId
-  if (typeof taskId !== "string" || !taskId) {
-    throw new Error("Invalid task");
-  }
-
-  // 4. Validate and convert the date
-  if (typeof dateValue !== "string" || !dateValue) {
-    throw new Error("Invalid occurrence date");
-  }
-  const date = new Date(`${dateValue}T00:00:00.000Z`);
-  if (
-    Number.isNaN(date.getTime()) ||
-    date.toISOString().slice(0, 10) !== dateValue
-  ) {
-    throw new Error("Invalid occurrence date");
-  }
-
-  // 5. Confirm that the signed-in user owns the task
-  const task = await prisma.task.findFirst({
+  // Read the task's current deletion date
+  const current = await prisma.task.findUnique({
     where: {
-      id: taskId,
-      userId: user.id,
+      id: task.id,
     },
     select: {
-      id: true,
       deletedFrom: true,
     },
   });
 
-  if (!task) {
-    throw new Error("Task not found");
-  }
-
-  // 6. Keep the earliest deletion date; never move it later
-  if (!task.deletedFrom || task.deletedFrom > date) {
+  // Keep the earliest deletion date; never move it later
+  if (!current?.deletedFrom || current.deletedFrom > date) {
     await prisma.task.update({
       where: {
         id: task.id,
@@ -84,6 +56,6 @@ export async function deleteThisAndFutureTasks(formData: FormData) {
     });
   }
 
-  // 7. Reload the weekly data
+  // Reload the weekly data
   revalidatePath("/");
 }
