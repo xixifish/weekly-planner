@@ -60,6 +60,8 @@ A non-repeating task uses direct **Save** and **Delete** actions. For a repeatin
 
 **This and Future Tasks** includes later occurrences in the same week and in later weeks. Earlier occurrences remain unchanged. Saving splits the repeating rule at the selected card; deleting stops it there.
 
+Later cards changed with **This Task Only** keep that change when **This and Future Tasks** is saved: a deleted card stays deleted, and an edited card keeps its own text and label. *To be checked in user testing.*
+
 Save scope depends on the fields changed:
 
 | Field | This Task Only | This and Future Tasks |
