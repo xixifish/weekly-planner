@@ -43,17 +43,17 @@ export async function getWeekOccurrences(weekStart: Date) {
     include: {
       rules: {
         where: {
-          effectiveFrom: {
-            lte: weekEnd,
-          },
-          OR: [
+          AND: [
+            { effectiveFrom: { lte: weekEnd } },
             {
-              effectiveTo: null,
-            },
-            {
-              effectiveTo: {
-                gte: weekStart,
-              },
+              OR: [
+                { effectiveTo: null },
+                {
+                  effectiveTo: {
+                    gte: weekStart,
+                  },
+                },
+              ],
             },
           ],
         },
@@ -63,6 +63,18 @@ export async function getWeekOccurrences(weekStart: Date) {
       },
       // Add loading completions
       completions: {
+        where: {
+          date: {
+            gte: weekStart,
+            lte: weekEnd,
+          },
+        },
+        select: {
+          date: true,
+        },
+      },
+      // Add loading taskskips
+      skips: {
         where: {
           date: {
             gte: weekStart,
@@ -92,6 +104,12 @@ export async function getWeekOccurrences(weekStart: Date) {
 
         // The task was deleted from this date onward
         if (task.deletedFrom && date >= task.deletedFrom) continue;
+
+        // This occurrence was deleted with "This Task Only"
+        const skipped = task.skips.some(
+          (skip) => skip.date.getTime() === date.getTime(),
+        );
+        if (skipped) continue;
 
         // If repeating task
         if (rule.repeating) {
