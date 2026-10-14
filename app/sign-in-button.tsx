@@ -14,9 +14,9 @@ export function SignInButton() {
     <button
       type="button"
       onClick={handleSignIn}
-      className="rounded-md border border-zinc-300 bg-white px-4 py-2 font-medium text-zinc-900 shadow-sm hover:bg-zinc-50"
+      className="h-9 w-19 rounded-md border border-logo-blue text-[15px] font-extrabold text-logo-blue"
     >
-      Sign in with Google
+      Sign in
     </button>
   );
 }
