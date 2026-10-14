@@ -1,25 +1,46 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* Fonts: --font-manrope is created by next/font in layout.tsx */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-manrope);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-  }
+/* Colours: same names as the variables in the Figma file */
+@theme {
+  /* Brand */
+  --color-logo-blue: #0084d9;
+  --color-logo-orange: #ff7700;
+
+  /* Text */
+  --color-text-dark: #303741;
+  --color-text-dark-grey: #666666;
+  --color-text-grey: #999999;
+  --color-text-grey-blue: #99a7bd;
+
+  /* Borders and backgrounds */
+  --color-area-border-grey: #ececec;
+  --color-card-border: #f2f2f2;
+  --color-today-yellow: #fffcf5;
+
+  /* Controls */
+  --color-select-blue: #dbf1ff;
+  --color-selected-blue: #005b96;
+  --color-button-off-grey: #d2dbe1;
+  --color-check-green: #06ad06;
+
+  /* Errors */
+  --color-error-red: #d94100;
+  --color-error-background: #fff9f9;
+
+  /* Labels */
+  --color-tag-green: #72de72;
+  --color-tag-pink: #f7bbbc;
+  --color-tag-purple: #e283f5;
+  --color-tag-blue: #77afff;
+  --color-tag-yellow: #f5dd8e;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: white;
+  color: var(--color-text-dark);
 }
