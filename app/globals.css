@@ -7,20 +7,24 @@
 
 /* Colours: same names as the variables in the Figma file */
 @theme {
+  /* Text colours reach 4.5:1 contrast on white. logo-orange reaches 3:1: enough for
+     the logo, graphics and large text (24px+, or ~19px+ bold), not small text */
+
   /* Brand */
-  --color-logo-blue: #0084d9;
-  --color-logo-orange: #ff7700;
+  --color-logo-blue: #0078c5;
+  --color-logo-orange: #f86300;
 
   /* Text */
   --color-text-dark: #303741;
   --color-text-dark-grey: #666666;
-  --color-text-grey: #999999;
-  --color-text-grey-blue: #99a7bd;
+  --color-text-grey: #757575;
+  --color-text-grey-blue: #5e769c;
 
   /* Borders and backgrounds */
   --color-area-border-grey: #ececec;
   --color-card-border: #f2f2f2;
   --color-today-yellow: #fffcf5;
+  --color-progress-track: #ffeab9;
 
   /* Controls */
   --color-select-blue: #dbf1ff;

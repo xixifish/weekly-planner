@@ -17,18 +17,27 @@ import { getWeekOccurrences } from "@/lib/tasks/get-week-occurrences";
 import { getWeekDates } from "@/lib/dates/get-week-dates";
 
 import { AppHeader } from "@/components/app-header";
+import { WeekHeader } from "@/components/week-header";
+import { parseWeekParam } from "@/lib/dates/week";
+import { getToday, resolveTimeZone } from "@/lib/dates/today";
 
 const fieldClass =
   "rounded-md border border-zinc-300 bg-white px-3 py-2 text-zinc-900";
 
-export default async function Home() {
+export default async function Home({ searchParams }: PageProps<"/">) {
+  const requestHeaders = await headers();
   // Read and validate the session takes time
   const session = await auth.api.getSession({
-    headers: await headers(),
+    headers: requestHeaders,
   });
 
+  // Which week to show: ?week=... from the URL, or the current week
+  const today = getToday(
+    resolveTimeZone(requestHeaders.get("x-vercel-ip-timezone")),
+  );
+  const { week } = await searchParams;
   // Get the start of the current week for the occurrences
-  const weekStart = new Date("2026-09-28T00:00:00.000Z");
+  const weekStart = parseWeekParam(week, today);
   const occurrences = session ? await getWeekOccurrences(weekStart) : [];
 
   const weekDates = getWeekDates(weekStart);
@@ -48,24 +57,33 @@ export default async function Home() {
   ).length;
 
   if (!session) {
-    return <AppHeader />;
+    return (
+      <>
+        <AppHeader />;
+        <WeekHeader weekStart={weekStart} doneCount={0} totalCount={0} />
+      </>
+    );
   }
 
   return (
     <>
       <AppHeader user={session?.user} />
+      <WeekHeader
+        weekStart={weekStart}
+        doneCount={doneCount}
+        totalCount={occurrences.length}
+      />
+      {/* Test-only: account info and sign out until the profile menu exists */}
+      <div className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white px-5 py-4">
+        <div>
+          <p className="text-sm text-zinc-500">
+            Signed in as {session.user.email}
+          </p>
+        </div>
+        <SignOutButton />
+      </div>
       <main className="min-h-screen bg-zinc-100 px-6 py-8 text-zinc-900">
         <div className="mx-auto flex max-w-5xl flex-col gap-6">
-          {/* Test-only: account info and sign out until the profile menu exists */}
-          <div className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white px-5 py-4">
-            <div>
-              <p className="text-sm text-zinc-500">
-                Signed in as {session.user.email}
-              </p>
-            </div>
-            <SignOutButton />
-          </div>
-
           <div className="grid items-start gap-6 md:grid-cols-[320px_1fr]">
             {/* Left: create task form */}
             <section className="rounded-lg border border-zinc-200 bg-white p-5">
