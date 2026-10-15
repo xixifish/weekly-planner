@@ -5,6 +5,7 @@ import { useState } from "react";
 import { CheckIcon, CrossIcon } from "./icons";
 import { Weekday } from "@/app/generated/prisma/enums";
 import { LABEL_OPTIONS } from "@/lib/tasks/labels";
+import { formatWeekRange } from "@/lib/dates/week";
 
 const WEEKDAY_OPTIONS = [
   { value: Weekday.MON, label: "Mon" },
@@ -18,7 +19,7 @@ const WEEKDAY_OPTIONS = [
 
 // A pill-shaped option: a hidden checkbox inside a styled label
 const pillClass =
-  "flex h-8.5 px-4 cursor-pointer items-center justify-center rounded-md border border-area-border-grey text-sm font-medium text-text-dark has-checked:border-logo-blue has-checked:bg-select-blue has-checked:text-logo-blue has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-logo-blue hover:border-logo-blue transition";
+  "flex h-8.5 px-4 cursor-pointer items-center justify-center rounded-md border border-area-border-grey text-sm font-medium text-text-dark has-checked:border-logo-blue has-checked:bg-select-blue has-checked:text-logo-blue has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-selected-blue hover:text-selected-blue hover:border-selected-blue transition";
 
 const sectionTitleClass =
   "mb-3 text-sm font-bold text-text-grey-blue uppercase";
@@ -35,9 +36,10 @@ const buttonClass = "h-9.5 rounded-md px-4 text-base font-bold transition";
 
 type TaskFormProps = {
   onCancel: () => void;
+  weekStart: Date;
 };
 
-export function TaskForm({ onCancel }: TaskFormProps) {
+export function TaskForm({ onCancel, weekStart }: TaskFormProps) {
   const [text, setText] = useState("");
   const [days, setDays] = useState<Weekday[]>([]);
   const [repeating, setRepeating] = useState(false);
@@ -78,13 +80,20 @@ export function TaskForm({ onCancel }: TaskFormProps) {
       : null;
 
   return (
-    <form className="mt-4">
+    <form>
+      {/* Form title */}
+      <h2 id="add-task-title" className="text-lg text-text-dark">
+        <span className="font-bold">
+          {repeating ? "Add Repeating Task" : "Add Task"}
+        </span>{" "}
+        · {formatWeekRange(weekStart)}
+      </h2>
       {/* Task fields */}
       <textarea
         name="description"
         placeholder="Describe your task"
         maxLength={1000}
-        className="w-full h-25 rounded-md border px-2 py-1.5 text-lg font-semibold text-text-dark placeholder:text-text-grey-blue resize-none border-area-border-grey focus:border-logo-blue focus:outline-none"
+        className="block w-full mt-4 h-25 rounded-md border px-2 py-1.5 text-lg font-semibold text-text-dark placeholder:text-text-grey-blue resize-none border-area-border-grey focus:border-logo-blue focus:outline-none"
         aria-label="Task description"
         value={text}
         onChange={(event) => setText(event.target.value)}

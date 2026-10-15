@@ -2,7 +2,6 @@
 import { useRef } from "react";
 
 import { AddIcon } from "./icons";
-import { formatWeekRange } from "@/lib/dates/week";
 import { TaskForm } from "./task-form";
 
 type AddTaskButtonProps = {
@@ -30,12 +29,10 @@ export function AddTaskButton({ weekStart }: AddTaskButtonProps) {
         aria-labelledby="add-task-title"
         className="m-auto w-[699px] rounded-xl bg-white px-7.5 py-5 backdrop:bg-black/40"
       >
-        <h2 id="add-task-title" className="text-lg text-text-dark">
-          <span className="font-bold">Add Task</span> ·{" "}
-          {formatWeekRange(weekStart)}
-        </h2>
-
-        <TaskForm onCancel={() => dialogRef.current?.close()} />
+        <TaskForm
+          onCancel={() => dialogRef.current?.close()}
+          weekStart={weekStart}
+        />
       </dialog>
     </>
   );
