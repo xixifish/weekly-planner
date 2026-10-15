@@ -98,9 +98,9 @@ The end date controls recurrence only. It is not a deadline and does not create 
 
 ## 6. Adding and editing a task
 
-Tasks are added with the floating **+** button at the bottom right. The dialog adds to the week being viewed: its title shows that week, such as **Add Task · 31 Aug – 6 Sep**, and the selected day sets the date within it. No day is preselected; the user chooses one.
+Tasks are added with the floating **+** button at the bottom right. The dialog adds to the week being viewed: its title shows that week in the same format as the week header, such as **Add Task · Aug 31 - Sep 6**, and the selected day sets the date within it. No day is preselected; the user chooses one. When **Repeating Task** is on, the title shows the start date instead, which is the Monday of that week: **Add Repeating Task · Aug 31**.
 
-When editing, the title shows the card's own date, such as **Edit Task · Tue 1 Sep**, because **This Task Only** applies to that date.
+When editing, the title shows the card's own date, such as **Edit Task · Sep 1**, because **This Task Only** applies to that date.
 
 The dialog contains the task text, **Days**, a **Repeating Task** option, an optional label colour, and—when repeating is on—an optional **End Date**.
 

@@ -14,13 +14,15 @@ export function TaskCard({ occurrence }: TaskCardProps) {
 
   return (
     <li
-      className={`group flex h-11 w-55 cursor-pointer items-center rounded-md border border-card-border bg-white px-3 transition-shadow ${completed ? "" : "shadow-sm hover:shadow-none"}`}
+      className={`group flex h-11 w-55 cursor-pointer items-center rounded-md border border-area-border-grey bg-white px-3 transition-shadow ${completed ? "" : "shadow-sm hover:shadow-none"}`}
     >
       {/* Tick: always shown when done; otherwise on hover or keyboard focus */}
       <form
         action={toggleTaskCompletion}
         className={`flex shrink-0 overflow-hidden transition-[width] motion-reduce:transition-none ${
-          completed ? "w-7.5" : "w-0 group-focus-within:w-7.5 group-hover:w-7.5"
+          completed
+            ? "w-7.5"
+            : "w-0 group-has-focus-visible:w-7.5 group-hover:w-7.5"
         }`}
       >
         <input type="hidden" name="taskId" value={taskId} />

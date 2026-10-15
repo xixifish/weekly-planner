@@ -7,6 +7,7 @@ import {
   getIsoWeek,
   getWeeksInYear,
   toDateString,
+  formatWeekRange,
 } from "@/lib/dates/week";
 
 type WeekHeaderProps = {
@@ -14,21 +15,6 @@ type WeekHeaderProps = {
   doneCount: number;
   totalCount: number;
 };
-
-// "Mon dayNum - (Mon) dayNum"
-function formatWeekRange(weekStart: Date) {
-  const weekEnd = addDays(weekStart, 6);
-  const month = (date: Date) =>
-    date.toLocaleDateString("en-US", { month: "short", timeZone: "UTC" });
-
-  const start = `${month(weekStart)} ${weekStart.getUTCDate()}`;
-  const end =
-    month(weekStart) === month(weekEnd)
-      ? `${weekEnd.getUTCDate()}`
-      : `${month(weekEnd)} ${weekEnd.getUTCDate()}`;
-
-  return `${start} - ${end}`;
-}
 
 const navButtonClass =
   "flex h-7.5 items-center justify-center rounded-[5px] border border-area-border-grey bg-white text-logo-blue hover:border-logo-blue";

@@ -2,8 +2,14 @@
 import { useRef } from "react";
 
 import { AddIcon } from "./icons";
+import { formatWeekRange } from "@/lib/dates/week";
+import { TaskForm } from "./task-form";
 
-export function AddTaskButton() {
+type AddTaskButtonProps = {
+  weekStart: Date;
+};
+
+export function AddTaskButton({ weekStart }: AddTaskButtonProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   return (
@@ -22,22 +28,14 @@ export function AddTaskButton() {
       <dialog
         ref={dialogRef}
         aria-labelledby="add-task-title"
-        className="m-auto w-[480px] rounded-xl bg-white p-8 backdrop:bg-black/40"
+        className="m-auto w-[699px] rounded-xl bg-white px-7.5 py-5 backdrop:bg-black/40"
       >
-        <h2
-          id="add-task-title"
-          className="text-xl font-extrabold text-text-dark"
-        >
-          Add Task
+        <h2 id="add-task-title" className="text-lg text-text-dark">
+          <span className="font-bold">Add Task</span> ·{" "}
+          {formatWeekRange(weekStart)}
         </h2>
 
-        <button
-          type="button"
-          onClick={() => dialogRef.current?.close()}
-          className="mt-6 rounded-[5px] border border-area-border-grey px-4 py-1.5 text-sm font-semibold text-text-dark"
-        >
-          Cancel
-        </button>
+        <TaskForm onCancel={() => dialogRef.current?.close()} />
       </dialog>
     </>
   );
