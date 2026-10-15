@@ -20,6 +20,7 @@ import { AppHeader } from "@/components/app-header";
 import { WeekHeader } from "@/components/week-header";
 import { parseWeekParam } from "@/lib/dates/week";
 import { getToday, resolveTimeZone } from "@/lib/dates/today";
+import { DayRow } from "@/components/day-row";
 
 const fieldClass =
   "rounded-md border border-zinc-300 bg-white px-3 py-2 text-zinc-900";
@@ -59,8 +60,18 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   if (!session) {
     return (
       <>
-        <AppHeader />;
+        <AppHeader />
         <WeekHeader weekStart={weekStart} doneCount={0} totalCount={0} />
+        <main>
+          {weekDates.map((date) => (
+            <DayRow
+              key={date.toISOString()}
+              date={date}
+              isToday={date.getTime() === today.getTime()}
+              occurrences={[]}
+            />
+          ))}
+        </main>
       </>
     );
   }
@@ -73,6 +84,18 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         doneCount={doneCount}
         totalCount={occurrences.length}
       />
+      <main>
+        {weekDates.map((date) => (
+          <DayRow
+            key={date.toISOString()}
+            date={date}
+            isToday={date.getTime() === today.getTime()}
+            occurrences={occurrences.filter(
+              (occurrence) => occurrence.date.getTime() === date.getTime(),
+            )}
+          />
+        ))}
+      </main>
       {/* Test-only: account info and sign out until the profile menu exists */}
       <div className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white px-5 py-4">
         <div>
@@ -82,7 +105,8 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         </div>
         <SignOutButton />
       </div>
-      <main className="min-h-screen bg-zinc-100 px-6 py-8 text-zinc-900">
+      {/* Test-only: forms until the card and dialogs exist */}
+      <div className="min-h-screen bg-zinc-100 px-6 py-8 text-zinc-900">
         <div className="mx-auto flex max-w-5xl flex-col gap-6">
           <div className="grid items-start gap-6 md:grid-cols-[320px_1fr]">
             {/* Left: create task form */}
@@ -160,21 +184,6 @@ export default async function Home({ searchParams }: PageProps<"/">) {
 
             {/* Right: the week's occurrences, one block per day */}
             <section className="flex flex-col gap-3">
-              <div className="flex items-baseline justify-between">
-                <h2 className="text-lg font-semibold">
-                  Week of{" "}
-                  {weekStart.toLocaleDateString("en-AU", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                    timeZone: "UTC",
-                  })}
-                </h2>
-                <p className="text-sm text-zinc-500">
-                  {doneCount}/{occurrences.length} done
-                </p>
-              </div>
-
               {weekDates.map((date) => {
                 const dayOccurrences = occurrences.filter(
                   (occurrence) => occurrence.date.getTime() === date.getTime(),
@@ -417,7 +426,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
             </section>
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }
