@@ -41,7 +41,7 @@
   --color-tag-purple: #e283f5;
   --color-tag-blue: #77afff;
   --color-tag-yellow: #f5dd8e;
-  --color-tag-orange: #ffa860;
+  --color-tag-orange: #f86300; /* same as logo-orange */
 }
 
 /* Tailwind 4 gives buttons the arrow cursor; restore the hand */

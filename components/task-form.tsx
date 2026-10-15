@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 
-import { CheckIcon } from "./icons";
+import { CheckIcon, CrossIcon } from "./icons";
 import { Weekday } from "@/app/generated/prisma/enums";
+import { LABEL_OPTIONS } from "@/lib/tasks/labels";
 
 const WEEKDAY_OPTIONS = [
   { value: Weekday.MON, label: "Mon" },
@@ -21,6 +22,13 @@ const pillClass =
 
 const sectionTitleClass =
   "mb-2 text-sm font-bold text-text-grey-blue uppercase";
+
+// A round label option: a hidden radio inside a styled label
+const swatchClass =
+  "group flex size-8 cursor-pointer items-center justify-center rounded-full has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-logo-blue";
+
+// Colour circles: a grey border, blue when selected
+const colourSwatchClass = `${swatchClass} border-2 border-area-border-grey has-checked:border-logo-blue`;
 
 type TaskFormProps = {
   onCancel: () => void;
@@ -64,6 +72,45 @@ export function TaskForm({ onCancel }: TaskFormProps) {
               <CheckIcon className="hidden size-4 group-has-checked:block" />
             </span>
             Repeating Task
+          </label>
+        </div>
+      </fieldset>
+
+      {/* LABEL: one colour, or none */}
+      <fieldset className="mt-4 border-b border-area-border-grey pb-4">
+        <legend className={sectionTitleClass}>Label</legend>
+        <div className="flex gap-3">
+          {LABEL_OPTIONS.map((option) => (
+            <label
+              key={option.value}
+              title={option.label}
+              className={`${colourSwatchClass} ${option.className}`}
+            >
+              <input
+                type="radio"
+                name="label"
+                value={option.value}
+                aria-label={option.label}
+                className="sr-only"
+              />
+              <CheckIcon className="hidden size-4.5 text-logo-blue group-has-checked:block" />
+            </label>
+          ))}
+
+          {/* No label: selected by default */}
+          <label
+            title="No label"
+            className={`${colourSwatchClass} text-button-off-grey has-checked:text-logo-blue`}
+          >
+            <input
+              type="radio"
+              name="label"
+              value=""
+              defaultChecked
+              aria-label="No label"
+              className="sr-only"
+            />
+            <CrossIcon className="size-4.5" />
           </label>
         </div>
       </fieldset>
