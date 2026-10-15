@@ -42,6 +42,15 @@
   --color-tag-purple: #e283f5;
   --color-tag-blue: #77afff;
   --color-tag-yellow: #f5dd8e;
+  --color-tag-orange: #ffa860;
+}
+
+/* Tailwind 4 gives buttons the arrow cursor; restore the hand */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
 body {

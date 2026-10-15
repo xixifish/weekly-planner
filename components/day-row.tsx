@@ -1,4 +1,5 @@
 import type { TaskOccurrence } from "@/lib/tasks/get-week-occurrences";
+import { TaskCard } from "./task-card";
 
 type DayRowProps = {
   date: Date;
@@ -46,18 +47,11 @@ export function DayRow({ date, isToday, occurrences }: DayRowProps) {
       </div>
 
       {/* Right: cards, wrapping onto new lines */}
-      <div className="flex flex-wrap gap-x-3 gap-y-[17px]">
+      <ul className="flex flex-wrap gap-x-3 gap-y-[17px]">
         {occurrences.map((occurrence) => (
-          <div
-            key={`${occurrence.ruleId}-${occurrence.date.toISOString()}`}
-            className="flex h-11 w-55 items-center rounded-md border border-card-border bg-white px-3"
-          >
-            <p className="truncate text-[13px] font-medium">
-              {occurrence.text}
-            </p>
-          </div>
+          <TaskCard key={occurrence.taskId} occurrence={occurrence} />
         ))}
-      </div>
+      </ul>
     </section>
   );
 }
