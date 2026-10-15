@@ -6,7 +6,6 @@ import {
   deleteThisAndFutureTasks,
   saveThisAndFutureTasks,
 } from "./actions/tasks";
-import { toggleTaskCompletion } from "./actions/completions";
 import { deleteThisTaskOnly } from "./actions/skips";
 import { saveThisTaskOnly } from "./actions/overrides";
 
@@ -21,6 +20,7 @@ import { WeekHeader } from "@/components/week-header";
 import { parseWeekParam } from "@/lib/dates/week";
 import { getToday, resolveTimeZone } from "@/lib/dates/today";
 import { DayRow } from "@/components/day-row";
+import { AddTaskButton } from "@/components/add-task-button";
 
 const fieldClass =
   "rounded-md border border-zinc-300 bg-white px-3 py-2 text-zinc-900";
@@ -401,6 +401,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
           </div>
         </div>
       </div>
+      <AddTaskButton />
     </>
   );
 }

@@ -65,3 +65,21 @@ export function CheckIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+
+export function AddIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 40 40"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={3}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M8.33334 20H31.6667" />
+      <path d="M20 8.3335V31.6668" />
+    </svg>
+  );
+}
