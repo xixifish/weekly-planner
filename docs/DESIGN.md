@@ -107,6 +107,7 @@ The dialog contains the task text, **Days**, a **Repeating Task** option, an opt
 - A task that is not repeating has exactly one selected day.
 - A repeating task may have one or more weekdays. Its occurrences can be within the current week, later weeks, or both.
 - Turning repeating on keeps the selected day and allows more days. To turn it off, the user must first leave only one day selected. If they try sooner, the option stays on and the dialog asks them to choose one day. Turning it off automatically removes the end date.
+- Selecting a second day while repeating is off never unselects the first one. Both stay selected, Save is disabled, and the dialog asks the user to turn on **Repeating Task** or choose one day. Nothing changes behind the user's back.
 - No end date means the task repeats indefinitely. An end date is inclusive and cannot be before the task starts. Removing it returns the task to indefinite repetition.
 - Text and a day are required; label and end date are optional. Save stays disabled until the required fields are valid.
 - The text box scrolls for long text. Titles contain no line breaks, spaces alone are invalid, and text is limited to 1000 characters.
