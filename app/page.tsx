@@ -349,32 +349,6 @@ export default async function Home({ searchParams }: PageProps<"/">) {
 
                             {/* Actions */}
                             <div className="flex shrink-0 items-center gap-2">
-                              <form action={toggleTaskCompletion}>
-                                <input
-                                  type="hidden"
-                                  name="taskId"
-                                  value={occurrence.taskId}
-                                />
-                                <input
-                                  type="hidden"
-                                  name="date"
-                                  value={occurrence.date
-                                    .toISOString()
-                                    .slice(0, 10)}
-                                />
-                                <button
-                                  type="submit"
-                                  className={
-                                    occurrence.completed
-                                      ? "rounded-md bg-green-600 px-3 py-1 text-sm text-white"
-                                      : "rounded-md border border-zinc-300 px-3 py-1 text-sm hover:bg-zinc-50"
-                                  }
-                                >
-                                  {occurrence.completed
-                                    ? "✓ Done"
-                                    : "Mark done"}
-                                </button>
-                              </form>
                               <form action={deleteThisTaskOnly}>
                                 <input
                                   type="hidden"
