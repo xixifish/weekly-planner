@@ -30,6 +30,9 @@ const swatchClass =
 // Colour circles: a grey border, blue when selected
 const colourSwatchClass = `${swatchClass} border-2 border-area-border-grey has-checked:border-logo-blue`;
 
+// Footer buttons (Cancel, Save); each adds its own colours
+const buttonClass = "h-9.5 rounded-md px-4 text-base font-bold";
+
 type TaskFormProps = {
   onCancel: () => void;
 };
@@ -115,13 +118,22 @@ export function TaskForm({ onCancel }: TaskFormProps) {
         </div>
       </fieldset>
 
-      <button
-        type="button"
-        onClick={onCancel}
-        className="mt-6 rounded-md border border-area-border-grey px-4 py-1.5 text-sm font-semibold text-text-dark"
-      >
-        Cancel
-      </button>
+      {/* Footer */}
+      <div className="mt-4 flex justify-end gap-2">
+        <button
+          type="button"
+          onClick={onCancel}
+          className={`${buttonClass} border border-logo-blue text-logo-blue hover:border-selected-blue hover:text-selected-blue`}
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className={`${buttonClass} bg-logo-blue text-white hover:bg-selected-blue`}
+        >
+          Save
+        </button>
+      </div>
     </form>
   );
 }
