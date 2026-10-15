@@ -20,19 +20,17 @@ const WEEKDAY_OPTIONS = [
 // A pill-shaped option: a hidden checkbox inside a styled label
 const pillClass =
   "flex h-8.5 px-4 cursor-pointer items-center justify-center rounded-md border border-area-border-grey text-sm font-medium text-text-dark has-checked:border-logo-blue has-checked:bg-select-blue has-checked:text-logo-blue has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-selected-blue hover:text-selected-blue hover:border-selected-blue transition";
-
 const sectionTitleClass =
   "mb-3 text-sm font-bold text-text-grey-blue uppercase";
-
 // A round label option: a hidden radio inside a styled label
 const swatchClass =
   "group flex size-8 cursor-pointer items-center justify-center rounded-full has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-logo-blue";
-
 // Colour circles: a grey border, blue when selected
 const colourSwatchClass = `${swatchClass} border-2 border-area-border-grey has-checked:border-logo-blue`;
-
 // Footer buttons (Cancel, Save); each adds its own colours
 const buttonClass = "h-9.5 rounded-md px-4 text-base font-bold transition";
+// Error message
+const errorClass = "text-[13px] font-medium text-error-red normal-case";
 
 type TaskFormProps = {
   onCancel: () => void;
@@ -40,12 +38,16 @@ type TaskFormProps = {
 };
 
 export function TaskForm({ onCancel, weekStart }: TaskFormProps) {
+  // 1. State
   const [text, setText] = useState("");
   const [days, setDays] = useState<Weekday[]>([]);
+  // Show the error msg for empty description
+  const [textTouched, setTextTouched] = useState(false);
   const [repeating, setRepeating] = useState(false);
   // The user tries to turn Repeating off while several days were selected
   const [turnOffBlocked, setTurnOffBlocked] = useState(false);
 
+  // 2. Handlers
   // If the day is already selected, remove it; otherwise add it
   function toggleDay(day: Weekday) {
     const nextDays = days.includes(day)
@@ -70,24 +72,36 @@ export function TaskForm({ onCancel, weekStart }: TaskFormProps) {
     setTurnOffBlocked(false);
   }
 
+  // 3. Calculated values
   // A one-off task has exactly one day
   const tooManyDays = !repeating && days.length > 1;
-
   const daysError = tooManyDays
     ? "Turn on Repeating Task to choose more than one day"
     : turnOffBlocked
       ? "Choose one day only before turning off repeating"
       : null;
+  const textError = textTouched && text.trim() === "";
+  const canSave =
+    text.trim().length !== 0 && days.length !== 0 && daysError === null;
 
   return (
     <form>
-      {/* Form title */}
-      <h2 id="add-task-title" className="text-lg text-text-dark">
-        <span className="font-bold">
-          {repeating ? "Add Repeating Task" : "Add Task"}
-        </span>{" "}
-        · {formatWeekRange(weekStart)}
-      </h2>
+      <div className="flex items-baseline justify-between">
+        {/* Form title */}
+        <h2 id="add-task-title" className="text-lg text-text-dark">
+          <span className="font-bold">
+            {repeating ? "Add Repeating Task" : "Add Task"}
+          </span>{" "}
+          · {formatWeekRange(weekStart)}
+        </h2>
+        {/* Text error */}
+        {textError && (
+          <span role="alert" className={errorClass}>
+            Enter a task description
+          </span>
+        )}
+      </div>
+
       {/* Task fields */}
       <textarea
         name="description"
@@ -95,8 +109,12 @@ export function TaskForm({ onCancel, weekStart }: TaskFormProps) {
         maxLength={1000}
         className="block w-full mt-4 h-25 rounded-md border px-2 py-1.5 text-lg font-semibold text-text-dark placeholder:text-text-grey-blue resize-none border-area-border-grey focus:border-logo-blue focus:outline-none"
         aria-label="Task description"
+        aria-invalid={textError}
         value={text}
-        onChange={(event) => setText(event.target.value)}
+        onChange={(event) => {
+          setText(event.target.value);
+          setTextTouched(true);
+        }}
       />
 
       {/* DAYS: seven weekday checkboxes and the Repeating Task toggle */}
@@ -106,10 +124,7 @@ export function TaskForm({ onCancel, weekStart }: TaskFormProps) {
         >
           <span>Days</span>
           {daysError && (
-            <span
-              role="alert"
-              className="text-[13px] font-medium text-error-red normal-case"
-            >
+            <span role="alert" className={errorClass}>
               {daysError}
             </span>
           )}
@@ -205,7 +220,8 @@ export function TaskForm({ onCancel, weekStart }: TaskFormProps) {
         </button>
         <button
           type="submit"
-          className={`${buttonClass} bg-logo-blue text-white hover:bg-selected-blue`}
+          disabled={!canSave}
+          className={`${buttonClass} bg-logo-blue text-white hover:bg-selected-blue disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:hover:bg-button-off-grey`}
         >
           Save
         </button>
