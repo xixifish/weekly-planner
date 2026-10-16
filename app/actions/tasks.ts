@@ -7,11 +7,26 @@ import { parseTaskForm } from "@/lib/tasks/parse-task-form";
 import { requireOwnedOccurrence } from "@/lib/tasks/require-owned-occurrence";
 import { requireCurrentUser } from "@/lib/current-user";
 import { prisma } from "@/lib/prisma";
+import { file } from "better-auth";
 
-export async function createTask(formData: FormData) {
+// What the add dialog gets back: an error message, or null when saved
+export type CreateTaskResult = { error: string | null };
+
+export async function createTask(
+  formData: FormData,
+): Promise<CreateTaskResult> {
   const user = await requireCurrentUser();
 
-  const { text, days, repeating, date, endDate } = parseTaskForm(formData);
+  let fields;
+  try {
+    fields = parseTaskForm(formData);
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : "Could not save the task",
+    };
+  }
+
+  const { text, days, repeating, date, endDate } = fields;
 
   await prisma.task.create({
     data: {
@@ -29,6 +44,7 @@ export async function createTask(formData: FormData) {
   });
 
   revalidatePath("/"); // Render home page again with fresh data
+  return { error: null };
 }
 
 export async function deleteThisAndFutureTasks(formData: FormData) {

@@ -51,6 +51,8 @@ export function TaskForm({ onCancel, onSaved, weekStart }: TaskFormProps) {
   const [turnOffBlocked, setTurnOffBlocked] = useState(false);
   // Save the task
   const [saving, startSaving] = useTransition();
+  // A message from the server when saving failed
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   // 2. Handlers
   // If the day is already selected, remove it; otherwise add it
@@ -82,8 +84,15 @@ export function TaskForm({ onCancel, onSaved, weekStart }: TaskFormProps) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
+    // Reset the saveError
+    setSaveError(null);
+
     startSaving(async () => {
-      await createTask(formData);
+      const result = await createTask(formData);
+      if (result.error) {
+        setSaveError(result.error);
+        return;
+      }
       onSaved(); // close the dialog after saving the new task
     });
   }
@@ -232,6 +241,11 @@ export function TaskForm({ onCancel, onSaved, weekStart }: TaskFormProps) {
 
       {/* Footer */}
       <div className="mt-4 flex justify-end gap-2">
+        {saveError && (
+          <p role="alert" className={`${errorClass} mr-auto`}>
+            {saveError}
+          </p>
+        )}
         <button
           type="button"
           onClick={onCancel}
@@ -244,7 +258,7 @@ export function TaskForm({ onCancel, onSaved, weekStart }: TaskFormProps) {
           disabled={!canSave || saving}
           className={`${buttonClass} bg-logo-blue text-white hover:bg-selected-blue disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:hover:bg-button-off-grey`}
         >
-          Save
+          {saving ? "Saving..." : "Save"}
         </button>
       </div>
     </form>
