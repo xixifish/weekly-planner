@@ -2,7 +2,6 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 
 import {
-  createTask,
   deleteThisAndFutureTasks,
   saveThisAndFutureTasks,
 } from "./actions/tasks";
@@ -21,9 +20,6 @@ import { parseWeekParam } from "@/lib/dates/week";
 import { getToday, resolveTimeZone } from "@/lib/dates/today";
 import { DayRow } from "@/components/day-row";
 import { AddTaskButton } from "@/components/add-task-button";
-
-const fieldClass =
-  "rounded-md border border-zinc-300 bg-white px-3 py-2 text-zinc-900";
 
 export default async function Home({ searchParams }: PageProps<"/">) {
   const requestHeaders = await headers();
@@ -108,80 +104,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
       {/* Test-only: forms until the card and dialogs exist */}
       <div className="min-h-screen bg-zinc-100 px-6 py-8 text-zinc-900">
         <div className="mx-auto flex max-w-5xl flex-col gap-6">
-          <div className="grid items-start gap-6 md:grid-cols-[320px_1fr]">
-            {/* Left: create task form */}
-            <section className="rounded-lg border border-zinc-200 bg-white p-5">
-              <h2 className="mb-4 text-lg font-semibold">Create a task</h2>
-              <form action={createTask} className="flex flex-col gap-4">
-                <div className="flex flex-col gap-1">
-                  <label htmlFor="description" className="text-sm font-medium">
-                    Description
-                  </label>
-                  <input
-                    id="description"
-                    name="description"
-                    type="text"
-                    required
-                    maxLength={1000}
-                    className={fieldClass}
-                  />
-                </div>
-
-                <fieldset className="flex flex-col gap-2">
-                  <legend className="mb-1 text-sm font-medium">Days</legend>
-                  <div className="flex flex-wrap gap-2">
-                    {weekdayOptions.map((day) => (
-                      <label
-                        key={day.value}
-                        className="flex items-center gap-1 rounded-md border border-zinc-300 px-2 py-1 text-sm has-checked:border-blue-600 has-checked:bg-blue-50"
-                      >
-                        <input type="checkbox" name="days" value={day.value} />
-                        {day.label}
-                      </label>
-                    ))}
-                  </div>
-                </fieldset>
-
-                <label className="flex items-center gap-2 text-sm font-medium">
-                  <input type="checkbox" name="repeating" value="true" />
-                  Repeating task
-                </label>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="flex flex-col gap-1">
-                    <label htmlFor="date" className="text-sm font-medium">
-                      Start date
-                    </label>
-                    <input
-                      id="date"
-                      name="date"
-                      type="date"
-                      required
-                      className={fieldClass}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label htmlFor="endDate" className="text-sm font-medium">
-                      End date
-                    </label>
-                    <input
-                      id="endDate"
-                      name="endDate"
-                      type="date"
-                      className={fieldClass}
-                    />
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
-                >
-                  Create task
-                </button>
-              </form>
-            </section>
-
+          <div className="grid items-start gap-6">
             {/* Right: the week's occurrences, one block per day */}
             <section className="flex flex-col gap-3">
               {weekDates.map((date) => {
