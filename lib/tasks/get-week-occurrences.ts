@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 
 import { WEEKDAYS } from "../dates/week";
 import { getWeekDates } from "../dates/get-week-dates";
+import { LabelColour } from "@/app/generated/prisma/enums";
 
 export type TaskOccurrence = {
   taskId: string;
@@ -10,6 +11,7 @@ export type TaskOccurrence = {
   date: Date;
   text: string;
   completed: boolean;
+  label: LabelColour | null;
 };
 
 export async function getWeekOccurrences(weekStart: Date) {
@@ -142,6 +144,7 @@ export async function getWeekOccurrences(weekStart: Date) {
           date,
           text: override ? override.text : rule.text,
           completed,
+          label: override ? override.label : rule.label,
         });
       }
     }

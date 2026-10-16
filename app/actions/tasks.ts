@@ -7,7 +7,6 @@ import { parseTaskForm } from "@/lib/tasks/parse-task-form";
 import { requireOwnedOccurrence } from "@/lib/tasks/require-owned-occurrence";
 import { requireCurrentUser } from "@/lib/current-user";
 import { prisma } from "@/lib/prisma";
-import { file } from "better-auth";
 
 // What the add dialog gets back: an error message, or null when saved
 export type CreateTaskResult = { error: string | null };
@@ -26,7 +25,7 @@ export async function createTask(
     };
   }
 
-  const { text, days, repeating, date, endDate } = fields;
+  const { text, days, repeating, date, endDate, label } = fields;
 
   await prisma.task.create({
     data: {
@@ -38,6 +37,7 @@ export async function createTask(
           repeating,
           effectiveFrom: date,
           endDate,
+          label,
         },
       },
     },
@@ -78,7 +78,7 @@ export async function deleteThisAndFutureTasks(formData: FormData) {
 
 export async function saveThisAndFutureTasks(formData: FormData) {
   const { task, date } = await requireOwnedOccurrence(formData);
-  const { text, days, repeating, endDate } = parseTaskForm(formData);
+  const { text, days, repeating, endDate, label } = parseTaskForm(formData);
 
   if (!repeating) {
     throw new Error("Turning off repeating is not supported yet");
@@ -137,6 +137,7 @@ export async function saveThisAndFutureTasks(formData: FormData) {
           repeating,
           endDate,
           effectiveTo: null,
+          label,
         },
       });
     } else {
@@ -158,6 +159,7 @@ export async function saveThisAndFutureTasks(formData: FormData) {
           repeating,
           endDate,
           effectiveFrom: date,
+          label,
         },
       });
     }

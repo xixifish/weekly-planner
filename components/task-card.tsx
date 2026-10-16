@@ -3,19 +3,33 @@
 import { toggleTaskCompletion } from "@/app/actions/completions";
 import { toDateString } from "@/lib/dates/week";
 import type { TaskOccurrence } from "@/lib/tasks/get-week-occurrences";
+import { LABEL_OPTIONS } from "@/lib/tasks/labels";
 
 import { CheckIcon } from "./icons";
+
 type TaskCardProps = {
   occurrence: TaskOccurrence;
 };
 
 export function TaskCard({ occurrence }: TaskCardProps) {
-  const { taskId, date, text, completed } = occurrence;
+  const { taskId, date, text, completed, label } = occurrence;
+
+  // The label's colour class, e.g. "bg-tag-green"; undefined when there is no label
+  const labelClass = LABEL_OPTIONS.find(
+    (option) => option.value === label,
+  )?.className;
 
   return (
     <li
-      className={`group flex h-11 w-55 cursor-pointer items-center rounded-md border border-area-border-grey bg-white px-3 transition-shadow ${completed ? "" : "shadow-sm hover:shadow-none"}`}
+      className={`group flex h-11 w-55 cursor-pointer items-center overflow-hidden rounded-md border border-area-border-grey bg-white pr-3 transition-shadow ${labelClass ? "" : "pl-3"} ${completed ? "" : "shadow-sm hover:shadow-none"}`}
     >
+      {/* The label colour: a bar along the left edge */}
+      {labelClass && (
+        <span
+          aria-hidden="true"
+          className={`mr-3 w-1.5 shrink-0 self-stretch ${labelClass}`}
+        />
+      )}
       {/* Tick: always shown when done; otherwise on hover or keyboard focus */}
       <form
         action={toggleTaskCompletion}
