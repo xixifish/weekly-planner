@@ -1,4 +1,22 @@
+import { Weekday } from "@/app/generated/prisma/enums";
+
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
+
+// getUTCDay() numbers the days from Sunday (0) to Saturday (6)
+export const WEEKDAYS = [
+  Weekday.SUN,
+  Weekday.MON,
+  Weekday.TUE,
+  Weekday.WED,
+  Weekday.THU,
+  Weekday.FRI,
+  Weekday.SAT,
+];
+
+// The weekday of a UTC-midnight date, e.g. Weekday.WED
+export function getWeekday(date: Date) {
+  return WEEKDAYS[date.getUTCDay()];
+}
 
 // A UTC-midnight date as "2026-10-12"
 export function toDateString(date: Date) {

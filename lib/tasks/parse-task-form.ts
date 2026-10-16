@@ -1,11 +1,13 @@
 import { Weekday } from "@/app/generated/prisma/enums";
+import { getWeekday } from "../dates/week";
 
 export function parseTaskForm(formData: FormData) {
   const description = formData.get("description");
   const dateValue = formData.get("date");
   const rawSelectedDays = formData.getAll("days");
   const repeatingValue = formData.get("repeating") === "true";
-  const endDateValue = formData.get("endDate");
+  // A one-off task's form has no end date field at all
+  const endDateValue = formData.get("endDate") ?? "";
 
   // Validate: description cannot be empty
   if (typeof description !== "string" || !description.trim()) {
@@ -79,6 +81,10 @@ export function parseTaskForm(formData: FormData) {
 
   if (!repeatingValue && selectedDays.length !== 1) {
     throw new Error("A non-repeating task must have one day");
+  }
+
+  if (!repeatingValue && getWeekday(date) !== selectedDays[0]) {
+    throw new Error("The date does not match the selected day");
   }
 
   return {

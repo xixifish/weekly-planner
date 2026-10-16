@@ -1,19 +1,8 @@
 import { requireCurrentUser } from "../current-user";
 import { prisma } from "@/lib/prisma";
 
-import { Weekday } from "@/app/generated/prisma/enums";
-
+import { WEEKDAYS } from "../dates/week";
 import { getWeekDates } from "../dates/get-week-dates";
-
-const WEEKDAYS = [
-  Weekday.SUN,
-  Weekday.MON,
-  Weekday.TUE,
-  Weekday.WED,
-  Weekday.THU,
-  Weekday.FRI,
-  Weekday.SAT,
-];
 
 export type TaskOccurrence = {
   taskId: string;
