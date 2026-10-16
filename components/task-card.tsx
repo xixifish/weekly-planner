@@ -21,7 +21,7 @@ export function TaskCard({ occurrence }: TaskCardProps) {
 
   return (
     <li
-      className={`group flex h-11 w-55 cursor-pointer items-center overflow-hidden rounded-md border border-area-border-grey bg-white pr-3 transition-shadow ${labelClass ? "" : "pl-3"} ${completed ? "" : "shadow-sm hover:shadow-none"}`}
+      className={`group flex h-11 w-55 cursor-pointer items-center overflow-hidden rounded-md border border-area-border-grey pr-3 transition ${labelClass ? "" : "pl-3"} ${completed ? "bg-background-grey" : "bg-white shadow-sm hover:border-selected-blue"}`}
     >
       {/* The label colour: a bar along the left edge */}
       {labelClass && (

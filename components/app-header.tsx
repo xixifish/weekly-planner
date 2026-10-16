@@ -22,7 +22,7 @@ export function AppHeader({ user }: AppHeaderProps) {
       </div>
       {/* Account: avatar when signed in, Sign in button when not */}
       {user ? (
-        <div className="flex items-center gap-1 rounded-lg px-2.5 py-1 hover:bg-card-border">
+        <div className="flex items-center gap-1 rounded-lg px-2.5 py-1 hover:bg-background-grey">
           {user.image ? (
             <Image
               src={user.image}

@@ -86,8 +86,8 @@ States: plain, done, hover.
 
 **The coloured left bar is the label the user picked.** It never changes to show state. A done task keeps its own colour.
 
-- **Done**: green filled tick, greyed text. The left bar stays the label colour.
-- **Hover**: the tick slides in from the left, and the text moves right to make room. The card's shadow disappears. A done card always shows its tick.
+- **Done**: green filled tick, greyed and struck-through text, and a grey background with no shadow. The left bar stays the label colour.
+- **Hover**: the tick slides in from the left, and the text moves right to make room. The card's border turns blue. A done card always shows its tick and has no hover effect.
 - **Full text**: v1 uses the browser's built-in tooltip (the `title` attribute) on the card text.
 
 *To do: replace it with a custom tooltip.* After about 400ms of hover, the full text appears above the card, but only when the text is actually cut off. The delay stops it flashing as the mouse crosses a row. It is at most 280px wide, ignores the mouse, and flips sides near the edge of the window. It also appears on keyboard focus.
