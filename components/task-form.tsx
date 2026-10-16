@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 import { CheckIcon, CrossIcon } from "./icons";
 import { Weekday } from "@/app/generated/prisma/enums";
 import { LABEL_OPTIONS } from "@/lib/tasks/labels";
-import { formatWeekRange, toDateString } from "@/lib/dates/week";
+import { addDays, formatWeekRange, toDateString } from "@/lib/dates/week";
 import { EndDateField } from "./end-date-field";
+import { createTask } from "@/app/actions/tasks";
 
 const WEEKDAY_OPTIONS = [
   { value: Weekday.MON, label: "Mon" },
@@ -35,10 +36,11 @@ const errorClass = "text-[13px] font-medium text-error-red normal-case";
 
 type TaskFormProps = {
   onCancel: () => void;
+  onSaved: () => void;
   weekStart: Date;
 };
 
-export function TaskForm({ onCancel, weekStart }: TaskFormProps) {
+export function TaskForm({ onCancel, onSaved, weekStart }: TaskFormProps) {
   // 1. State
   const [text, setText] = useState("");
   const [days, setDays] = useState<Weekday[]>([]);
@@ -47,6 +49,8 @@ export function TaskForm({ onCancel, weekStart }: TaskFormProps) {
   const [repeating, setRepeating] = useState(false);
   // The user tries to turn Repeating off while several days were selected
   const [turnOffBlocked, setTurnOffBlocked] = useState(false);
+  // Save the task
+  const [saving, startSaving] = useTransition();
 
   // 2. Handlers
   // If the day is already selected, remove it; otherwise add it
@@ -73,6 +77,17 @@ export function TaskForm({ onCancel, weekStart }: TaskFormProps) {
     setTurnOffBlocked(false);
   }
 
+  // Send the form to the server
+  function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+
+    startSaving(async () => {
+      await createTask(formData);
+      onSaved(); // close the dialog after saving the new task
+    });
+  }
+
   // 3. Calculated values
   // A one-off task has exactly one day
   const tooManyDays = !repeating && days.length > 1;
@@ -84,9 +99,16 @@ export function TaskForm({ onCancel, weekStart }: TaskFormProps) {
   const textError = textTouched && text.trim() === "";
   const canSave =
     text.trim().length !== 0 && days.length !== 0 && daysError === null;
+  // Repeating: starts on the week's Monday. One-off: that week's chosen day
+  const dayOffset = WEEKDAY_OPTIONS.findIndex(
+    (option) => option.value === days[0],
+  );
+  const taskDate =
+    repeating || dayOffset === -1 ? weekStart : addDays(weekStart, dayOffset);
 
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
+      <input type="hidden" name="date" value={toDateString(taskDate)} />
       <div className="flex items-baseline justify-between">
         {/* Form title */}
         <h2 id="add-task-title" className="text-lg text-text-dark">
@@ -219,7 +241,7 @@ export function TaskForm({ onCancel, weekStart }: TaskFormProps) {
         </button>
         <button
           type="submit"
-          disabled={!canSave}
+          disabled={!canSave || saving}
           className={`${buttonClass} bg-logo-blue text-white hover:bg-selected-blue disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:hover:bg-button-off-grey`}
         >
           Save
