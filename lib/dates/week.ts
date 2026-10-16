@@ -66,3 +66,13 @@ export function formatWeekRange(weekStart: Date) {
 
   return `${start} - ${end}`;
 }
+
+// A "YYYY-MM-DD" date as "Oct 30, 2026"
+export function formatLongDate(value: string) {
+  return new Date(`${value}T00:00:00.000Z`).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}

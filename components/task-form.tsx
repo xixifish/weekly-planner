@@ -5,7 +5,8 @@ import { useState } from "react";
 import { CheckIcon, CrossIcon } from "./icons";
 import { Weekday } from "@/app/generated/prisma/enums";
 import { LABEL_OPTIONS } from "@/lib/tasks/labels";
-import { formatWeekRange } from "@/lib/dates/week";
+import { formatWeekRange, toDateString } from "@/lib/dates/week";
+import { EndDateField } from "./end-date-field";
 
 const WEEKDAY_OPTIONS = [
   { value: Weekday.MON, label: "Mon" },
@@ -160,13 +161,11 @@ export function TaskForm({ onCancel, weekStart }: TaskFormProps) {
         </div>
       </fieldset>
 
-      {/* ENDS: only for a repeating task; the end date comes in 3b.3 */}
+      {/* ENDS: only for a repeating task */}
       {repeating && (
         <fieldset className="mt-4 border-b border-area-border-grey pb-4">
           <legend className={sectionTitleClass}>Ends</legend>
-          <p className="text-[13px] text-text-grey-blue">
-            Optional: Leave blank to repeat indefinitely
-          </p>
+          <EndDateField min={toDateString(weekStart)} />
         </fieldset>
       )}
 
