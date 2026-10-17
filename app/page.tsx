@@ -20,6 +20,7 @@ import { parseWeekParam } from "@/lib/dates/week";
 import { getToday, resolveTimeZone } from "@/lib/dates/today";
 import { DayRow } from "@/components/day-row";
 import { AddTaskButton } from "@/components/add-task-button";
+import { TaskDialogProvider } from "@/components/task-dialog-provider";
 
 export default async function Home({ searchParams }: PageProps<"/">) {
   const requestHeaders = await headers();
@@ -80,18 +81,22 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         doneCount={doneCount}
         totalCount={occurrences.length}
       />
-      <main>
-        {weekDates.map((date) => (
-          <DayRow
-            key={date.toISOString()}
-            date={date}
-            isToday={date.getTime() === today.getTime()}
-            occurrences={occurrences.filter(
-              (occurrence) => occurrence.date.getTime() === date.getTime(),
-            )}
-          />
-        ))}
-      </main>
+      <TaskDialogProvider weekStart={weekStart}>
+        <main>
+          {weekDates.map((date) => (
+            <DayRow
+              key={date.toISOString()}
+              date={date}
+              isToday={date.getTime() === today.getTime()}
+              occurrences={occurrences.filter(
+                (occurrence) => occurrence.date.getTime() === date.getTime(),
+              )}
+            />
+          ))}
+        </main>
+        <AddTaskButton />
+      </TaskDialogProvider>
+
       {/* Test-only: account info and sign out until the profile menu exists */}
       <div className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white px-5 py-4">
         <div>
@@ -324,7 +329,6 @@ export default async function Home({ searchParams }: PageProps<"/">) {
           </div>
         </div>
       </div>
-      <AddTaskButton weekStart={weekStart} />
     </>
   );
 }
