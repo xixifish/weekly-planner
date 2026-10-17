@@ -111,7 +111,7 @@ The dialog contains the task text, **Days**, a **Repeating Task** option, an opt
 - No end date means the task repeats indefinitely. An end date is inclusive and cannot be before the task starts. Removing it returns the task to indefinite repetition.
 - Text and a day are required; label and end date are optional. Save stays disabled until the required fields are valid.
 - The text box scrolls for long text. Titles contain no line breaks, spaces alone are invalid, and text is limited to 1000 characters.
-- Closing the add dialog with **Cancel** or Esc keeps what was typed, so an accidental close loses nothing. The draft lasts until the page reloads. Saving closes the dialog and clears the form.
+- Closing the add dialog with **Cancel** or Esc keeps what was typed, so an accidental close loses nothing. The draft lasts until the page reloads or a card is opened for editing, since adding and editing share one dialog. Saving closes the dialog and clears the form.
 
 Creating a task and editing a non-repeating task use a direct **Save** action. When editing a repeating task, **Save** and **Delete** each open a menu with two scopes: **This Task Only** and **This and Future Tasks**.
 
@@ -144,3 +144,11 @@ Four, not one, because social sign-in means you need to see *which* account you 
 | Clickable Figma prototype | A prototype exists to show an idea to someone before it is built. I am both the designer and the builder, and the live app is the demo. |
 
 ---
+
+## 9. To do after v1
+
+Planned, but not part of the first version.
+
+| To do | Notes |
+|---|---|
+| Dark mode | Follow the system setting. Every colour is already a named token in `app/globals.css` and a Figma variable, so a dark theme is a second set of values rather than new components. Each text and border pair needs its contrast checked again, and the logo and icon SVGs need dark versions. |

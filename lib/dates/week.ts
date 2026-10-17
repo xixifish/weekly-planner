@@ -76,7 +76,7 @@ export function formatWeekRange(weekStart: Date) {
   const month = (date: Date) =>
     date.toLocaleDateString("en-US", { month: "short", timeZone: "UTC" });
 
-  const start = `${month(weekStart)} ${weekStart.getUTCDate()}`;
+  const start = formatShortDate(weekStart);
   const end =
     month(weekStart) === month(weekEnd)
       ? `${weekEnd.getUTCDate()}`
@@ -93,4 +93,13 @@ export function formatLongDate(value: string) {
     year: "numeric",
     timeZone: "UTC",
   });
+}
+
+// A date as "Oct 14", for showing single date title on edit dialog
+export function formatShortDate(date: Date) {
+  const month = date.toLocaleDateString("en-US", {
+    month: "short",
+    timeZone: "UTC",
+  });
+  return `${month} ${date.getUTCDate()}`;
 }

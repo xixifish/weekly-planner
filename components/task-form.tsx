@@ -5,9 +5,15 @@ import { useState, useTransition } from "react";
 import { CheckIcon, CrossIcon } from "./icons";
 import { Weekday } from "@/app/generated/prisma/enums";
 import { LABEL_OPTIONS } from "@/lib/tasks/labels";
-import { addDays, formatWeekRange, toDateString } from "@/lib/dates/week";
+import {
+  addDays,
+  formatWeekRange,
+  toDateString,
+  formatShortDate,
+} from "@/lib/dates/week";
 import { EndDateField } from "./end-date-field";
 import { createTask } from "@/app/actions/tasks";
+import type { TaskOccurrence } from "@/lib/tasks/get-week-occurrences";
 
 const WEEKDAY_OPTIONS = [
   { value: Weekday.MON, label: "Mon" },
@@ -35,12 +41,18 @@ const buttonClass = "h-9.5 rounded-md px-4 text-base font-bold transition";
 const errorClass = "text-[13px] font-medium text-error-red normal-case";
 
 type TaskFormProps = {
+  occurrence: TaskOccurrence | null;
   onCancel: () => void;
   onSaved: () => void;
   weekStart: Date;
 };
 
-export function TaskForm({ onCancel, onSaved, weekStart }: TaskFormProps) {
+export function TaskForm({
+  occurrence,
+  onCancel,
+  onSaved,
+  weekStart,
+}: TaskFormProps) {
   // 1. State
   const [text, setText] = useState("");
   const [days, setDays] = useState<Weekday[]>([]);
@@ -82,6 +94,10 @@ export function TaskForm({ onCancel, onSaved, weekStart }: TaskFormProps) {
   // Send the form to the server
   function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (occurrence) {
+      console.log("Saving edits is not built yet");
+      return;
+    }
     const formData = new FormData(event.currentTarget);
 
     // Reset the saveError
@@ -98,6 +114,12 @@ export function TaskForm({ onCancel, onSaved, weekStart }: TaskFormProps) {
   }
 
   // 3. Calculated values
+  // "Add Task", "Edit Repeating Task"
+  const titleText = `${occurrence ? "Edit" : "Add"} ${repeating ? "Repeating Task" : "Task"}`;
+  // Adding: the viewed week. Editing: the card's own date
+  const titleDate = occurrence
+    ? formatShortDate(occurrence.date)
+    : formatWeekRange(weekStart);
   // A one-off task has exactly one day
   const tooManyDays = !repeating && days.length > 1;
   const daysError = tooManyDays
@@ -120,11 +142,8 @@ export function TaskForm({ onCancel, onSaved, weekStart }: TaskFormProps) {
       <input type="hidden" name="date" value={toDateString(taskDate)} />
       <div className="flex items-baseline justify-between">
         {/* Form title */}
-        <h2 id="add-task-title" className="text-lg text-text-dark">
-          <span className="font-bold">
-            {repeating ? "Add Repeating Task" : "Add Task"}
-          </span>{" "}
-          · {formatWeekRange(weekStart)}
+        <h2 id="task-dialog-title" className="text-lg text-text-dark">
+          <span className="font-bold">{titleText}</span> · {titleDate}
         </h2>
         {/* Text error */}
         {textError && (
