@@ -54,11 +54,11 @@ export function TaskForm({
   weekStart,
 }: TaskFormProps) {
   // 1. State
-  const [text, setText] = useState("");
-  const [days, setDays] = useState<Weekday[]>([]);
+  const [text, setText] = useState(occurrence?.text ?? "");
+  const [days, setDays] = useState<Weekday[]>(occurrence?.days ?? []);
   // Show the error msg for empty description
   const [textTouched, setTextTouched] = useState(false);
-  const [repeating, setRepeating] = useState(false);
+  const [repeating, setRepeating] = useState(occurrence?.repeating ?? false);
   // The user tries to turn Repeating off while several days were selected
   const [turnOffBlocked, setTurnOffBlocked] = useState(false);
   // Save the task
@@ -115,7 +115,9 @@ export function TaskForm({
 
   // 3. Calculated values
   // "Add Task", "Edit Repeating Task"
-  const titleText = `${occurrence ? "Edit" : "Add"} ${repeating ? "Repeating Task" : "Task"}`;
+  const titleText = occurrence
+    ? `Edit ${occurrence.repeating ? "Repeating Task" : "Task"}`
+    : `Add ${repeating ? "Repeating Task" : "Task"}`;
   // Adding: the viewed week. Editing: the card's own date
   const titleDate = occurrence
     ? formatShortDate(occurrence.date)
@@ -215,11 +217,16 @@ export function TaskForm({
       {repeating && (
         <fieldset className="mt-4 border-b border-area-border-grey pb-4">
           <legend className={sectionTitleClass}>Ends</legend>
-          <EndDateField min={toDateString(weekStart)} />
+          <EndDateField
+            min={toDateString(occurrence ? occurrence.date : weekStart)}
+            defaultValue={
+              occurrence?.endDate ? toDateString(occurrence.endDate) : ""
+            }
+          />
         </fieldset>
       )}
 
-      {/* LABEL: one colour, or none */}
+      {/* LABEL */}
       <fieldset className="mt-4 border-b border-area-border-grey pb-4">
         <legend className={sectionTitleClass}>Label</legend>
         <div className="flex gap-3">
@@ -235,6 +242,7 @@ export function TaskForm({
                 value={option.value}
                 aria-label={option.label}
                 className="sr-only"
+                defaultChecked={occurrence?.label === option.value}
               />
               <CheckIcon className="hidden size-4.5 text-logo-blue group-has-checked:block" />
             </label>
@@ -249,7 +257,7 @@ export function TaskForm({
               type="radio"
               name="label"
               value=""
-              defaultChecked
+              defaultChecked={!occurrence?.label}
               aria-label="No label"
               className="sr-only"
             />

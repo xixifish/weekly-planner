@@ -7,6 +7,8 @@ import { formatLongDate } from "@/lib/dates/week";
 
 type EndDateFieldProps = {
   min: string;
+  // The date to start with, as "YYYY-MM-DD"; "" for none
+  defaultValue: string;
 };
 
 // Same look as the day pills: plain until a date is chosen, then blue
@@ -18,8 +20,8 @@ const pillSelectedClass = "border-logo-blue bg-select-blue text-logo-blue";
 
 const hintClass = "text-[13px] text-text-grey-blue";
 
-export function EndDateField({ min }: EndDateFieldProps) {
-  const [endDate, setEndDate] = useState("");
+export function EndDateField({ min, defaultValue }: EndDateFieldProps) {
+  const [endDate, setEndDate] = useState(defaultValue);
   const inputRef = useRef<HTMLInputElement>(null);
 
   function openPicker() {
