@@ -57,6 +57,8 @@ Occurrences are worked out when a week is opened rather than stored in advance. 
 
 A non-repeating task uses direct **Save** and **Delete** actions. For a repeating task, each action opens a menu with **This Task Only** and **This and Future Tasks**.
 
+Deleting a non-repeating task removes its one card, the same as **This Task Only**. Turning **Repeating Task** on while editing a non-repeating task makes it a repeating task that starts on the Monday of the card's week, the same as adding one.
+
 **This Task Only** changes or deletes only the selected card. The repeating pattern remains unchanged.
 
 **This and Future Tasks** includes later occurrences in the same week and in later weeks. Earlier occurrences remain unchanged. Saving splits the repeating rule at the selected card; deleting stops it there.

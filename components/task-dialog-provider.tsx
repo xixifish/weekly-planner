@@ -69,6 +69,9 @@ export function TaskDialogProvider({
             dialogRef.current?.close();
             setFormKey((key) => key + 1);
           }}
+          onDeleted={() => {
+            dialogRef.current?.close();
+          }}
           weekStart={weekStart}
         />
       </dialog>

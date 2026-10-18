@@ -13,6 +13,7 @@ import {
 } from "@/lib/dates/week";
 import { EndDateField } from "./end-date-field";
 import { createTask } from "@/app/actions/tasks";
+import { deleteThisTaskOnly } from "@/app/actions/skips";
 import type { TaskOccurrence } from "@/lib/tasks/get-week-occurrences";
 
 const WEEKDAY_OPTIONS = [
@@ -44,6 +45,7 @@ type TaskFormProps = {
   occurrence: TaskOccurrence | null;
   onCancel: () => void;
   onSaved: () => void;
+  onDeleted: () => void;
   weekStart: Date;
 };
 
@@ -51,6 +53,7 @@ export function TaskForm({
   occurrence,
   onCancel,
   onSaved,
+  onDeleted,
   weekStart,
 }: TaskFormProps) {
   // 1. State
@@ -110,6 +113,26 @@ export function TaskForm({
         return;
       }
       onSaved(); // close the dialog after saving the new task
+    });
+  }
+
+  // Delete this card's occurrence, then close the dialog
+  function handleDelete() {
+    if (!occurrence) return;
+
+    const formData = new FormData();
+    formData.set("taskId", occurrence.taskId);
+    formData.set("date", toDateString(occurrence.date));
+
+    setSaveError(null);
+    startSaving(async () => {
+      try {
+        await deleteThisTaskOnly(formData);
+      } catch {
+        setSaveError("Could not delete the task");
+        return;
+      }
+      onDeleted();
     });
   }
 
@@ -272,6 +295,16 @@ export function TaskForm({
           <p role="alert" className={`${errorClass} mr-auto`}>
             {saveError}
           </p>
+        )}
+        {/* Editing only: Delete sits on the left */}
+        {occurrence && (
+          <button
+            type="button"
+            onClick={handleDelete}
+            className={`${buttonClass} mr-auto border border-error-red text-error-red hover:border-error-red-dark hover:text-error-red-dark`}
+          >
+            Delete
+          </button>
         )}
         <button
           type="button"
