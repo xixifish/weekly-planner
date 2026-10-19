@@ -19,6 +19,8 @@ import {
 } from "@/app/actions/tasks";
 import { deleteThisTaskOnly } from "@/app/actions/skips";
 import type { TaskOccurrence } from "@/lib/tasks/get-week-occurrences";
+import { saveThisTaskOnly } from "@/app/actions/overrides";
+import type { CreateTaskResult } from "@/app/actions/tasks";
 
 const WEEKDAY_OPTIONS = [
   { value: Weekday.MON, label: "Mon" },
@@ -155,6 +157,30 @@ export function TaskForm({
         return;
       }
       onDeleted();
+    });
+  }
+
+  // Save a repeating task's edits with the chosen scope, then close the dialog
+  function handleScopedSave(
+    event: React.MouseEvent<HTMLButtonElement>,
+    saveAction: (formData: FormData) => Promise<CreateTaskResult>,
+  ) {
+    const form = event.currentTarget.form;
+    if (!occurrence || !form) return;
+
+    const formData = new FormData(form);
+    formData.set("taskId", occurrence.taskId);
+    formData.set("date", toDateString(occurrence.date));
+
+    setSaveError(null);
+    setSaveMenuOpen(false);
+    startSaving(async () => {
+      const result = await saveAction(formData);
+      if (result.error) {
+        setSaveError(result.error);
+        return;
+      }
+      onSaved();
     });
   }
 
@@ -410,7 +436,7 @@ export function TaskForm({
               <div className="absolute top-full right-0 z-10 mt-2 flex w-max flex-col overflow-hidden rounded-md border border-logo-blue bg-white">
                 <button
                   type="button"
-                  onClick={() => console.log("Save This Task Only")}
+                  onClick={(event) => handleScopedSave(event, saveThisTaskOnly)}
                   className={saveItemClass}
                 >
                   Save This Task Only
