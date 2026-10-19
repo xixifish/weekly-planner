@@ -55,7 +55,7 @@ export function TaskDialogProvider({
       <dialog
         ref={dialogRef}
         aria-labelledby="task-dialog-title"
-        className="m-auto w-[700px] rounded-xl bg-white px-7.5 py-5 backdrop:bg-black/40"
+        className="m-auto w-[700px] rounded-xl bg-white px-7.5 py-5 backdrop:bg-black/40 overflow-visible"
       >
         <TaskForm
           key={

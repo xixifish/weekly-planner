@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 
-import { CheckIcon, CrossIcon } from "./icons";
+import { CheckIcon, CrossIcon, ChevronDownIcon } from "./icons";
 import { Weekday } from "@/app/generated/prisma/enums";
 import { LABEL_OPTIONS } from "@/lib/tasks/labels";
 import {
@@ -12,7 +12,11 @@ import {
   formatShortDate,
 } from "@/lib/dates/week";
 import { EndDateField } from "./end-date-field";
-import { createTask, saveOneOffTask } from "@/app/actions/tasks";
+import {
+  createTask,
+  saveOneOffTask,
+  deleteThisAndFutureTasks,
+} from "@/app/actions/tasks";
 import { deleteThisTaskOnly } from "@/app/actions/skips";
 import type { TaskOccurrence } from "@/lib/tasks/get-week-occurrences";
 
@@ -38,6 +42,9 @@ const swatchClass =
 const colourSwatchClass = `${swatchClass} border-2 border-area-border-grey has-checked:border-logo-blue`;
 // Footer buttons (Cancel, Save); each adds its own colours
 const buttonClass = "h-9.5 rounded-md px-4 text-base font-bold transition";
+// Items in the Delete ▾ menu: red text, filled red on hover
+const menuItemClass =
+  "px-3 py-2 text-left text-sm font-bold text-error-red transition hover:bg-error-red hover:text-white";
 // Error message
 const errorClass = "text-[13px] font-medium text-error-red normal-case";
 
@@ -68,6 +75,8 @@ export function TaskForm({
   const [saving, startSaving] = useTransition();
   // A message from the server when saving failed
   const [saveError, setSaveError] = useState<string | null>(null);
+  // The Delete menu of a repeating task
+  const [deleteMenuOpen, setDeleteMenuOpen] = useState(false);
 
   // 2. Handlers
   // If the day is already selected, remove it; otherwise add it
@@ -116,7 +125,7 @@ export function TaskForm({
   }
 
   // Delete this card's occurrence, then close the dialog
-  function handleDelete() {
+  function handleDelete(deleteAction: (formData: FormData) => Promise<void>) {
     if (!occurrence) return;
 
     const formData = new FormData();
@@ -124,9 +133,10 @@ export function TaskForm({
     formData.set("date", toDateString(occurrence.date));
 
     setSaveError(null);
+    setDeleteMenuOpen(false);
     startSaving(async () => {
       try {
-        await deleteThisTaskOnly(formData);
+        await deleteAction(formData);
       } catch {
         setSaveError("Could not delete the task");
         return;
@@ -296,15 +306,50 @@ export function TaskForm({
           </p>
         )}
         {/* Editing only: Delete sits on the left */}
-        {occurrence && (
-          <button
-            type="button"
-            onClick={handleDelete}
-            className={`${buttonClass} mr-auto border border-error-red text-error-red hover:border-error-red-dark hover:text-error-red-dark`}
-          >
-            Delete
-          </button>
-        )}
+        {occurrence &&
+          (occurrence.repeating ? (
+            // Repeating: Delete opens a menu with the two scopes
+            <div className="relative mr-auto">
+              <button
+                type="button"
+                aria-expanded={deleteMenuOpen}
+                onClick={() => setDeleteMenuOpen((open) => !open)}
+                disabled={saving}
+                className={`${buttonClass} flex items-center gap-1 border border-error-red text-error-red hover:border-error-red-dark hover:text-error-red-dark`}
+              >
+                Delete
+                <ChevronDownIcon className="-mr-1 size-4" />
+              </button>
+              {deleteMenuOpen && (
+                <div className="absolute top-full left-0 z-10 mt-1 flex w-max flex-col overflow-hidden rounded-md border border-error-red bg-white">
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(deleteThisTaskOnly)}
+                    className={menuItemClass}
+                  >
+                    Delete This Task Only
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(deleteThisAndFutureTasks)}
+                    className={menuItemClass}
+                  >
+                    Delete This and Future Tasks
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            // One-off: a direct Delete, as before
+            <button
+              type="button"
+              onClick={() => handleDelete(deleteThisTaskOnly)}
+              disabled={saving}
+              className={`${buttonClass} mr-auto items-center gap-1 border border-error-red text-error-red hover:border-error-red-dark hover:text-error-red-dark`}
+            >
+              Delete
+            </button>
+          ))}
         <button
           type="button"
           onClick={onCancel}
