@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect, useRef } from "react";
 
 import { CheckIcon, CrossIcon, ChevronDownIcon } from "./icons";
 import { Weekday } from "@/app/generated/prisma/enums";
@@ -45,6 +45,8 @@ const buttonClass = "h-9.5 rounded-md px-4 text-base font-bold transition";
 // Items in the Delete ▾ menu: red text, filled red on hover
 const menuItemClass =
   "px-3 py-2 text-left text-sm font-bold text-error-red transition hover:bg-error-red hover:text-white";
+const deleteItemClass = `${menuItemClass} text-error-red hover:bg-error-red hover:text-white`;
+const saveItemClass = `${menuItemClass} text-logo-blue hover:bg-logo-blue hover:text-white`;
 // Error message
 const errorClass = "text-[13px] font-medium text-error-red normal-case";
 
@@ -77,6 +79,17 @@ export function TaskForm({
   const [saveError, setSaveError] = useState<string | null>(null);
   // The Delete menu of a repeating task
   const [deleteMenuOpen, setDeleteMenuOpen] = useState(false);
+  // The Save menu of a repeating task
+  const [saveMenuOpen, setSaveMenuOpen] = useState(false);
+  // For close the dropdown menus of the delete and save buttons
+  const deleteMenuRef = useRef<HTMLDivElement>(null);
+  const saveMenuRef = useRef<HTMLDivElement>(null);
+  useCloseOnClickOutside(deleteMenuRef, deleteMenuOpen, () =>
+    setDeleteMenuOpen(false),
+  );
+  useCloseOnClickOutside(saveMenuRef, saveMenuOpen, () =>
+    setSaveMenuOpen(false),
+  );
 
   // 2. Handlers
   // If the day is already selected, remove it; otherwise add it
@@ -143,6 +156,27 @@ export function TaskForm({
       }
       onDeleted();
     });
+  }
+
+  // Closes a menu when the user presses anywhere outside it
+  function useCloseOnClickOutside(
+    ref: React.RefObject<HTMLElement | null>,
+    isOpen: boolean,
+    close: () => void,
+  ) {
+    useEffect(() => {
+      if (!isOpen) return;
+
+      function handlePointerDown(event: PointerEvent) {
+        if (!ref.current?.contains(event.target as Node)) {
+          close();
+        }
+      }
+
+      document.addEventListener("pointerdown", handlePointerDown);
+      return () =>
+        document.removeEventListener("pointerdown", handlePointerDown);
+    }, [ref, isOpen, close]);
   }
 
   // 3. Calculated values
@@ -309,7 +343,7 @@ export function TaskForm({
         {occurrence &&
           (occurrence.repeating ? (
             // Repeating: Delete opens a menu with the two scopes
-            <div className="relative mr-auto">
+            <div ref={deleteMenuRef} className="relative mr-auto">
               <button
                 type="button"
                 aria-expanded={deleteMenuOpen}
@@ -321,18 +355,18 @@ export function TaskForm({
                 <ChevronDownIcon className="-mr-1 size-4" />
               </button>
               {deleteMenuOpen && (
-                <div className="absolute top-full left-0 z-10 mt-1 flex w-max flex-col overflow-hidden rounded-md border border-error-red bg-white">
+                <div className="absolute top-full left-0 z-10 mt-2 flex w-max flex-col overflow-hidden rounded-md border border-error-red bg-white">
                   <button
                     type="button"
                     onClick={() => handleDelete(deleteThisTaskOnly)}
-                    className={menuItemClass}
+                    className={deleteItemClass}
                   >
                     Delete This Task Only
                   </button>
                   <button
                     type="button"
                     onClick={() => handleDelete(deleteThisAndFutureTasks)}
-                    className={menuItemClass}
+                    className={deleteItemClass}
                   >
                     Delete This and Future Tasks
                   </button>
@@ -357,13 +391,50 @@ export function TaskForm({
         >
           Cancel
         </button>
-        <button
-          type="submit"
-          disabled={!canSave || saving}
-          className={`${buttonClass} bg-logo-blue text-white hover:bg-selected-blue disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:hover:bg-button-off-grey`}
-        >
-          {saving ? "Saving..." : "Save"}
-        </button>
+
+        {occurrence?.repeating ? (
+          // Repeating: Save ▾ opens a menu with the two scopes
+          <div ref={saveMenuRef} className="relative">
+            <button
+              type="button"
+              aria-expanded={saveMenuOpen}
+              onClick={() => setSaveMenuOpen((open) => !open)}
+              disabled={!canSave || saving}
+              className={`${buttonClass} flex items-center gap-1 bg-logo-blue text-white hover:bg-selected-blue disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:hover:bg-button-off-grey`}
+            >
+              Save
+              <ChevronDownIcon className="-mr-1 size-4" />
+            </button>
+
+            {saveMenuOpen && (
+              <div className="absolute top-full right-0 z-10 mt-2 flex w-max flex-col overflow-hidden rounded-md border border-logo-blue bg-white">
+                <button
+                  type="button"
+                  onClick={() => console.log("Save This Task Only")}
+                  className={saveItemClass}
+                >
+                  Save This Task Only
+                </button>
+                <button
+                  type="button"
+                  onClick={() => console.log("Save This and Future Tasks")}
+                  className={saveItemClass}
+                >
+                  Save This and Future Tasks
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          // Adding, or a one-off task: a direct Save
+          <button
+            type="submit"
+            disabled={!canSave || saving}
+            className={`${buttonClass} bg-logo-blue text-white hover:bg-selected-blue disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:hover:bg-button-off-grey`}
+          >
+            {saving ? "Saving..." : "Save"}
+          </button>
+        )}
       </div>
     </form>
   );
