@@ -76,12 +76,24 @@ export async function deleteThisAndFutureTasks(formData: FormData) {
   revalidatePath("/");
 }
 
-export async function saveThisAndFutureTasks(formData: FormData) {
+export async function saveThisAndFutureTasks(
+  formData: FormData,
+): Promise<CreateTaskResult> {
   const { task, date } = await requireOwnedOccurrence(formData);
-  const { text, days, repeating, endDate, label } = parseTaskForm(formData);
+
+  let fields;
+  try {
+    fields = parseTaskForm(formData);
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : "Could not save the task",
+    };
+  }
+
+  const { text, days, repeating, endDate, label } = fields;
 
   if (!repeating) {
-    throw new Error("Turning off repeating is not supported yet");
+    return { error: "Turning off repeating is not supported yet" };
   }
 
   // Find the rule active on the date
@@ -109,7 +121,7 @@ export async function saveThisAndFutureTasks(formData: FormData) {
   });
 
   if (!taskRule) {
-    throw new Error("No rule found for this date");
+    return { error: "No rule found for this date" };
   }
 
   // The day before the selected card closes the old rule
@@ -166,6 +178,7 @@ export async function saveThisAndFutureTasks(formData: FormData) {
   });
 
   revalidatePath("/");
+  return { error: null };
 }
 
 // Saves an edited one-off task: its only rule is changed in place

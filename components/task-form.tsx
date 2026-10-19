@@ -16,11 +16,12 @@ import {
   createTask,
   saveOneOffTask,
   deleteThisAndFutureTasks,
+  CreateTaskResult,
+  saveThisAndFutureTasks,
 } from "@/app/actions/tasks";
 import { deleteThisTaskOnly } from "@/app/actions/skips";
 import type { TaskOccurrence } from "@/lib/tasks/get-week-occurrences";
 import { saveThisTaskOnly } from "@/app/actions/overrides";
-import type { CreateTaskResult } from "@/app/actions/tasks";
 
 const WEEKDAY_OPTIONS = [
   { value: Weekday.MON, label: "Mon" },
@@ -59,6 +60,26 @@ type TaskFormProps = {
   onDeleted: () => void;
   weekStart: Date;
 };
+
+// Closes a menu when the user presses anywhere outside it
+function useCloseOnClickOutside(
+  ref: React.RefObject<HTMLElement | null>,
+  isOpen: boolean,
+  close: () => void,
+) {
+  useEffect(() => {
+    if (!isOpen) return;
+
+    function handlePointerDown(event: PointerEvent) {
+      if (!ref.current?.contains(event.target as Node)) {
+        close();
+      }
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [ref, isOpen, close]);
+}
 
 export function TaskForm({
   occurrence,
@@ -184,27 +205,6 @@ export function TaskForm({
     });
   }
 
-  // Closes a menu when the user presses anywhere outside it
-  function useCloseOnClickOutside(
-    ref: React.RefObject<HTMLElement | null>,
-    isOpen: boolean,
-    close: () => void,
-  ) {
-    useEffect(() => {
-      if (!isOpen) return;
-
-      function handlePointerDown(event: PointerEvent) {
-        if (!ref.current?.contains(event.target as Node)) {
-          close();
-        }
-      }
-
-      document.addEventListener("pointerdown", handlePointerDown);
-      return () =>
-        document.removeEventListener("pointerdown", handlePointerDown);
-    }, [ref, isOpen, close]);
-  }
-
   // 3. Calculated values
   // "Add Task", "Edit Repeating Task"
   const titleText = occurrence
@@ -319,7 +319,7 @@ export function TaskForm({
       )}
 
       {/* LABEL */}
-      <fieldset className="mt-4 border-b border-area-border-grey pb-4">
+      <fieldset className="mt-4">
         <legend className={sectionTitleClass}>Label</legend>
         <div className="flex gap-3">
           {LABEL_OPTIONS.map((option) => (
@@ -359,17 +359,12 @@ export function TaskForm({
       </fieldset>
 
       {/* Footer */}
-      <div className="mt-4 flex justify-end gap-2">
-        {saveError && (
-          <p role="alert" className={`${errorClass} mr-auto`}>
-            {saveError}
-          </p>
-        )}
+      <div className="-mx-7.5 mt-4 flex items-center justify-end gap-2 border-t border-area-border-grey px-7.5 pt-4">
         {/* Editing only: Delete sits on the left */}
         {occurrence &&
           (occurrence.repeating ? (
             // Repeating: Delete opens a menu with the two scopes
-            <div ref={deleteMenuRef} className="relative mr-auto">
+            <div ref={deleteMenuRef} className="relative">
               <button
                 type="button"
                 aria-expanded={deleteMenuOpen}
@@ -405,15 +400,20 @@ export function TaskForm({
               type="button"
               onClick={() => handleDelete(deleteThisTaskOnly)}
               disabled={saving}
-              className={`${buttonClass} mr-auto items-center gap-1 border border-error-red text-error-red hover:border-error-red-dark hover:text-error-red-dark`}
+              className={`${buttonClass} items-center gap-1 border border-error-red text-error-red hover:border-error-red-dark hover:text-error-red-dark`}
             >
               Delete
             </button>
           ))}
+        {saveError && (
+          <p role="alert" className={errorClass}>
+            {saveError}
+          </p>
+        )}
         <button
           type="button"
           onClick={onCancel}
-          className={`${buttonClass} border border-logo-blue text-logo-blue hover:border-selected-blue hover:text-selected-blue`}
+          className={`${buttonClass} ml-auto border border-logo-blue text-logo-blue hover:border-selected-blue hover:text-selected-blue`}
         >
           Cancel
         </button>
@@ -443,7 +443,9 @@ export function TaskForm({
                 </button>
                 <button
                   type="button"
-                  onClick={() => console.log("Save This and Future Tasks")}
+                  onClick={(event) =>
+                    handleScopedSave(event, saveThisAndFutureTasks)
+                  }
                   className={saveItemClass}
                 >
                   Save This and Future Tasks
