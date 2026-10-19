@@ -167,3 +167,39 @@ export async function saveThisAndFutureTasks(formData: FormData) {
 
   revalidatePath("/");
 }
+
+// Saves an edited one-off task: its only rule is changed in place
+export async function saveOneOffTask(
+  taskId: string,
+  formData: FormData,
+): Promise<CreateTaskResult> {
+  const user = await requireCurrentUser();
+
+  // The task must belong to this user, and be a one-off task
+  const task = await prisma.task.findFirst({
+    where: { id: taskId, userId: user.id },
+    include: { rules: true },
+  });
+  const rule = task?.rules[0];
+  if (!task || task.rules.length !== 1 || !rule || rule.repeating) {
+    return { error: "This task can't be edited here" };
+  }
+
+  let fields;
+  try {
+    fields = parseTaskForm(formData);
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : "Could not save the task",
+    };
+  }
+  const { text, days, repeating, date, endDate, label } = fields;
+
+  await prisma.taskRule.update({
+    where: { id: rule.id },
+    data: { text, days, repeating, effectiveFrom: date, endDate, label },
+  });
+
+  revalidatePath("/");
+  return { error: null };
+}

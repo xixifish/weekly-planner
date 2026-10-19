@@ -12,7 +12,7 @@ import {
   formatShortDate,
 } from "@/lib/dates/week";
 import { EndDateField } from "./end-date-field";
-import { createTask } from "@/app/actions/tasks";
+import { createTask, saveOneOffTask } from "@/app/actions/tasks";
 import { deleteThisTaskOnly } from "@/app/actions/skips";
 import type { TaskOccurrence } from "@/lib/tasks/get-week-occurrences";
 
@@ -97,17 +97,16 @@ export function TaskForm({
   // Send the form to the server
   function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (occurrence) {
-      console.log("Saving edits is not built yet");
-      return;
-    }
+
     const formData = new FormData(event.currentTarget);
 
     // Reset the saveError
     setSaveError(null);
 
     startSaving(async () => {
-      const result = await createTask(formData);
+      const result = occurrence
+        ? await saveOneOffTask(occurrence.taskId, formData)
+        : await createTask(formData);
       if (result.error) {
         setSaveError(result.error);
         return;
