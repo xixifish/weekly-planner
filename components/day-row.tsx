@@ -35,15 +35,14 @@ export function DayRow({ date, isToday, occurrences }: DayRowProps) {
 
       {/* Left: day name, number and summary */}
       <div className="w-[138px] shrink-0">
-        <p>
-          <span
-            className={`text-[18px] font-bold ${isToday ? "text-logo-orange" : "text-text-dark"}`}
-          >
-            {dayName}
-          </span>{" "}
-          <span className="font-semibold text-text-grey-blue">{dayNumber}</span>
+        <p
+          className={`text-[18px] ${isToday ? "text-logo-orange" : "text-text-dark"}`}
+        >
+          <span className="font-bold">{dayName}</span> {dayNumber}
         </p>
-        <p className="text-[11px] font-semibold text-text-grey">{summary}</p>
+        <p className="text-[11px] font-semibold text-text-grey-blue">
+          {summary}
+        </p>
       </div>
 
       {/* Right: cards, wrapping onto new lines */}
