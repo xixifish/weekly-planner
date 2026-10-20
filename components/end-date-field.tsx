@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useRef } from "react";
 
 import { AddIcon, CrossIcon } from "./icons";
 import { formatLongDate } from "@/lib/dates/week";
@@ -8,7 +8,8 @@ import { formatLongDate } from "@/lib/dates/week";
 type EndDateFieldProps = {
   min: string;
   // The date to start with, as "YYYY-MM-DD"; "" for none
-  defaultValue: string;
+  value: string;
+  onChange: (value: string) => void;
 };
 
 // Same look as the day pills: plain until a date is chosen, then blue
@@ -20,8 +21,7 @@ const pillSelectedClass = "border-logo-blue bg-select-blue text-logo-blue";
 
 const hintClass = "text-[13px] text-text-grey-blue";
 
-export function EndDateField({ min, defaultValue }: EndDateFieldProps) {
-  const [endDate, setEndDate] = useState(defaultValue);
+export function EndDateField({ min, value, onChange }: EndDateFieldProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   function openPicker() {
@@ -30,7 +30,7 @@ export function EndDateField({ min, defaultValue }: EndDateFieldProps) {
 
   return (
     <div className="flex items-center gap-3">
-      {endDate === "" ? (
+      {value === "" ? (
         <>
           <button
             type="button"
@@ -50,21 +50,21 @@ export function EndDateField({ min, defaultValue }: EndDateFieldProps) {
             <button
               type="button"
               onClick={openPicker}
-              aria-label={`Change end date, ${formatLongDate(endDate)}`}
+              aria-label={`Change end date, ${formatLongDate(value)}`}
               className="h-full pr-1.5 pl-3 transition hover:text-selected-blue"
             >
-              {formatLongDate(endDate)}
+              {formatLongDate(value)}
             </button>
             <button
               type="button"
-              onClick={() => setEndDate("")}
+              onClick={() => onChange("")}
               aria-label="Remove end date"
               className="flex h-full items-center pr-3 pl-1 transition hover:text-selected-blue"
             >
               <CrossIcon className="size-3.5" />
             </button>
           </span>
-          <p className={hintClass}>Repeats until {formatLongDate(endDate)}</p>
+          <p className={hintClass}>Repeats until {formatLongDate(value)}</p>
         </>
       )}
 
@@ -73,8 +73,8 @@ export function EndDateField({ min, defaultValue }: EndDateFieldProps) {
         ref={inputRef}
         type="date"
         name="endDate"
-        value={endDate}
-        onChange={(event) => setEndDate(event.target.value)}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
         min={min}
         tabIndex={-1}
         className="sr-only"

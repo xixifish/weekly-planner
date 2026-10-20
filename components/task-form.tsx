@@ -107,11 +107,17 @@ export function TaskForm({
   // For close the dropdown menus of the delete and save buttons
   const deleteMenuRef = useRef<HTMLDivElement>(null);
   const saveMenuRef = useRef<HTMLDivElement>(null);
+
   useCloseOnClickOutside(deleteMenuRef, deleteMenuOpen, () =>
     setDeleteMenuOpen(false),
   );
   useCloseOnClickOutside(saveMenuRef, saveMenuOpen, () =>
     setSaveMenuOpen(false),
+  );
+
+  // The end date as "YYYY-MM-DD"; "" means it repeats indefinitely
+  const [endDate, setEndDate] = useState(
+    occurrence?.endDate ? toDateString(occurrence.endDate) : "",
   );
 
   // 2. Handlers
@@ -137,6 +143,10 @@ export function TaskForm({
 
     setRepeating(checked);
     setTurnOffBlocked(false);
+    // A one-off task has no end date
+    if (!checked) {
+      setEndDate("");
+    }
   }
 
   // Send the form to the server
@@ -311,9 +321,8 @@ export function TaskForm({
           <legend className={sectionTitleClass}>Ends</legend>
           <EndDateField
             min={toDateString(occurrence ? occurrence.date : weekStart)}
-            defaultValue={
-              occurrence?.endDate ? toDateString(occurrence.endDate) : ""
-            }
+            value={endDate}
+            onChange={setEndDate}
           />
         </fieldset>
       )}
