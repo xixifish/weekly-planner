@@ -317,7 +317,7 @@ export function TaskForm({
               checked={repeating}
               onChange={(event) => changeRepeating(event.target.checked)}
             />
-            <span className="flex size-5 items-center justify-center rounded-full border border-button-off-grey text-white group-has-checked:border-check-green group-has-checked:bg-check-green">
+            <span className="flex size-5 items-center justify-center rounded-full border border-dark-border-grey text-white group-has-checked:border-check-green group-has-checked:bg-check-green">
               <CheckIcon className="hidden size-4 group-has-checked:block" />
             </span>
             Repeating Task
@@ -362,7 +362,7 @@ export function TaskForm({
           {/* No label: selected by default */}
           <label
             title="No label"
-            className={`${colourSwatchClass} text-button-off-grey has-checked:text-logo-blue`}
+            className={`${swatchClass} border-2 border-dark-border-grey text-button-off-grey has-checked:border-logo-blue has-checked:text-logo-blue`}
           >
             <input
               type="radio"
@@ -378,7 +378,7 @@ export function TaskForm({
       </fieldset>
 
       {/* Footer */}
-      <div className="-mx-7.5 mt-4 flex items-center justify-end gap-2 border-t border-area-border-grey px-7.5 pt-4">
+      <div className="-mx-7.5 mt-4 flex items-center justify-end gap-2 border-t border-dark-border-grey px-7.5 pt-4">
         {/* Editing only: Delete sits on the left */}
         {occurrence &&
           (occurrence.repeating ? (

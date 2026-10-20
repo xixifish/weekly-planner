@@ -52,7 +52,7 @@ export function TaskCard({ occurrence }: TaskCardProps) {
           className={`flex size-5 shrink-0 items-center justify-center rounded-full border transition ${
             completed
               ? "border-check-green bg-check-green text-white"
-              : "border-button-off-grey opacity-0 group-hover:opacity-100 hover:border-check-green focus-visible:opacity-100"
+              : "border-dark-border-grey opacity-0 group-hover:opacity-100 hover:border-check-green focus-visible:opacity-100"
           }`}
         >
           {completed && <CheckIcon className="size-3.5" />}

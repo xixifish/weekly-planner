@@ -12,7 +12,7 @@ type AppHeaderProps = {
 
 export function AppHeader({ user }: AppHeaderProps) {
   return (
-    <header className="flex h-15 items-center justify-between border-b border-area-border-grey bg-white px-10">
+    <header className="flex h-15 items-center justify-between border-b border-dark-border-grey bg-white px-10">
       {/* Logo and app name */}
       <div className="flex items-center gap-2.5">
         <Image src="/logo.svg" alt="" width={40} height={7} />

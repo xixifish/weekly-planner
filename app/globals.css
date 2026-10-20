@@ -21,6 +21,8 @@
 
   /* Borders and backgrounds */
   --color-area-border-grey: #e6e6e6;
+  /* Borders that should stand out: app header line, unticked circles, the "No label" circle, dialog bands */
+  --color-dark-border-grey: #d7d7d7;
   --color-background-grey: #f2f2f2; /* done cards, avatar hover */
   --color-today-yellow: #fffcf5;
   --color-progress-track: #ffeab9;
