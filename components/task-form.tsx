@@ -115,10 +115,13 @@ export function TaskForm({
     setSaveMenuOpen(false),
   );
 
+  // The card's end date as "YYYY-MM-DD", or "" (also used as the starting value)
+  const originalEndDate = occurrence?.endDate
+    ? toDateString(occurrence.endDate)
+    : "";
+
   // The end date as "YYYY-MM-DD"; "" means it repeats indefinitely
-  const [endDate, setEndDate] = useState(
-    occurrence?.endDate ? toDateString(occurrence.endDate) : "",
-  );
+  const [endDate, setEndDate] = useState(originalEndDate);
 
   // 2. Handlers
   // If the day is already selected, remove it; otherwise add it
@@ -240,6 +243,13 @@ export function TaskForm({
   );
   const taskDate =
     repeating || dayOffset === -1 ? weekStart : addDays(weekStart, dayOffset);
+  // Editing: did days, Repeating or the end date change from the card's?
+  const scheduleChanged =
+    occurrence !== null &&
+    (repeating !== occurrence.repeating ||
+      endDate !== originalEndDate ||
+      days.length !== occurrence.days.length ||
+      days.some((day) => !occurrence.days.includes(day)));
 
   return (
     <form onSubmit={handleSubmit}>
@@ -446,9 +456,15 @@ export function TaskForm({
                 <button
                   type="button"
                   onClick={(event) => handleScopedSave(event, saveThisTaskOnly)}
-                  className={saveItemClass}
+                  disabled={scheduleChanged}
+                  className={`${saveItemClass} disabled:cursor-not-allowed disabled:text-button-off-grey disabled:hover:bg-white`}
                 >
                   Save This Task Only
+                  {scheduleChanged && (
+                    <span className="block text-[11px] font-medium text-text-grey">
+                      Schedule changes apply to this and future tasks.
+                    </span>
+                  )}
                 </button>
                 <button
                   type="button"
