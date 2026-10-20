@@ -74,7 +74,7 @@ Save scope depends on the fields changed:
 | Repeating Task | No | Yes |
 | End Date | No | Yes |
 
-If a schedule field changes, **This Task Only** is disabled with the message: "Schedule changes apply to this and future tasks." Editing controls remain scoped to the original repeating task even if repeating is turned off in the form.
+If a schedule field changes, **This Task Only** is disabled, and a grey message above the buttons explains why: "Changes to weekdays, repeating or the end date can only be saved for this and future tasks." It appears as soon as the change is made, before the menu is opened. Editing controls remain scoped to the original repeating task even if repeating is turned off in the form.
 
 Task deletion has no confirmation box. An Undo bar appears for about five seconds in the day where deletion began. Its message identifies the scope. Counts and progress update immediately and revert on Undo.
 
@@ -116,6 +116,25 @@ The dialog contains the task text, **Days**, a **Repeating Task** option, an opt
 - Closing the add dialog with **Cancel** or Esc keeps what was typed, so an accidental close loses nothing. The draft lasts until the page reloads or a card is opened for editing, since adding and editing share one dialog. Saving closes the dialog and clears the form.
 
 Creating a task and editing a non-repeating task use a direct **Save** action. When editing a repeating task, **Save** and **Delete** each open a menu with two scopes: **This Task Only** and **This and Future Tasks**.
+
+**Layout.** The title sits in a header band and the buttons in a footer band, each separated from the form by a full-width line. Each section has a bold heading with a short grey hint:
+
+- **Weekdays:** only repeating tasks can have several days. **Repeating** comes first in the row, before Mon–Sun, separated by a thin divider, because it is a mode switch rather than a day and people decide it first.
+- **End Date:** leave blank to repeat indefinitely (shown only for a repeating task).
+- **Label:** optional.
+
+**Messages.** Each message is a full-width banner directly above what it is about. Errors are dark red on a light red background; information is grey.
+
+| Message | Where | When |
+|---|---|---|
+| Enter a task description | above the text box | the text was typed, then emptied or left as spaces |
+| Choose one day, or turn on repeating | above the day row | two or more days while repeating is off |
+| Leave one day to turn off repeating | above the day row | turning repeating off with two or more days |
+| The schedule message (see §4), in grey | above the buttons | editing a repeating task after a schedule change |
+| Save and delete errors from the server | above the buttons | the action failed; the dialog stays open |
+| Your session has expired. **Sign in again** | above the buttons | the session ended; the link signs in with Google |
+
+Signing in again leaves the page, so the dialog's draft is lost. The user comes back to the same week they were viewing. The wording of the day messages may still be refined when they are built.
 
 ---
 
