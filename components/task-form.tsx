@@ -35,9 +35,11 @@ const WEEKDAY_OPTIONS = [
 
 // A pill-shaped option: a hidden checkbox inside a styled label
 const pillClass =
-  "flex h-8.5 px-4 cursor-pointer items-center justify-center rounded-md border border-area-border-grey text-sm font-medium text-text-dark has-checked:border-logo-blue has-checked:bg-select-blue has-checked:text-logo-blue has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-selected-blue hover:text-selected-blue hover:border-selected-blue transition";
-const sectionTitleClass =
-  "mb-3 text-sm font-bold text-text-grey-blue uppercase";
+  "flex h-8 px-4 cursor-pointer items-center justify-center rounded-md border border-area-border-grey text-sm font-medium text-text-dark has-checked:border-logo-blue has-checked:bg-select-blue has-checked:text-logo-blue has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-selected-blue hover:text-selected-blue hover:border-selected-blue transition";
+// A form section with a line under it; the space above and below the line is the same
+const sectionClass = "mt-5 border-b border-area-border-grey pb-5";
+const sectionTitleClass = "mb-4 text-sm text-text-grey";
+const sectionLabelClass = "font-bold text-text-dark";
 // A round label option: a hidden radio inside a styled label
 const swatchClass =
   "group flex size-8 cursor-pointer items-center justify-center rounded-full has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-logo-blue";
@@ -282,11 +284,14 @@ export function TaskForm({
       />
 
       {/* DAYS: seven weekday checkboxes and the Repeating Task toggle */}
-      <fieldset className="relative mt-4 border-b border-area-border-grey pb-4">
+      <fieldset className={`relative ${sectionClass}`}>
         <legend
           className={`${sectionTitleClass} flex w-full items-baseline justify-between`}
         >
-          <span>Days</span>
+          <span>
+            <span className={sectionLabelClass}>Weekdays:</span> only repeating
+            tasks can have several days
+          </span>
           {daysError && (
             <span role="alert" className={errorClass}>
               {daysError}
@@ -326,8 +331,11 @@ export function TaskForm({
 
       {/* ENDS: only for a repeating task */}
       {repeating && (
-        <fieldset className="mt-4 border-b border-area-border-grey pb-4">
-          <legend className={sectionTitleClass}>Ends</legend>
+        <fieldset className={sectionClass}>
+          <legend className={sectionTitleClass}>
+            <span className={sectionLabelClass}>End Date:</span> leave blank to
+            repeat indefinitely
+          </legend>
           <EndDateField
             min={toDateString(occurrence ? occurrence.date : weekStart)}
             value={endDate}
@@ -336,9 +344,11 @@ export function TaskForm({
         </fieldset>
       )}
 
-      {/* LABEL */}
-      <fieldset className="mt-4">
-        <legend className={sectionTitleClass}>Label</legend>
+      {/* LABEL: no line under it; the footer draws that one */}
+      <fieldset className="mt-5">
+        <legend className={sectionTitleClass}>
+          <span className={sectionLabelClass}>Label:</span> optional
+        </legend>
         <div className="flex gap-3">
           {LABEL_OPTIONS.map((option) => (
             <label
@@ -377,7 +387,7 @@ export function TaskForm({
       </fieldset>
 
       {/* Footer */}
-      <div className="-mx-7.5 mt-4 flex items-center justify-end gap-2 border-t border-dark-border-grey px-7.5 pt-4">
+      <div className="-mx-7.5 mt-5 flex items-center justify-end gap-2 border-t border-dark-border-grey px-7.5 pt-4">
         {/* Editing only: Delete sits on the left */}
         {occurrence &&
           (occurrence.repeating ? (
