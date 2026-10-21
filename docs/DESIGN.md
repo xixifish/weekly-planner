@@ -100,9 +100,11 @@ The end date controls recurrence only. It is not a deadline and does not create 
 
 ## 6. Adding and editing a task
 
-Tasks are added with the floating **+** button at the bottom right. The dialog adds to the week being viewed: its title shows that week in the same format as the week header, such as **Add Task · Aug 31 - Sep 6**, and the selected day sets the date within it. No day is preselected; the user chooses one. When **Repeating Task** is on, only the words change: **Add Repeating Task · Aug 31 - Sep 6**. The title keeps the week range, not the rule's start date (that week's Monday), because the first card may be on a later day, such as Wednesday.
+Tasks are added with the floating **+** button at the bottom right. The dialog adds to the week being viewed: its title shows that week in the same format as the week header, such as **Add Task · Aug 31 - Sep 6**, and the selected day sets the date within it. No day is preselected; the user chooses one. A repeating task keeps the same title, with the week range rather than the rule's start date (that week's Monday), because the first card may be on a later day, such as Wednesday.
 
 When editing, the title shows the card's own date, such as **Edit Task · Sep 1**, because **This Task Only** applies to that date.
+
+There are only two titles, **Add Task** and **Edit Task**. The title never says "Repeating": the **Repeating** toggle shows it, and when editing, so do the **Save** and **Delete** menus. This also keeps the title from changing while the user clicks the toggle.
 
 The dialog contains the task text, **Days**, a **Repeating Task** option, an optional label colour, and—when repeating is on—an optional **End Date**.
 

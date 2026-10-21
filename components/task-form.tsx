@@ -219,10 +219,8 @@ export function TaskForm({
   }
 
   // 3. Calculated values
-  // "Add Task", "Edit Repeating Task"
-  const titleText = occurrence
-    ? `Edit ${occurrence.repeating ? "Repeating Task" : "Task"}`
-    : `Add ${repeating ? "Repeating Task" : "Task"}`;
+  // "Add Task", "Edit Task"
+  const titleText = occurrence ? "Edit Task" : "Add Task";
   // Adding: the viewed week. Editing: the card's own date
   const titleDate = occurrence
     ? formatShortDate(occurrence.date)

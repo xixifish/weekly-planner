@@ -17,20 +17,20 @@
   /* Text */
   --color-text-dark: #303741;
   --color-text-grey: #757575;
-  --color-text-grey-blue: #5e769c;
+  --color-text-grey-blue: #4a5f80;
 
   /* Borders and backgrounds */
   --color-area-border-grey: #e6e6e6;
   /* Borders that should stand out: app header line, unticked circles, the "No label" circle, dialog bands */
   --color-dark-border-grey: #d7d7d7;
-  --color-background-grey: #f0f0f0; /* done cards */
+  --color-background-grey: #f2f2f2; /* done cards, grey message banners */
   --color-today-yellow: #fffcf5;
   --color-progress-track: #ffe0cc;
 
   /* Controls */
   --color-select-blue: #dbf1ff;
   --color-selected-blue: #005b96;
-  --color-button-off-grey: #d2dbe1;
+  --color-button-off-grey: #c0cdd5;
   --color-check-green: #06ad06;
 
   /* Errors */
