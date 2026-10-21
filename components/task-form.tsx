@@ -252,10 +252,11 @@ export function TaskForm({
   return (
     <form onSubmit={handleSubmit}>
       <input type="hidden" name="date" value={toDateString(taskDate)} />
-      <div className="flex items-baseline justify-between">
+      <div className="-mx-7.5 -mt-5 flex items-baseline justify-between border-b border-dark-border-grey px-7.5 py-5">
         {/* Form title */}
         <h2 id="task-dialog-title" className="text-lg text-text-dark">
-          <span className="font-bold">{titleText}</span> · {titleDate}
+          <span className="font-bold">{titleText}</span>
+          <span className="text-text-grey"> · {titleDate}</span>
         </h2>
         {/* Text error */}
         {textError && (
@@ -270,7 +271,7 @@ export function TaskForm({
         name="description"
         placeholder="Describe your task"
         maxLength={1000}
-        className="block w-full mt-4 h-25 rounded-md border px-2 py-1.5 text-lg font-semibold text-text-dark placeholder:text-text-grey-blue resize-none border-area-border-grey focus:border-logo-blue focus:outline-none"
+        className="block w-full mt-5 h-18 rounded-md border inset-shadow-xs px-2 py-1.5 text-lg font-semibold text-text-dark placeholder:text-text-grey-blue resize-none border-area-border-grey focus:border-logo-blue focus:outline-none"
         aria-label="Task description"
         aria-invalid={textError}
         value={text}
