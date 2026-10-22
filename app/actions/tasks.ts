@@ -5,16 +5,28 @@ import { revalidatePath } from "next/cache";
 
 import { parseTaskForm } from "@/lib/tasks/parse-task-form";
 import { requireOwnedOccurrence } from "@/lib/tasks/require-owned-occurrence";
-import { requireCurrentUser } from "@/lib/current-user";
+import {
+  requireCurrentUser,
+  SIGNED_OUT_RESULT,
+  SignedOutError,
+} from "@/lib/current-user";
 import { prisma } from "@/lib/prisma";
 
 // What the add dialog gets back: an error message, or null when saved
-export type CreateTaskResult = { error: string | null };
+export type CreateTaskResult = { error: string | null; signedOut?: boolean };
 
 export async function createTask(
   formData: FormData,
 ): Promise<CreateTaskResult> {
-  const user = await requireCurrentUser();
+  let user;
+  try {
+    user = await requireCurrentUser();
+  } catch (error) {
+    if (error instanceof SignedOutError) {
+      return SIGNED_OUT_RESULT;
+    }
+    throw error;
+  }
 
   let fields;
   try {
@@ -79,7 +91,16 @@ export async function deleteThisAndFutureTasks(formData: FormData) {
 export async function saveThisAndFutureTasks(
   formData: FormData,
 ): Promise<CreateTaskResult> {
-  const { task, date } = await requireOwnedOccurrence(formData);
+  let occurrence;
+  try {
+    occurrence = await requireOwnedOccurrence(formData);
+  } catch (error) {
+    if (error instanceof SignedOutError) {
+      return SIGNED_OUT_RESULT;
+    }
+    throw error;
+  }
+  const { task, date } = occurrence;
 
   let fields;
   try {
@@ -186,7 +207,15 @@ export async function saveOneOffTask(
   taskId: string,
   formData: FormData,
 ): Promise<CreateTaskResult> {
-  const user = await requireCurrentUser();
+  let user;
+  try {
+    user = await requireCurrentUser();
+  } catch (error) {
+    if (error instanceof SignedOutError) {
+      return SIGNED_OUT_RESULT;
+    }
+    throw error;
+  }
 
   // The task must belong to this user, and be a one-off task
   const task = await prisma.task.findFirst({

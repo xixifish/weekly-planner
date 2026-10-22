@@ -7,12 +7,22 @@ import type { CreateTaskResult } from "./tasks";
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { SIGNED_OUT_RESULT, SignedOutError } from "@/lib/current-user";
 
 export async function saveThisTaskOnly(
   formData: FormData,
 ): Promise<CreateTaskResult> {
   // Check whether occurrence is owned
-  const { task, date } = await requireOwnedOccurrence(formData);
+  let occurrence;
+  try {
+    occurrence = await requireOwnedOccurrence(formData);
+  } catch (error) {
+    if (error instanceof SignedOutError) {
+      return SIGNED_OUT_RESULT;
+    }
+    throw error;
+  }
+  const { task, date } = occurrence;
 
   let fields;
   try {

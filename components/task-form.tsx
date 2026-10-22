@@ -22,6 +22,7 @@ import {
 } from "@/app/actions/tasks";
 import { deleteThisTaskOnly } from "@/app/actions/skips";
 import type { TaskOccurrence } from "@/lib/tasks/get-week-occurrences";
+import { signInWithGoogle } from "@/lib/sign-in";
 import { saveThisTaskOnly } from "@/app/actions/overrides";
 
 const WEEKDAY_OPTIONS = [
@@ -112,6 +113,8 @@ export function TaskForm({
   // For close the dropdown menus of the delete and save buttons
   const deleteMenuRef = useRef<HTMLDivElement>(null);
   const saveMenuRef = useRef<HTMLDivElement>(null);
+  // The last save failed because the session expired
+  const [signedOut, setSignedOut] = useState(false);
 
   useCloseOnClickOutside(deleteMenuRef, deleteMenuOpen, () =>
     setDeleteMenuOpen(false),
@@ -165,13 +168,14 @@ export function TaskForm({
 
     // Reset the saveError
     setSaveError(null);
+    setSignedOut(false);
 
     startSaving(async () => {
       const result = occurrence
         ? await saveOneOffTask(occurrence.taskId, formData)
         : await createTask(formData);
       if (result.error) {
-        setSaveError(result.error);
+        showSaveError(result);
         return;
       }
       onSaved(); // close the dialog after saving the new task
@@ -187,6 +191,7 @@ export function TaskForm({
     formData.set("date", toDateString(occurrence.date));
 
     setSaveError(null);
+    setSignedOut(false);
     setDeleteMenuOpen(false);
     startSaving(async () => {
       try {
@@ -212,15 +217,22 @@ export function TaskForm({
     formData.set("date", toDateString(occurrence.date));
 
     setSaveError(null);
+    setSignedOut(false);
     setSaveMenuOpen(false);
     startSaving(async () => {
       const result = await saveAction(formData);
       if (result.error) {
-        setSaveError(result.error);
+        showSaveError(result);
         return;
       }
       onSaved();
     });
+  }
+
+  // Show a failed save's message, and the sign-in link when it was a signed-out error
+  function showSaveError(result: CreateTaskResult) {
+    setSaveError(result.error);
+    setSignedOut(result.signedOut ?? false);
   }
 
   // 3. Calculated values
@@ -398,6 +410,22 @@ export function TaskForm({
         {saveError && (
           <p role="alert" className={`${errorBannerClass} mb-3`}>
             {saveError}
+            {signedOut && (
+              <>
+                {" "}
+                <button
+                  type="button"
+                  onClick={() =>
+                    signInWithGoogle(
+                      window.location.pathname + window.location.search,
+                    )
+                  }
+                  className="font-bold underline text-logo-blue"
+                >
+                  Sign in again
+                </button>
+              </>
+            )}
           </p>
         )}
         {/* Editing a repeating task: why This Task Only is off */}
