@@ -16,10 +16,8 @@ type EndDateFieldProps = {
 const pillBaseClass =
   "flex h-8.5 items-center rounded-md border text-sm font-semibold transition";
 const pillIdleClass =
-  "border-area-border-grey bg-white text-text-dark hover:border-selected-blue hover:text-selected-blue";
+  "border-area-border-grey bg-white text-logo-blue hover:border-selected-blue hover:text-selected-blue";
 const pillSelectedClass = "border-select-blue bg-select-blue text-logo-blue";
-
-const hintClass = "text-[13px] text-text-grey-blue";
 
 export function EndDateField({ min, value, onChange }: EndDateFieldProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -31,41 +29,33 @@ export function EndDateField({ min, value, onChange }: EndDateFieldProps) {
   return (
     <div className="flex items-center gap-3">
       {value === "" ? (
-        <>
+        <button
+          type="button"
+          onClick={openPicker}
+          className={`${pillBaseClass} ${pillIdleClass} gap-1.5 px-3`}
+        >
+          <AddIcon className="size-3.5" />
+          Add End Date
+        </button>
+      ) : (
+        <span className={`${pillBaseClass} ${pillSelectedClass}`}>
           <button
             type="button"
             onClick={openPicker}
-            className={`${pillBaseClass} ${pillIdleClass} gap-1.5 px-3`}
+            aria-label={`Change end date, ${formatLongDate(value)}`}
+            className="h-full pr-1.5 pl-3 transition hover:text-selected-blue"
           >
-            <AddIcon className="size-3.5" />
-            Add End Date
+            {formatLongDate(value)}
           </button>
-          <p className={hintClass}>
-            Optional: Leave blank to repeat indefinitely
-          </p>
-        </>
-      ) : (
-        <>
-          <span className={`${pillBaseClass} ${pillSelectedClass}`}>
-            <button
-              type="button"
-              onClick={openPicker}
-              aria-label={`Change end date, ${formatLongDate(value)}`}
-              className="h-full pr-1.5 pl-3 transition hover:text-selected-blue"
-            >
-              {formatLongDate(value)}
-            </button>
-            <button
-              type="button"
-              onClick={() => onChange("")}
-              aria-label="Remove end date"
-              className="flex h-full items-center pr-3 pl-1 transition hover:text-selected-blue"
-            >
-              <CrossIcon className="size-3.5" />
-            </button>
-          </span>
-          <p className={hintClass}>Repeats until {formatLongDate(value)}</p>
-        </>
+          <button
+            type="button"
+            onClick={() => onChange("")}
+            aria-label="Remove end date"
+            className="flex h-full items-center pr-3 pl-1 transition hover:text-selected-blue"
+          >
+            <CrossIcon className="size-3.5" />
+          </button>
+        </span>
       )}
 
       {/* Hidden: opened by the buttons above, and sent with the form */}

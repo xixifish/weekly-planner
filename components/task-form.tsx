@@ -10,6 +10,7 @@ import {
   formatWeekRange,
   toDateString,
   formatShortDate,
+  formatLongDate,
 } from "@/lib/dates/week";
 import { EndDateField } from "./end-date-field";
 import {
@@ -337,8 +338,10 @@ export function TaskForm({
       {repeating && (
         <fieldset className={sectionClass}>
           <legend className={sectionTitleClass}>
-            <span className={sectionLabelClass}>End Date:</span> leave blank to
-            repeat indefinitely
+            <span className={sectionLabelClass}>End Date:</span>{" "}
+            {endDate
+              ? `Repeats until ${formatLongDate(endDate)}`
+              : "leave blank to repeat indefinitely"}
           </legend>
           <EndDateField
             min={toDateString(occurrence ? occurrence.date : weekStart)}
