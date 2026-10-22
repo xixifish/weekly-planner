@@ -32,7 +32,7 @@ export function WeekHeader({
   return (
     <section className="flex h-[121px] items-center justify-between border-b border-area-border-grey bg-white px-10">
       {/* Left: week number, dates, navigation */}
-      <div>
+      <div className="flex-1">
         <p className="text-xs font-bold text-text-grey-blue">
           WEEK <span className="text-logo-orange">{week}</span> OF {weeksInYear}{" "}
           · {year}
@@ -63,17 +63,16 @@ export function WeekHeader({
               Today
             </Link>
           </nav>
+          {/* An empty week: a prompt, in line with the navigation */}
+          {totalCount === 0 && (
+            <p className="ml-auto text-base font-bold text-logo-orange">
+              Add a task to start a productive week!
+            </p>
+          )}
         </div>
       </div>
-
-      {/* Right: progress, or a prompt when the week is empty */}
-      {totalCount > 0 ? (
-        <ProgressBar done={doneCount} total={totalCount} />
-      ) : (
-        <p className="text-base font-extrabold text-logo-orange">
-          Add a task to start a brand new week!
-        </p>
-      )}
+      {/* Right: the week's progress */}
+      {totalCount > 0 && <ProgressBar done={doneCount} total={totalCount} />}
     </section>
   );
 }
