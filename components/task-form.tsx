@@ -413,7 +413,7 @@ export function TaskForm({
       </fieldset>
 
       {/* Footer */}
-      <div className="-mx-7.5 mt-5 border-t border-dark-border-grey px-7.5 pt-4">
+      <div className="-mx-7.5 mt-5 border-t border-dark-border-grey px-7.5 pt-5">
         {saveError && (
           <p role="alert" className={`${errorBannerClass} mb-3`}>
             {saveError}

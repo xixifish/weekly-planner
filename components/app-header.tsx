@@ -1,11 +1,12 @@
 import Image from "next/image";
 
 import { SignInButton } from "@/app/sign-in-button";
-import { ChevronDownIcon } from "./icons";
+import { ProfileMenu } from "./profile-menu";
 
 type AppHeaderProps = {
   user?: {
     name: string;
+    email: string;
     image?: string | null;
   };
 };
@@ -22,22 +23,7 @@ export function AppHeader({ user }: AppHeaderProps) {
       </div>
       {/* Account: avatar when signed in, Sign in button when not */}
       {user ? (
-        <div className="flex items-center gap-1 rounded-lg border border-transparent px-2.5 py-1 transition hover:border-selected-blue">
-          {user.image ? (
-            <Image
-              src={user.image}
-              alt=""
-              width={36}
-              height={36}
-              className="size-9 rounded-full object-cover"
-            />
-          ) : (
-            <span className="flex size-9 items-center justify-center rounded-full bg-logo-blue text-sm font-extrabold text-white">
-              {user.name.charAt(0)}
-            </span>
-          )}
-          <ChevronDownIcon className="size-4 text-text-dark" />
-        </div>
+        <ProfileMenu name={user.name} email={user.email} image={user.image} />
       ) : (
         <SignInButton />
       )}
