@@ -14,7 +14,7 @@ type EndDateFieldProps = {
 
 // Same look as the day pills: plain until a date is chosen, then blue
 const pillBaseClass =
-  "flex h-8.5 items-center rounded-md border text-sm font-medium transition";
+  "flex h-8.5 items-center rounded-md border text-sm font-semibold transition";
 const pillIdleClass =
   "border-area-border-grey bg-white text-text-dark hover:border-selected-blue hover:text-selected-blue";
 const pillSelectedClass = "border-logo-blue bg-select-blue text-logo-blue";

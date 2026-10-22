@@ -35,8 +35,8 @@
 
   /* Errors */
   --color-error-red: #d94100;
-  --color-error-red-dark: #ad3400; /* hover on red buttons */
-  --color-error-background: #fff9f9;
+  --color-error-red-dark: #ad3400;
+  --color-error-background: #fff5f5; /* Error banner background */
 
   /* Labels */
   --color-tag-green: #72de72;

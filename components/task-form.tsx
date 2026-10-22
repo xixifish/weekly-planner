@@ -35,10 +35,10 @@ const WEEKDAY_OPTIONS = [
 
 // A pill-shaped option: a hidden checkbox inside a styled label
 const pillClass =
-  "flex h-8 px-4 cursor-pointer items-center justify-center rounded-md border border-area-border-grey text-sm font-medium text-text-dark has-checked:border-logo-blue has-checked:bg-select-blue has-checked:text-logo-blue has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-selected-blue hover:text-selected-blue hover:border-selected-blue transition";
+  "flex h-8 px-4 cursor-pointer items-center justify-center rounded-md border border-area-border-grey text-sm font-semibold text-text-dark has-checked:border-select-blue has-checked:bg-select-blue has-checked:text-logo-blue has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-selected-blue hover:text-selected-blue hover:border-selected-blue transition";
 // A form section with a line under it; the space above and below the line is the same
-const sectionClass = "mt-5 border-b border-area-border-grey pb-5";
-const sectionTitleClass = "mb-4 text-sm text-text-grey";
+const sectionClass = "mt-4.5 border-b border-area-border-grey pb-4.5";
+const sectionTitleClass = "mb-3.5 text-sm text-text-grey";
 const sectionLabelClass = "font-bold text-text-dark";
 // A round label option: a hidden radio inside a styled label
 const swatchClass =
@@ -54,6 +54,10 @@ const deleteItemClass = `${menuItemClass} text-error-red hover:bg-error-red hove
 const saveItemClass = `${menuItemClass} text-logo-blue hover:bg-logo-blue hover:text-white`;
 // Error message
 const errorClass = "text-[13px] font-medium text-error-red normal-case";
+// Full-width message banners: red for errors, grey for information
+const bannerClass = "rounded-md px-3 py-1.5 text-[13px] font-normal";
+const errorBannerClass = `${bannerClass} bg-error-background text-error-red-dark`;
+const infoBannerClass = `${bannerClass} bg-background-grey text-text-grey-blue`;
 
 type TaskFormProps = {
   occurrence: TaskOccurrence | null;
@@ -273,7 +277,7 @@ export function TaskForm({
         name="description"
         placeholder="Describe your task"
         maxLength={1000}
-        className="block w-full mt-5 h-18 rounded-md border inset-shadow-xs px-2 py-1.5 text-lg font-semibold text-text-dark placeholder:text-text-grey-blue resize-none border-area-border-grey focus:border-logo-blue focus:outline-none"
+        className="block w-full mt-5 h-18 rounded-md border inset-shadow-xs px-2 py-1.5 text-lg font-semibold text-text-dark placeholder:font-medium placeholder:text-text-grey resize-none border-area-border-grey focus:border-logo-blue focus:outline-none"
         aria-label="Task description"
         aria-invalid={textError}
         value={text}
@@ -299,6 +303,25 @@ export function TaskForm({
           )}
         </legend>
         <div className="flex gap-2">
+          <label className={`${pillClass} group gap-2`}>
+            <input
+              type="checkbox"
+              name="repeating"
+              value="true"
+              className="sr-only"
+              checked={repeating}
+              onChange={(event) => changeRepeating(event.target.checked)}
+            />
+            <span className="flex size-5 items-center justify-center rounded-full border border-dark-border-grey text-white group-has-checked:border-check-green group-has-checked:bg-check-green">
+              <CheckIcon className="hidden size-4 group-has-checked:block" />
+            </span>
+            Repeating
+          </label>
+          {/* A mode switch, not a day: keep it visually apart */}
+          <span
+            aria-hidden="true"
+            className="mx-3 w-px self-stretch bg-area-border-grey"
+          />
           {WEEKDAY_OPTIONS.map((day) => (
             <label key={day.value} className={`${pillClass} flex-1`}>
               <input
@@ -312,20 +335,6 @@ export function TaskForm({
               {day.label}
             </label>
           ))}
-          <label className={`${pillClass} group gap-2`}>
-            <input
-              type="checkbox"
-              name="repeating"
-              value="true"
-              className="sr-only"
-              checked={repeating}
-              onChange={(event) => changeRepeating(event.target.checked)}
-            />
-            <span className="flex size-5 items-center justify-center rounded-full border border-dark-border-grey text-white group-has-checked:border-check-green group-has-checked:bg-check-green">
-              <CheckIcon className="hidden size-4 group-has-checked:block" />
-            </span>
-            Repeating Task
-          </label>
         </div>
       </fieldset>
 
@@ -387,116 +396,120 @@ export function TaskForm({
       </fieldset>
 
       {/* Footer */}
-      <div className="-mx-7.5 mt-5 flex items-center justify-end gap-2 border-t border-dark-border-grey px-7.5 pt-4">
-        {/* Editing only: Delete sits on the left */}
-        {occurrence &&
-          (occurrence.repeating ? (
-            // Repeating: Delete opens a menu with the two scopes
-            <div ref={deleteMenuRef} className="relative">
+      <div className="-mx-7.5 mt-5 border-t border-dark-border-grey px-7.5 pt-4">
+        {saveError && (
+          <p role="alert" className={`${errorBannerClass} mb-3`}>
+            {saveError}
+          </p>
+        )}
+        <div className="flex items-center justify-end gap-2">
+          {/* Editing only: Delete sits on the left */}
+          {occurrence &&
+            (occurrence.repeating ? (
+              // Repeating: Delete opens a menu with the two scopes
+              <div ref={deleteMenuRef} className="relative">
+                <button
+                  type="button"
+                  aria-expanded={deleteMenuOpen}
+                  onClick={() => setDeleteMenuOpen((open) => !open)}
+                  disabled={saving}
+                  className={`${buttonClass} flex items-center gap-1 border border-error-red text-error-red hover:border-error-red-dark hover:text-error-red-dark`}
+                >
+                  Delete
+                  <ChevronDownIcon className="-mr-1 size-4" />
+                </button>
+                {deleteMenuOpen && (
+                  <div className="absolute top-full left-0 z-10 mt-2 flex w-max flex-col overflow-hidden rounded-md border border-error-red bg-white">
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(deleteThisTaskOnly)}
+                      className={deleteItemClass}
+                    >
+                      Delete This Task Only
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(deleteThisAndFutureTasks)}
+                      className={deleteItemClass}
+                    >
+                      Delete This and Future Tasks
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              // One-off: a direct Delete, as before
               <button
                 type="button"
-                aria-expanded={deleteMenuOpen}
-                onClick={() => setDeleteMenuOpen((open) => !open)}
+                onClick={() => handleDelete(deleteThisTaskOnly)}
                 disabled={saving}
-                className={`${buttonClass} flex items-center gap-1 border border-error-red text-error-red hover:border-error-red-dark hover:text-error-red-dark`}
+                className={`${buttonClass} items-center gap-1 border border-error-red text-error-red hover:border-error-red-dark hover:text-error-red-dark`}
               >
                 Delete
+              </button>
+            ))}
+          <button
+            type="button"
+            onClick={onCancel}
+            className={`${buttonClass} ml-auto border border-logo-blue text-logo-blue hover:border-selected-blue hover:text-selected-blue`}
+          >
+            Cancel
+          </button>
+
+          {occurrence?.repeating ? (
+            // Repeating: Save ▾ opens a menu with the two scopes
+            <div ref={saveMenuRef} className="relative">
+              <button
+                type="button"
+                aria-expanded={saveMenuOpen}
+                onClick={() => setSaveMenuOpen((open) => !open)}
+                disabled={!canSave || saving}
+                className={`${buttonClass} flex items-center gap-1 bg-logo-blue text-white hover:bg-selected-blue disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:hover:bg-button-off-grey`}
+              >
+                Save
                 <ChevronDownIcon className="-mr-1 size-4" />
               </button>
-              {deleteMenuOpen && (
-                <div className="absolute top-full left-0 z-10 mt-2 flex w-max flex-col overflow-hidden rounded-md border border-error-red bg-white">
+
+              {saveMenuOpen && (
+                <div className="absolute top-full right-0 z-10 mt-2 flex w-max flex-col overflow-hidden rounded-md border border-logo-blue bg-white">
                   <button
                     type="button"
-                    onClick={() => handleDelete(deleteThisTaskOnly)}
-                    className={deleteItemClass}
+                    onClick={(event) =>
+                      handleScopedSave(event, saveThisTaskOnly)
+                    }
+                    disabled={scheduleChanged}
+                    className={`${saveItemClass} disabled:cursor-not-allowed disabled:text-button-off-grey disabled:hover:bg-white`}
                   >
-                    Delete This Task Only
+                    Save This Task Only
+                    {scheduleChanged && (
+                      <span className="block text-[11px] font-medium text-text-grey">
+                        Schedule changes apply to this and future tasks.
+                      </span>
+                    )}
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleDelete(deleteThisAndFutureTasks)}
-                    className={deleteItemClass}
+                    onClick={(event) =>
+                      handleScopedSave(event, saveThisAndFutureTasks)
+                    }
+                    className={saveItemClass}
                   >
-                    Delete This and Future Tasks
+                    Save This and Future Tasks
                   </button>
                 </div>
               )}
             </div>
           ) : (
-            // One-off: a direct Delete, as before
+            // Adding, or a one-off task: a direct Save
             <button
-              type="button"
-              onClick={() => handleDelete(deleteThisTaskOnly)}
-              disabled={saving}
-              className={`${buttonClass} items-center gap-1 border border-error-red text-error-red hover:border-error-red-dark hover:text-error-red-dark`}
-            >
-              Delete
-            </button>
-          ))}
-        {saveError && (
-          <p role="alert" className={errorClass}>
-            {saveError}
-          </p>
-        )}
-        <button
-          type="button"
-          onClick={onCancel}
-          className={`${buttonClass} ml-auto border border-logo-blue text-logo-blue hover:border-selected-blue hover:text-selected-blue`}
-        >
-          Cancel
-        </button>
-
-        {occurrence?.repeating ? (
-          // Repeating: Save ▾ opens a menu with the two scopes
-          <div ref={saveMenuRef} className="relative">
-            <button
-              type="button"
-              aria-expanded={saveMenuOpen}
-              onClick={() => setSaveMenuOpen((open) => !open)}
+              type="submit"
               disabled={!canSave || saving}
-              className={`${buttonClass} flex items-center gap-1 bg-logo-blue text-white hover:bg-selected-blue disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:hover:bg-button-off-grey`}
+              className={`${buttonClass} bg-logo-blue text-white hover:bg-selected-blue disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:hover:bg-button-off-grey`}
             >
-              Save
-              <ChevronDownIcon className="-mr-1 size-4" />
+              {saving ? "Saving..." : "Save"}
             </button>
-
-            {saveMenuOpen && (
-              <div className="absolute top-full right-0 z-10 mt-2 flex w-max flex-col overflow-hidden rounded-md border border-logo-blue bg-white">
-                <button
-                  type="button"
-                  onClick={(event) => handleScopedSave(event, saveThisTaskOnly)}
-                  disabled={scheduleChanged}
-                  className={`${saveItemClass} disabled:cursor-not-allowed disabled:text-button-off-grey disabled:hover:bg-white`}
-                >
-                  Save This Task Only
-                  {scheduleChanged && (
-                    <span className="block text-[11px] font-medium text-text-grey">
-                      Schedule changes apply to this and future tasks.
-                    </span>
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={(event) =>
-                    handleScopedSave(event, saveThisAndFutureTasks)
-                  }
-                  className={saveItemClass}
-                >
-                  Save This and Future Tasks
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
-          // Adding, or a one-off task: a direct Save
-          <button
-            type="submit"
-            disabled={!canSave || saving}
-            className={`${buttonClass} bg-logo-blue text-white hover:bg-selected-blue disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:hover:bg-button-off-grey`}
-          >
-            {saving ? "Saving..." : "Save"}
-          </button>
-        )}
+          )}
+        </div>
       </div>
     </form>
   );
