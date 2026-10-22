@@ -52,8 +52,6 @@ const menuItemClass =
   "px-3 py-2 text-left text-sm font-bold text-error-red transition hover:bg-error-red hover:text-white";
 const deleteItemClass = `${menuItemClass} text-error-red hover:bg-error-red hover:text-white`;
 const saveItemClass = `${menuItemClass} text-logo-blue hover:bg-logo-blue hover:text-white`;
-// Error message
-const errorClass = "text-[13px] font-medium text-error-red normal-case";
 // Full-width message banners: red for errors, grey for information
 const bannerClass = "rounded-md px-3 py-1.5 text-[13px] font-normal";
 const errorBannerClass = `${bannerClass} bg-error-background text-error-red-dark`;
@@ -234,9 +232,9 @@ export function TaskForm({
   // A one-off task has exactly one day
   const tooManyDays = !repeating && days.length > 1;
   const daysError = tooManyDays
-    ? "Turn on Repeating Task to choose more than one day"
+    ? "Choose one day, or turn on repeating"
     : turnOffBlocked
-      ? "Choose one day only before turning off repeating"
+      ? "Leave one day to turn off repeating"
       : null;
   const textError = textTouched && text.trim() === "";
   const canSave =
@@ -258,50 +256,47 @@ export function TaskForm({
   return (
     <form onSubmit={handleSubmit}>
       <input type="hidden" name="date" value={toDateString(taskDate)} />
-      <div className="-mx-7.5 -mt-5 flex items-baseline justify-between border-b border-dark-border-grey px-7.5 py-5">
+      <div className="-mx-7.5 -mt-5 border-b border-dark-border-grey px-7.5 py-5">
         {/* Form title */}
         <h2 id="task-dialog-title" className="text-lg text-text-dark">
           <span className="font-bold">{titleText}</span>
           <span className="text-text-grey"> · {titleDate}</span>
         </h2>
-        {/* Text error */}
-        {textError && (
-          <span role="alert" className={errorClass}>
-            Enter a task description
-          </span>
-        )}
       </div>
 
       {/* Task fields */}
-      <textarea
-        name="description"
-        placeholder="Describe your task"
-        maxLength={1000}
-        className="block w-full mt-5 h-18 rounded-md border inset-shadow-xs px-2 py-1.5 text-lg font-semibold text-text-dark placeholder:font-medium placeholder:text-text-grey resize-none border-area-border-grey focus:border-logo-blue focus:outline-none"
-        aria-label="Task description"
-        aria-invalid={textError}
-        value={text}
-        onChange={(event) => {
-          setText(event.target.value);
-          setTextTouched(true);
-        }}
-      />
+      <div className="mt-4 space-y-2">
+        {textError && (
+          <p role="alert" className={errorBannerClass}>
+            Enter a task description
+          </p>
+        )}
+        <textarea
+          name="description"
+          placeholder="Describe your task"
+          maxLength={1000}
+          className="block w-full mt-4 h-18 rounded-md border inset-shadow-xs px-2 py-1.5 text-lg font-semibold text-text-dark placeholder:font-medium placeholder:text-text-grey resize-none border-area-border-grey focus:border-logo-blue focus:outline-none"
+          aria-label="Task description"
+          aria-invalid={textError}
+          value={text}
+          onChange={(event) => {
+            setText(event.target.value);
+            setTextTouched(true);
+          }}
+        />
+      </div>
 
       {/* DAYS: seven weekday checkboxes and the Repeating Task toggle */}
       <fieldset className={`relative ${sectionClass}`}>
-        <legend
-          className={`${sectionTitleClass} flex w-full items-baseline justify-between`}
-        >
-          <span>
-            <span className={sectionLabelClass}>Weekdays:</span> only repeating
-            tasks can have several days
-          </span>
-          {daysError && (
-            <span role="alert" className={errorClass}>
-              {daysError}
-            </span>
-          )}
+        <legend className={sectionTitleClass}>
+          <span className={sectionLabelClass}>Weekdays:</span> only repeating
+          task can have several days
         </legend>
+        {daysError && (
+          <p role="alert" className={`${errorBannerClass} mb-3`}>
+            {daysError}
+          </p>
+        )}
         <div className="flex gap-2">
           <label className={`${pillClass} group gap-2`}>
             <input

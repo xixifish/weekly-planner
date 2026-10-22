@@ -17,7 +17,7 @@ const pillBaseClass =
   "flex h-8.5 items-center rounded-md border text-sm font-semibold transition";
 const pillIdleClass =
   "border-area-border-grey bg-white text-text-dark hover:border-selected-blue hover:text-selected-blue";
-const pillSelectedClass = "border-logo-blue bg-select-blue text-logo-blue";
+const pillSelectedClass = "border-select-blue bg-select-blue text-logo-blue";
 
 const hintClass = "text-[13px] text-text-grey-blue";
 
