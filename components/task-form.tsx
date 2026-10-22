@@ -400,6 +400,14 @@ export function TaskForm({
             {saveError}
           </p>
         )}
+        {/* Editing a repeating task: why This Task Only is off */}
+        {occurrence?.repeating && scheduleChanged && !saveError && (
+          <p aria-live="polite" className={`${infoBannerClass} mb-3`}>
+            <strong>Weekdays</strong>, <strong>Repeating</strong>, and{" "}
+            <strong>End Date</strong> changes can&apos;t be saved for this task
+            only.
+          </p>
+        )}
         <div className="flex items-center justify-end gap-2">
           {/* Editing only: Delete sits on the left */}
           {occurrence &&
@@ -476,14 +484,9 @@ export function TaskForm({
                       handleScopedSave(event, saveThisTaskOnly)
                     }
                     disabled={scheduleChanged}
-                    className={`${saveItemClass} disabled:cursor-not-allowed disabled:text-button-off-grey disabled:hover:bg-white`}
+                    className={`${saveItemClass} disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:text-white disabled:hover:bg-button-off-grey`}
                   >
                     Save This Task Only
-                    {scheduleChanged && (
-                      <span className="block text-[11px] font-medium text-text-grey">
-                        Schedule changes apply to this and future tasks.
-                      </span>
-                    )}
                   </button>
                   <button
                     type="button"

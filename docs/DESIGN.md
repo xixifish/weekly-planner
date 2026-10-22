@@ -74,7 +74,7 @@ Save scope depends on the fields changed:
 | Repeating Task | No | Yes |
 | End Date | No | Yes |
 
-If a schedule field changes, **This Task Only** is disabled, and a grey message above the buttons explains why: "Changes to weekdays, repeating or the end date can only be saved for this and future tasks." It appears as soon as the change is made, before the menu is opened. Editing controls remain scoped to the original repeating task even if repeating is turned off in the form.
+If a schedule field changes, **This Task Only** is disabled, and a grey message above the buttons explains why: "**Weekdays**, **Repeating**, and **End Date** changes can't be saved for this task only." It appears as soon as the change is made, before the menu is opened, and gives way to an error message if one appears. Editing controls remain scoped to the original repeating task even if repeating is turned off in the form.
 
 Task deletion has no confirmation box. An Undo bar appears for about five seconds in the day where deletion began. Its message identifies the scope. Counts and progress update immediately and revert on Undo.
 
@@ -136,8 +136,7 @@ Creating a task and editing a non-repeating task use a direct **Save** action. W
 | Save and delete errors from the server | above the buttons | the action failed; the dialog stays open |
 | Your session has expired. **Sign in again** | above the buttons | the session ended; the link signs in with Google |
 
-Signing in again leaves the page, so the dialog's draft is lost. The user comes back to the same week they were viewing. The wording of the day messages may still be refined when they are built.
-
+Signing in again leaves the page, so the dialog's draft is lost. The user comes back to the same week they were viewing.
 ---
 
 ## 7. Accounts
