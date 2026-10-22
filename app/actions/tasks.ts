@@ -59,8 +59,20 @@ export async function createTask(
   return { error: null };
 }
 
-export async function deleteThisAndFutureTasks(formData: FormData) {
-  const { task, date } = await requireOwnedOccurrence(formData);
+export async function deleteThisAndFutureTasks(
+  formData: FormData,
+): Promise<CreateTaskResult> {
+  let occurrence;
+  try {
+    occurrence = await requireOwnedOccurrence(formData);
+  } catch (error) {
+    if (error instanceof SignedOutError) {
+      return SIGNED_OUT_RESULT;
+    }
+    throw error;
+  }
+
+  const { task, date } = occurrence;
 
   // Read the task's current deletion date
   const current = await prisma.task.findUnique({
@@ -86,6 +98,7 @@ export async function deleteThisAndFutureTasks(formData: FormData) {
 
   // Reload the weekly data
   revalidatePath("/");
+  return { error: null };
 }
 
 export async function saveThisAndFutureTasks(

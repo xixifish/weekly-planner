@@ -183,7 +183,9 @@ export function TaskForm({
   }
 
   // Delete this card's occurrence, then close the dialog
-  function handleDelete(deleteAction: (formData: FormData) => Promise<void>) {
+  function handleDelete(
+    deleteAction: (formData: FormData) => Promise<CreateTaskResult>,
+  ) {
     if (!occurrence) return;
 
     const formData = new FormData();
@@ -194,10 +196,15 @@ export function TaskForm({
     setSignedOut(false);
     setDeleteMenuOpen(false);
     startSaving(async () => {
+      let result;
       try {
-        await deleteAction(formData);
+        result = await deleteAction(formData);
       } catch {
         setSaveError("Could not delete the task");
+        return;
+      }
+      if (result.error) {
+        showSaveError(result);
         return;
       }
       onDeleted();
