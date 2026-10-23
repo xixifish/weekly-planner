@@ -22,9 +22,10 @@ import {
 } from "@/app/actions/tasks";
 import { deleteThisTaskOnly } from "@/app/actions/skips";
 import type { TaskOccurrence } from "@/lib/tasks/get-week-occurrences";
-import { signInWithGoogle } from "@/lib/sign-in";
 import { saveThisTaskOnly } from "@/app/actions/overrides";
 import { useCloseOnClickOutside } from "@/lib/use-close-on-click-outside";
+import { SignInAgainButton } from "./sign-in-again-button";
+import { errorBannerClass, infoBannerClass } from "./banner-styles";
 
 const WEEKDAY_OPTIONS = [
   { value: Weekday.MON, label: "Mon" },
@@ -55,10 +56,6 @@ const menuItemClass =
   "px-3 py-2 text-left text-sm font-bold text-error-red transition hover:bg-error-red hover:text-white";
 const deleteItemClass = `${menuItemClass} text-error-red hover:bg-error-red hover:text-white`;
 const saveItemClass = `${menuItemClass} text-logo-blue hover:bg-logo-blue hover:text-white`;
-// Full-width message banners: red for errors, grey for information
-const bannerClass = "rounded-md px-3 py-1.5 text-[13px] font-normal";
-const errorBannerClass = `${bannerClass} bg-error-background text-error-red-dark`;
-const infoBannerClass = `${bannerClass} bg-background-grey text-text-grey-blue`;
 
 type TaskFormProps = {
   occurrence: TaskOccurrence | null;
@@ -401,17 +398,12 @@ export function TaskForm({
             {signedOut && (
               <>
                 {" "}
-                <button
-                  type="button"
-                  onClick={() =>
-                    signInWithGoogle(
-                      window.location.pathname + window.location.search,
-                    )
-                  }
-                  className="font-bold underline text-logo-blue"
-                >
-                  Sign in again
-                </button>
+                {signedOut && (
+                  <>
+                    {" "}
+                    <SignInAgainButton />
+                  </>
+                )}
               </>
             )}
           </p>

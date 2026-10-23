@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 
 import { useCloseOnClickOutside } from "@/lib/use-close-on-click-outside";
+import { errorBannerClass } from "./banner-styles";
+import { SignInAgainButton } from "./sign-in-again-button";
 
 import { ChevronDownIcon, AlertIcon } from "./icons";
 import { authClient } from "@/lib/auth-client";
@@ -53,9 +55,16 @@ export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
 
   const confirmRef = useRef<HTMLDialogElement>(null);
 
+  // A failed delete's message, and whether signing in again would fix it
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [needsSignIn, setNeedsSignIn] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   // Close the menu, then ask before deleting anything
   function openDeleteConfirm() {
     setOpen(false);
+    setDeleteError(null);
+    setNeedsSignIn(false);
     confirmRef.current?.showModal();
   }
 
@@ -69,9 +78,27 @@ export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
 
   // Delete the account and all its data, then show the signed-out page
   async function handleDeleteAccount() {
+    setDeleteError(null);
+    setNeedsSignIn(false);
+    setDeleting(true);
     const { error } = await authClient.deleteUser();
+    setDeleting(false);
+
     if (error) {
-      console.log("Could not delete the account", error);
+      // Better Auth only deletes after a recent sign-in
+      if (error.code === "UNAUTHORIZED") {
+        // Signed out
+        setDeleteError("Your session has expired.");
+        setNeedsSignIn(true);
+      } else if (error.code === "SESSION_EXPIRED") {
+        // Signed in, but too long ago for deleting
+        setDeleteError(
+          "For your security, please sign in again to delete your account.",
+        );
+        setNeedsSignIn(true);
+      } else {
+        setDeleteError("Couldn't delete your account. Please try again.");
+      }
       return;
     }
     confirmRef.current?.close();
@@ -145,7 +172,20 @@ export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
           This permanently deletes your account and all your tasks. It
           can&apos;t be undone.
         </p>
-        <div className="mt-8 flex justify-center gap-3">
+        {deleteError && (
+          <p role="alert" className={`${errorBannerClass} mt-6`}>
+            {deleteError}
+            {needsSignIn && (
+              <>
+                {" "}
+                <SignInAgainButton />
+              </>
+            )}
+          </p>
+        )}
+        <div
+          className={`${deleteError ? "mt-4" : "mt-8"} flex justify-center gap-3`}
+        >
           <button
             type="button"
             onClick={() => confirmRef.current?.close()}
@@ -156,9 +196,10 @@ export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
           <button
             type="button"
             onClick={handleDeleteAccount}
+            disabled={deleting}
             className="h-9.5 rounded-md bg-error-red px-4 font-bold text-white transition hover:bg-error-red-dark"
           >
-            Delete
+            {deleting ? "Deleting..." : "Delete"}
           </button>
         </div>
       </dialog>
