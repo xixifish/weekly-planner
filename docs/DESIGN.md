@@ -76,9 +76,9 @@ Save scope depends on the fields changed:
 
 If a schedule field changes, **This Task Only** is disabled, and a grey message above the buttons explains why: "**Weekdays**, **Repeating**, and **End Date** changes can't be saved for this task only." It appears as soon as the change is made, before the menu is opened, and gives way to an error message if one appears. Editing controls remain scoped to the original repeating task even if repeating is turned off in the form.
 
-Task deletion has no confirmation box. An Undo bar appears for about five seconds in the day where deletion began. Its message identifies the scope. Counts and progress update immediately and revert on Undo.
+Task deletion has no confirmation box and, in v1, no Undo: a deleted card is gone immediately, and counts and progress update straight away. A mistaken single card is quick to add again.
 
-**Deleting your account is the exception. It does get a real confirm**, because it cannot be undone.
+**Deleting your account is the exception. It does get a real confirm**, because it removes everything at once and cannot be undone.
 
 ---
 
@@ -143,9 +143,9 @@ Signing in again leaves the page, so the dialog's draft is lost. The user comes 
 
 **Sign in with social accounts only.** No email and password.
 
-**The profile dropdown has four things**: name, email, Log out, Delete my account.
+**The profile dropdown has four things**: name, email, **Sign out**, **Delete this account**.
 
-Four, not one, because social sign-in means you need to see *which* account you are in, and because storing someone's data means giving them a way to remove it. The avatar itself must never log you out — the dropdown is the safety.
+Four, not one, because social sign-in means you need to see *which* account you are in, and because storing someone's data means giving them a way to remove it. The avatar itself must never sign you out — the dropdown is the safety.
 
 **There is no settings page.** Those four items make one unnecessary.
 
@@ -163,6 +163,7 @@ Four, not one, because social sign-in means you need to see *which* account you 
 | Label names | Colours are enough to group things. Labels are stored as named values, so names can be added later in code. |
 | Carry unfinished tasks forward | A paper planner does not do it, and it hides the fact you did not do the thing. |
 | Settings page | The four dropdown items cover everything a settings page would hold. |
+| Undo after deleting a task | Planned as a bar that appears for a few seconds after a delete. Left out of v1 to keep the first version small; deletes are immediate instead. Worth revisiting if user testing shows accidental deletes, especially with **This and Future Tasks**. |
 | Clickable Figma prototype | A prototype exists to show an idea to someone before it is built. I am both the designer and the builder, and the live app is the demo. |
 
 ---

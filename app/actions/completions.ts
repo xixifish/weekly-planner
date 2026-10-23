@@ -4,10 +4,22 @@
 import { revalidatePath } from "next/cache";
 
 import { requireOwnedOccurrence } from "@/lib/tasks/require-owned-occurrence";
+import { SignedOutError } from "@/lib/current-user";
 import { prisma } from "@/lib/prisma";
 
 export async function toggleTaskCompletion(formData: FormData) {
-  const { task, date } = await requireOwnedOccurrence(formData);
+  let occurrence;
+  try {
+    occurrence = await requireOwnedOccurrence(formData);
+  } catch (error) {
+    if (error instanceof SignedOutError) {
+      // Signed out meanwhile: show the signed-out page instad of crashing
+      revalidatePath("/");
+      return;
+    }
+    throw error;
+  }
+  const { task, date } = occurrence;
 
   // Find an existing completion for this occurrence
   const existingCompletion = await prisma.completion.findUnique({
