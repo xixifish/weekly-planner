@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useEffect, useRef } from "react";
+import { useState, useTransition, useRef } from "react";
 
 import { CheckIcon, CrossIcon, ChevronDownIcon } from "./icons";
 import { Weekday } from "@/app/generated/prisma/enums";
@@ -24,6 +24,7 @@ import { deleteThisTaskOnly } from "@/app/actions/skips";
 import type { TaskOccurrence } from "@/lib/tasks/get-week-occurrences";
 import { signInWithGoogle } from "@/lib/sign-in";
 import { saveThisTaskOnly } from "@/app/actions/overrides";
+import { useCloseOnClickOutside } from "@/lib/use-close-on-click-outside";
 
 const WEEKDAY_OPTIONS = [
   { value: Weekday.MON, label: "Mon" },
@@ -66,26 +67,6 @@ type TaskFormProps = {
   onDeleted: () => void;
   weekStart: Date;
 };
-
-// Closes a menu when the user presses anywhere outside it
-function useCloseOnClickOutside(
-  ref: React.RefObject<HTMLElement | null>,
-  isOpen: boolean,
-  close: () => void,
-) {
-  useEffect(() => {
-    if (!isOpen) return;
-
-    function handlePointerDown(event: PointerEvent) {
-      if (!ref.current?.contains(event.target as Node)) {
-        close();
-      }
-    }
-
-    document.addEventListener("pointerdown", handlePointerDown);
-    return () => document.removeEventListener("pointerdown", handlePointerDown);
-  }, [ref, isOpen, close]);
-}
 
 export function TaskForm({
   occurrence,

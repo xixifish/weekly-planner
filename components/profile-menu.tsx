@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useRef } from "react";
+
+import { useCloseOnClickOutside } from "@/lib/use-close-on-click-outside";
 
 import { ChevronDownIcon } from "./icons";
 
@@ -40,9 +42,11 @@ function Avatar({
 
 export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
   const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  useCloseOnClickOutside(menuRef, open, () => setOpen(false));
 
   return (
-    <div className="relative">
+    <div ref={menuRef} className="relative">
       <button
         type="button"
         aria-label="Account menu"
