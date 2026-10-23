@@ -6,7 +6,7 @@ import { useState, useRef } from "react";
 
 import { useCloseOnClickOutside } from "@/lib/use-close-on-click-outside";
 
-import { ChevronDownIcon } from "./icons";
+import { ChevronDownIcon, AlertIcon } from "./icons";
 import { authClient } from "@/lib/auth-client";
 
 type ProfileMenuProps = {
@@ -44,18 +44,37 @@ function Avatar({
 
 // Items in the profile menu, like "Sign out"
 const menuItemClass =
-  "block w-full text-left text-sm font-semibold text-text-dark transition hover:text-selected-blue";
+  "block w-full text-left text-sm font-semibold text-text-dark transition";
 
 export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   useCloseOnClickOutside(menuRef, open, () => setOpen(false));
 
+  const confirmRef = useRef<HTMLDialogElement>(null);
+
+  // Close the menu, then ask before deleting anything
+  function openDeleteConfirm() {
+    setOpen(false);
+    confirmRef.current?.showModal();
+  }
+
   const router = useRouter();
 
   // Ends the session, then reloads the page's data as a signed-out visitor
   async function handleSignOut() {
     await authClient.signOut();
+    router.refresh();
+  }
+
+  // Delete the account and all its data, then show the signed-out page
+  async function handleDeleteAccount() {
+    const { error } = await authClient.deleteUser();
+    if (error) {
+      console.log("Could not delete the account", error);
+      return;
+    }
+    confirmRef.current?.close();
     router.refresh();
   }
 
@@ -87,15 +106,62 @@ export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
             </div>
           </div>
           <hr className="my-4 border-area-border-grey" />
-          <button
-            type="button"
-            onClick={handleSignOut}
-            className={menuItemClass}
-          >
-            Sign out
-          </button>
+          <div className="flex flex-col gap-3">
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className={`${menuItemClass} hover:text-selected-blue`}
+            >
+              Sign out
+            </button>
+            <button
+              type="button"
+              onClick={openDeleteConfirm}
+              className={`${menuItemClass} hover:text-error-red-dark`}
+            >
+              Delete this account
+            </button>
+          </div>
         </div>
       )}
+      {/* Deleting an account can't be undone, so it gets a real confirmation */}
+      <dialog
+        ref={confirmRef}
+        aria-labelledby="delete-account-title"
+        aria-describedby="delete-account-text"
+        className="m-auto w-100 rounded-xl bg-white px-7.5 py-8 text-center backdrop:bg-black/40"
+      >
+        <AlertIcon className="mx-auto size-8 text-error-red" />
+        <h2
+          id="delete-account-title"
+          className="mt-3 text-lg font-extrabold text-text-dark"
+        >
+          Delete Account
+        </h2>
+        <p
+          id="delete-account-text"
+          className="mt-1 font-medium text-sm text-text-dark"
+        >
+          This permanently deletes your account and all your tasks. It
+          can&apos;t be undone.
+        </p>
+        <div className="mt-8 flex justify-center gap-3">
+          <button
+            type="button"
+            onClick={() => confirmRef.current?.close()}
+            className="h-9.5 rounded-md border border-logo-blue px-4 font-bold text-logo-blue transition hover:border-selected-blue hover:text-selected-blue"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleDeleteAccount}
+            className="h-9.5 rounded-md bg-error-red px-4 font-bold text-white transition hover:bg-error-red-dark"
+          >
+            Delete
+          </button>
+        </div>
+      </dialog>
     </div>
   );
 }

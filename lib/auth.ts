@@ -29,4 +29,10 @@ export const auth = betterAuth({
       clientSecret: requireEnvironmentVariable("GOOGLE_CLIENT_SECRET"),
     },
   },
+
+  user: {
+    deleteUser: {
+      enabled: true,
+    },
+  },
 });
