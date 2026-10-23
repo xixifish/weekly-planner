@@ -71,10 +71,11 @@ Save scope depends on the fields changed:
 |---|---:|---:|
 | Description or label | Yes | Yes |
 | Days | No | Yes |
-| Repeating Task | No | Yes |
 | End Date | No | Yes |
 
-If a schedule field changes, **This Task Only** is disabled, and a grey message above the buttons explains why: "**Weekdays**, **Repeating**, and **End Date** changes can't be saved for this task only." It appears as soon as the change is made, before the menu is opened, and gives way to an error message if one appears. Editing controls remain scoped to the original repeating task even if repeating is turned off in the form.
+If the days or the end date change, **This Task Only** is no longer possible, so the **Save** menu is replaced by a direct **Save This and Future Tasks** button. The button's label says what will happen, so no extra message is needed. Changing the days back brings the menu back.
+
+**A repeating task stays repeating.** Its **Repeating** option cannot be turned off while editing; trying shows a grey message: "To stop repeating, add an **End Date** or use **Delete This and Future Tasks**." Those two existing actions cover what turning it off would mean, without extra rules about which day a remaining one-off task would land on. To keep a single task on another day, the user deletes this and future tasks, then adds a non-repeating task.
 
 Task deletion has no confirmation box and, in v1, no Undo: a deleted card is gone immediately, and counts and progress update straight away. A mistaken single card is quick to add again.
 
@@ -110,7 +111,7 @@ The dialog contains the task text, **Days**, a **Repeating Task** option, an opt
 
 - A task that is not repeating has exactly one selected day.
 - A repeating task may have one or more weekdays. Its occurrences can be within the current week, later weeks, or both.
-- Turning repeating on keeps the selected day and allows more days. To turn it off, the user must first leave only one day selected. If they try sooner, the option stays on and the dialog asks them to choose one day. Turning it off automatically removes the end date.
+- Turning repeating on keeps the selected day and allows more days. When adding a task (or editing a non-repeating one), turning it off again requires leaving only one day selected first. If they try sooner, the option stays on and the dialog asks them to choose one day. Turning it off automatically removes the end date.
 - Selecting a second day while repeating is off never unselects the first one. Both stay selected, Save is disabled, and the dialog asks the user to turn on **Repeating Task** or choose one day. Nothing changes behind the user's back.
 - No end date means the task repeats indefinitely. An end date is inclusive and cannot be before the task starts. Removing it returns the task to indefinite repetition.
 - Text and a day are required; label and end date are optional. Save stays disabled until the required fields are valid.
@@ -132,7 +133,7 @@ Creating a task and editing a non-repeating task use a direct **Save** action. W
 | Enter a task description | above the text box | the text was typed, then emptied or left as spaces |
 | Choose one day, or turn on repeating | above the day row | two or more days while repeating is off |
 | Leave one day to turn off repeating | above the day row | turning repeating off with two or more days |
-| The schedule message (see §4), in grey | above the buttons | editing a repeating task after a schedule change |
+| To stop repeating, add an **End Date** or use **Delete This and Future Tasks**. (grey) | above the day row | trying to turn off **Repeating** while editing a repeating task |
 | Save and delete errors from the server | above the buttons | the action failed; the dialog stays open |
 | Your session has expired. **Sign in again** | above the buttons | the session ended; the link signs in with Google |
 

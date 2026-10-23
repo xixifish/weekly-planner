@@ -80,6 +80,8 @@ export function TaskForm({
   const [repeating, setRepeating] = useState(occurrence?.repeating ?? false);
   // The user tries to turn Repeating off while several days were selected
   const [turnOffBlocked, setTurnOffBlocked] = useState(false);
+  // The user tried to turn off Repeating on a saved repeating task
+  const [stopRepeatingBlocked, setStopRepeatingBlocked] = useState(false);
   // Save the task
   const [saving, startSaving] = useTransition();
   // A message from the server when saving failed
@@ -125,6 +127,12 @@ export function TaskForm({
 
   // Repeating can only be turned off when at most one day is selected
   function changeRepeating(checked: boolean) {
+    // A saved repeating task stays repeating: it ends with an end date or a delete
+    if (!checked && occurrence?.repeating) {
+      setStopRepeatingBlocked(true);
+      return;
+    }
+
     if (!checked && days.length > 1) {
       setTurnOffBlocked(true);
       return;
@@ -295,6 +303,14 @@ export function TaskForm({
             {daysError}
           </p>
         )}
+        {/* Information, not an error: it doesn't stop saving */}
+        {stopRepeatingBlocked && (
+          <p aria-live="polite" className={`${infoBannerClass} mb-3`}>
+            To stop repeating, add an{" "}
+            <span className="font-bold">End Date</span> or use{" "}
+            <span className="font-bold">Delete This and Future Tasks</span>.
+          </p>
+        )}
         <div className="flex gap-2">
           <label className={`${pillClass} group gap-2`}>
             <input
@@ -408,14 +424,6 @@ export function TaskForm({
             )}
           </p>
         )}
-        {/* Editing a repeating task: why This Task Only is off */}
-        {occurrence?.repeating && scheduleChanged && !saveError && (
-          <p aria-live="polite" className={`${infoBannerClass} mb-3`}>
-            <strong>Weekdays</strong>, <strong>Repeating</strong>, and{" "}
-            <strong>End Date</strong> changes can&apos;t be saved for this task
-            only.
-          </p>
-        )}
         <div className="flex items-center justify-end gap-2">
           {/* Editing only: Delete sits on the left */}
           {occurrence &&
@@ -470,7 +478,19 @@ export function TaskForm({
             Cancel
           </button>
 
-          {occurrence?.repeating ? (
+          {occurrence?.repeating && scheduleChanged ? (
+            // Only one scope is possible after a schedule change: save straight away
+            <button
+              type="button"
+              onClick={(event) =>
+                handleScopedSave(event, saveThisAndFutureTasks)
+              }
+              disabled={!canSave || saving}
+              className={`${buttonClass} bg-logo-blue text-white hover:bg-selected-blue disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:hover:bg-button-off-grey`}
+            >
+              {saving ? "Saving…" : "Save This and Future Tasks"}
+            </button>
+          ) : occurrence?.repeating ? (
             // Repeating: Save ▾ opens a menu with the two scopes
             <div ref={saveMenuRef} className="relative">
               <button
@@ -491,8 +511,7 @@ export function TaskForm({
                     onClick={(event) =>
                       handleScopedSave(event, saveThisTaskOnly)
                     }
-                    disabled={scheduleChanged}
-                    className={`${saveItemClass} disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:text-white disabled:hover:bg-button-off-grey`}
+                    className={saveItemClass}
                   >
                     Save This Task Only
                   </button>
