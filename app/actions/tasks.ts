@@ -11,6 +11,13 @@ import {
   SignedOutError,
 } from "@/lib/current-user";
 import { prisma } from "@/lib/prisma";
+import type { Weekday } from "@/app/generated/prisma/enums";
+import {
+  addDays,
+  getWeekStart,
+  toDateString,
+  WEEKDAYS,
+} from "@/lib/dates/week";
 
 // What the add dialog gets back: an error message, or null when saved
 export type CreateTaskResult = { error: string | null; signedOut?: boolean };
@@ -115,6 +122,21 @@ export async function saveThisAndFutureTasks(
   }
   const { task, date } = occurrence;
 
+  // Turning repeating off: the one-off task goes on the chosen weekday of the
+  // card's week, on or after the card's own day (earlier days could duplicate
+  // a card the old series still shows)
+  if (formData.get("repeating") !== "true") {
+    const dayIndex = WEEKDAYS.indexOf(formData.get("days") as Weekday);
+    if (dayIndex !== -1) {
+      // WEEKDAYS starts on Sunday; the week starts on Monday
+      const oneOffDate = addDays(getWeekStart(date), (dayIndex + 6) % 7);
+      if (oneOffDate < date) {
+        return { error: "Choose this card's day or a later day this week" };
+      }
+      formData.set("date", toDateString(oneOffDate));
+    }
+  }
+
   let fields;
   try {
     fields = parseTaskForm(formData);
@@ -124,11 +146,7 @@ export async function saveThisAndFutureTasks(
     };
   }
 
-  const { text, days, repeating, endDate, label } = fields;
-
-  if (!repeating) {
-    return { error: "Turning off repeating is not supported yet" };
-  }
+  const { text, days, repeating, endDate, label, date: startDate } = fields;
 
   // Find the rule active on the date
   const taskRule = await prisma.taskRule.findFirst({
@@ -182,6 +200,7 @@ export async function saveThisAndFutureTasks(
           days,
           repeating,
           endDate,
+          effectiveFrom: startDate,
           effectiveTo: null,
           label,
         },
@@ -204,7 +223,7 @@ export async function saveThisAndFutureTasks(
           days,
           repeating,
           endDate,
-          effectiveFrom: date,
+          effectiveFrom: startDate,
           label,
         },
       });
