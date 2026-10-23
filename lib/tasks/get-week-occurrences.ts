@@ -1,21 +1,8 @@
 import { requireCurrentUser } from "../current-user";
 import { prisma } from "@/lib/prisma";
 
-import { WEEKDAYS } from "../dates/week";
 import { getWeekDates } from "../dates/get-week-dates";
-import { LabelColour, Weekday } from "@/app/generated/prisma/enums";
-
-export type TaskOccurrence = {
-  taskId: string;
-  ruleId: string;
-  date: Date;
-  text: string;
-  completed: boolean;
-  label: LabelColour | null;
-  days: Weekday[];
-  repeating: boolean;
-  endDate: Date | null;
-};
+import { buildOccurrences } from "./build-occurrences";
 
 export async function getWeekOccurrences(weekStart: Date) {
   // 1. Get the authenticated user
@@ -97,66 +84,5 @@ export async function getWeekOccurrences(weekStart: Date) {
   });
 
   // 4. Generate occurrences for the seven dates
-  const occurrences: TaskOccurrence[] = [];
-
-  for (const task of tasks) {
-    for (const rule of task.rules) {
-      for (const date of weekDates) {
-        // Does this rule create a card on this date?
-        // Not start yet
-        if (date < rule.effectiveFrom) continue;
-
-        // The rule version or repeating series has ended
-        if (rule.effectiveTo && date > rule.effectiveTo) continue;
-        if (rule.endDate && date > rule.endDate) continue;
-
-        // The task was deleted from this date onward
-        if (task.deletedFrom && date >= task.deletedFrom) continue;
-
-        // This occurrence was deleted with "This Task Only"
-        const skipped = task.skips.some(
-          (skip) => skip.date.getTime() === date.getTime(),
-        );
-        if (skipped) continue;
-
-        // If repeating task
-        if (rule.repeating) {
-          // Get weekday of the current date
-          const weekday = WEEKDAYS[date.getUTCDay()];
-          // If not repeat on this weekday
-          if (weekday === undefined || !rule.days.includes(weekday)) continue;
-        } else {
-          // A one-off task appears only on its effective date
-          if (date.getTime() !== rule.effectiveFrom.getTime()) continue;
-        }
-
-        // Check whether the current task on this date has completion
-        const completed = task.completions.some(
-          (completion) => completion.date.getTime() === date.getTime(),
-        );
-
-        // Look for this card's override (undefined if there is none)
-        const override = task.overrides.find(
-          (taskOverride) => taskOverride.date.getTime() === date.getTime(),
-        );
-
-        // One occurrence
-        // Only
-        occurrences.push({
-          taskId: task.id,
-          ruleId: rule.id,
-          date,
-          text: override ? override.text : rule.text,
-          completed,
-          label: override ? override.label : rule.label,
-          days: rule.days,
-          repeating: rule.repeating,
-          endDate: rule.endDate,
-        });
-      }
-    }
-  }
-
-  // 5. Return occurrence objects
-  return occurrences;
+  return buildOccurrences(tasks, weekDates);
 }

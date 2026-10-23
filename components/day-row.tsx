@@ -1,4 +1,4 @@
-import type { TaskOccurrence } from "@/lib/tasks/get-week-occurrences";
+import type { TaskOccurrence } from "@/lib/tasks/build-occurrences";
 import { TaskCard } from "./task-card";
 
 type DayRowProps = {

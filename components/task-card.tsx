@@ -2,7 +2,7 @@
 
 import { toggleTaskCompletion } from "@/app/actions/completions";
 import { toDateString } from "@/lib/dates/week";
-import type { TaskOccurrence } from "@/lib/tasks/get-week-occurrences";
+import type { TaskOccurrence } from "@/lib/tasks/build-occurrences";
 import { LABEL_OPTIONS } from "@/lib/tasks/labels";
 
 import { useTaskDialog } from "./task-dialog-provider";

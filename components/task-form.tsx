@@ -21,7 +21,7 @@ import {
   saveThisAndFutureTasks,
 } from "@/app/actions/tasks";
 import { deleteThisTaskOnly } from "@/app/actions/skips";
-import type { TaskOccurrence } from "@/lib/tasks/get-week-occurrences";
+import type { TaskOccurrence } from "@/lib/tasks/build-occurrences";
 import { saveThisTaskOnly } from "@/app/actions/overrides";
 import { useCloseOnClickOutside } from "@/lib/use-close-on-click-outside";
 import { SignInAgainButton } from "./sign-in-again-button";

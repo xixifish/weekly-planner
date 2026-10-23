@@ -3,7 +3,7 @@
 import { createContext, useContext, useRef, useState } from "react";
 
 import { TaskForm } from "./task-form";
-import type { TaskOccurrence } from "@/lib/tasks/get-week-occurrences";
+import type { TaskOccurrence } from "@/lib/tasks/build-occurrences";
 
 // What other components can ask the dialog to do
 type TaskDialogContextValue = {
