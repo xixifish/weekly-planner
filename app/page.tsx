@@ -1,8 +1,6 @@
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 
-import { SignOutButton } from "./sign-out-button";
-
 import { getWeekOccurrences } from "@/lib/tasks/get-week-occurrences";
 import { getWeekDates } from "@/lib/dates/get-week-dates";
 
@@ -78,16 +76,6 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         </main>
         <AddTaskButton />
       </TaskDialogProvider>
-
-      {/* Test-only: account info and sign out until the profile menu exists */}
-      <div className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white px-5 py-4">
-        <div>
-          <p className="text-sm text-zinc-500">
-            Signed in as {session.user.email}
-          </p>
-        </div>
-        <SignOutButton />
-      </div>
     </>
   );
 }

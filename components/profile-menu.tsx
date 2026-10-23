@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 
 import { useCloseOnClickOutside } from "@/lib/use-close-on-click-outside";
 
 import { ChevronDownIcon } from "./icons";
+import { authClient } from "@/lib/auth-client";
 
 type ProfileMenuProps = {
   name: string;
@@ -40,10 +42,22 @@ function Avatar({
   );
 }
 
+// Items in the profile menu, like "Sign out"
+const menuItemClass =
+  "block w-full text-left text-sm font-semibold text-text-dark transition hover:text-selected-blue";
+
 export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   useCloseOnClickOutside(menuRef, open, () => setOpen(false));
+
+  const router = useRouter();
+
+  // Ends the session, then reloads the page's data as a signed-out visitor
+  async function handleSignOut() {
+    await authClient.signOut();
+    router.refresh();
+  }
 
   return (
     <div ref={menuRef} className="relative">
@@ -73,7 +87,13 @@ export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
             </div>
           </div>
           <hr className="my-4 border-area-border-grey" />
-          {/* Sign out and Delete this account come in steps 3 and 5 */}
+          <button
+            type="button"
+            onClick={handleSignOut}
+            className={menuItemClass}
+          >
+            Sign out
+          </button>
         </div>
       )}
     </div>
