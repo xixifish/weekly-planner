@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 
@@ -149,6 +150,13 @@ export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
               Delete this account
             </button>
           </div>
+          <hr className="my-4 border-area-border-grey" />
+          <Link
+            href="/privacy"
+            className="text-xs font-semibold text-text-grey transition hover:text-selected-blue"
+          >
+            Privacy Policy
+          </Link>
         </div>
       )}
       {/* Deleting an account can't be undone, so it gets a real confirmation */}
