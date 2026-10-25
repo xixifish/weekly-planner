@@ -89,4 +89,49 @@ describe("saveThisAndFutureTasks", () => {
       },
     ]);
   });
+
+  it("changes the rule in place when the card is its first date", async () => {
+    const task = await createGymTask();
+
+    await saveThisAndFutureTasks(
+      editForm(task.id, "2026-10-05", "Swim", ["WED", "FRI"]),
+    );
+
+    expect(await rulesOf(task.id)).toMatchObject([
+      { text: "Swim", effectiveFrom: utc("2026-10-05"), effectiveTo: null },
+    ]);
+  });
+
+  it("replaces later rule versions when an earlier card is saved", async () => {
+    const task = await createGymTask();
+    // First split on Wed, Oct 21, then save an earlier card, Mon, Oct 12
+    await saveThisAndFutureTasks(
+      editForm(task.id, "2026-10-21", "Swim", ["WED", "FRI"]),
+    );
+    await saveThisAndFutureTasks(
+      editForm(task.id, "2026-10-12", "Run", ["MON"]),
+    );
+
+    expect(await rulesOf(task.id)).toMatchObject([
+      {
+        text: "Gym",
+        effectiveFrom: utc("2026-10-05"),
+        effectiveTo: utc("2026-10-11"),
+      },
+      { text: "Run", effectiveFrom: utc("2026-10-12"), effectiveTo: null },
+    ]);
+  });
+
+  it("refuses to turn a repeating task into a one-off", async () => {
+    const task = await createGymTask();
+    const formData = editForm(task.id, "2026-10-12", "Gym", ["MON"]);
+    formData.delete("repeating");
+
+    const result = await saveThisAndFutureTasks(formData);
+
+    expect(result.error).toContain("To stop repeating");
+    expect(await rulesOf(task.id)).toMatchObject([
+      { text: "Gym", repeating: true, effectiveTo: null },
+    ]);
+  });
 });
