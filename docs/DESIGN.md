@@ -63,15 +63,15 @@ Deleting a non-repeating task removes its one card, the same as **This Task Only
 
 **This and Future Tasks** includes later occurrences in the same week and in later weeks. Earlier occurrences remain unchanged. Saving splits the repeating rule at the selected card; deleting stops it there.
 
-Later cards changed with **This Task Only** keep that change when **This and Future Tasks** is saved: a deleted card stays deleted, and an edited card keeps its own text and label. *To be checked in user testing.*
+Later cards changed with **This Task Only** keep that change when **This and Future Tasks** is saved: a deleted card stays deleted, and an edited card keeps its own text and label. _To be checked in user testing._
 
 Save scope depends on the fields changed:
 
-| Field | This Task Only | This and Future Tasks |
-|---|---:|---:|
-| Description or label | Yes | Yes |
-| Days | No | Yes |
-| End Date | No | Yes |
+| Field                | This Task Only | This and Future Tasks |
+| -------------------- | -------------: | --------------------: |
+| Description or label |            Yes |                   Yes |
+| Days                 |             No |                   Yes |
+| End Date             |             No |                   Yes |
 
 If the days or the end date change, **This Task Only** is no longer possible, so the **Save** menu is replaced by a direct **Save This and Future Tasks** button. The button's label says what will happen, so no extra message is needed. Changing the days back brings the menu back.
 
@@ -93,7 +93,7 @@ States: plain, done, hover.
 - **Hover**: the tick slides in from the left, and the text moves right to make room. The card's border turns blue. A done card always shows its tick and has no hover effect.
 - **Full text**: v1 uses the browser's built-in tooltip (the `title` attribute) on the card text.
 
-*To do: replace it with a custom tooltip.* After about 400ms of hover, the full text appears above the card, but only when the text is actually cut off. The delay stops it flashing as the mouse crosses a row. It is at most 280px wide, ignores the mouse, and flips sides near the edge of the window. It also appears on keyboard focus.
+_To do: replace it with a custom tooltip._ After about 400ms of hover, the full text appears above the card, but only when the text is actually cut off. The delay stops it flashing as the mouse crosses a row. It is at most 280px wide, ignores the mouse, and flips sides near the edge of the window. It also appears on keyboard focus.
 
 The end date controls recurrence only. It is not a deadline and does not create an overdue card state.
 
@@ -128,14 +128,14 @@ Creating a task and editing a non-repeating task use a direct **Save** action. W
 
 **Messages.** Each message is a full-width banner directly above what it is about. Errors are dark red on a light red background; information is grey.
 
-| Message | Where | When |
-|---|---|---|
-| Enter a task description | above the text box | the text was typed, then emptied or left as spaces |
-| Choose one day, or turn on repeating | above the day row | two or more days while repeating is off |
-| Leave one day to turn off repeating | above the day row | turning repeating off with two or more days |
-| To stop repeating, add an **End Date** or use **Delete This and Future Tasks**. (grey) | above the day row | trying to turn off **Repeating** while editing a repeating task |
-| Save and delete errors from the server | above the buttons | the action failed; the dialog stays open |
-| Your session has expired. **Sign in again** | above the buttons | the session ended; the link signs in with Google |
+| Message                                                                                | Where              | When                                                            |
+| -------------------------------------------------------------------------------------- | ------------------ | --------------------------------------------------------------- |
+| Enter a task description                                                               | above the text box | the text was typed, then emptied or left as spaces              |
+| Choose one day, or turn on repeating                                                   | above the day row  | two or more days while repeating is off                         |
+| Leave one day to turn off repeating                                                    | above the day row  | turning repeating off with two or more days                     |
+| To stop repeating, add an **End Date** or use **Delete This and Future Tasks**. (grey) | above the day row  | trying to turn off **Repeating** while editing a repeating task |
+| Save and delete errors from the server                                                 | above the buttons  | the action failed; the dialog stays open                        |
+| Your session has expired. **Sign in again**                                            | above the buttons  | the session ended; the link signs in with Google                |
 
 Signing in again leaves the page, so the dialog's draft is lost. The user comes back to the same week they were viewing.
 ---
@@ -146,7 +146,7 @@ Signing in again leaves the page, so the dialog's draft is lost. The user comes 
 
 **The profile dropdown has four things**: name, email, **Sign out**, **Delete this account**.
 
-Four, not one, because social sign-in means you need to see *which* account you are in, and because storing someone's data means giving them a way to remove it. The avatar itself must never sign you out — the dropdown is the safety.
+Four, not one, because social sign-in means you need to see _which_ account you are in, and because storing someone's data means giving them a way to remove it. The avatar itself must never sign you out — the dropdown is the safety.
 
 **There is no settings page.** Those four items make one unnecessary.
 
@@ -156,16 +156,16 @@ Four, not one, because social sign-in means you need to see *which* account you 
 
 ## 8. Cut from v1, and why
 
-| Cut | Why |
-|---|---|
-| Phone layout | Below 1024px is a different design, not a smaller one. v1 is desktop. |
-| Drag a card to another day | Drag moves one occurrence, while the day picker changes the repeating pattern. They are different actions. |
-| Move one card to another day | "Working late this Monday, so gym moves to Tuesday." For now: delete that card, then add a non-repeating task on Tuesday. |
-| Label names | Colours are enough to group things. Labels are stored as named values, so names can be added later in code. |
-| Carry unfinished tasks forward | A paper planner does not do it, and it hides the fact you did not do the thing. |
-| Settings page | The four dropdown items cover everything a settings page would hold. |
-| Undo after deleting a task | Planned as a bar that appears for a few seconds after a delete. Left out of v1 to keep the first version small; deletes are immediate instead. Worth revisiting if user testing shows accidental deletes, especially with **This and Future Tasks**. |
-| Clickable Figma prototype | A prototype exists to show an idea to someone before it is built. I am both the designer and the builder, and the live app is the demo. |
+| Cut                            | Why                                                                                                                                                                                                                                                  |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Phone layout                   | Below 1024px is a different design, not a smaller one. v1 is desktop.                                                                                                                                                                                |
+| Drag a card to another day     | Drag moves one occurrence, while the day picker changes the repeating pattern. They are different actions.                                                                                                                                           |
+| Move one card to another day   | "Working late this Monday, so gym moves to Tuesday." For now: delete that card, then add a non-repeating task on Tuesday.                                                                                                                            |
+| Label names                    | Colours are enough to group things. Labels are stored as named values, so names can be added later in code.                                                                                                                                          |
+| Carry unfinished tasks forward | A paper planner does not do it, and it hides the fact you did not do the thing.                                                                                                                                                                      |
+| Settings page                  | The four dropdown items cover everything a settings page would hold.                                                                                                                                                                                 |
+| Undo after deleting a task     | Planned as a bar that appears for a few seconds after a delete. Left out of v1 to keep the first version small; deletes are immediate instead. Worth revisiting if user testing shows accidental deletes, especially with **This and Future Tasks**. |
+| Clickable Figma prototype      | A prototype exists to show an idea to someone before it is built. I am both the designer and the builder, and the live app is the demo.                                                                                                              |
 
 ---
 
@@ -173,6 +173,6 @@ Four, not one, because social sign-in means you need to see *which* account you 
 
 Planned, but not part of the first version.
 
-| To do | Notes |
-|---|---|
+| To do     | Notes                                                                                                                                                                                                                                                                                        |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Dark mode | Follow the system setting. Every colour is already a named token in `app/globals.css` and a Figma variable, so a dark theme is a second set of values rather than new components. Each text and border pair needs its contrast checked again, and the logo and icon SVGs need dark versions. |
