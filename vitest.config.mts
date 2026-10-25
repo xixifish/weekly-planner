@@ -19,6 +19,7 @@ export default defineConfig({
           name: "db",
           include: ["**/*.db.test.ts"],
           setupFiles: ["test/db-setup.ts"],
+          fileParallelism: false,
         },
       },
     ],
