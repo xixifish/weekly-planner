@@ -1,8 +1,18 @@
 @import "tailwindcss";
 
-/* Dark mode follows the system setting: the same tokens, with dark values */
+/* Colour theme: each token below is light-dark(light value, dark value), and
+   color-scheme picks which one is used. Without a choice, follow the system */
 :root {
   color-scheme: light dark;
+}
+
+/* The theme chosen in the profile menu */
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 /* Fonts: --font-manrope is created by next/font in layout.tsx */
@@ -12,43 +22,50 @@
 
 /* Colours: same names as the variables in the Figma file */
 @theme {
-  /* Text colours reach 4.5:1 contrast on white. logo-orange reaches 3:1: enough for
-     the logo, graphics and large text (24px+, or ~19px+ bold), not small text */
+  /* Text colours reach 4.5:1 contrast on the surface in both themes. logo-orange
+     reaches 3:1 on white: enough for the logo, graphics and large text (24px+,
+     or ~19px+ bold), not small text */
 
   /* Brand */
   --color-logo-blue: #0078c5;
   --color-logo-orange: #f86300;
 
   /* Text */
-  --color-button-off-text: #ffffff; /* text on a disabled button */
-  --color-text-dark: #303741;
-  --color-text-grey: #757575;
-  --color-text-grey-blue: #4a5f80;
+  --color-text-dark: light-dark(#303741, #e4e7eb);
+  --color-text-grey: light-dark(#757575, #a3a3a3);
+  --color-text-grey-blue: light-dark(#4a5f80, #9fb1cc);
+  /* Text on a disabled button */
+  --color-button-off-text: light-dark(#ffffff, #7a8390);
 
   /* Borders and backgrounds */
-  --color-surface: #ffffff; /* page, header, cards, dialogs, menus */
-  --color-area-border-grey: #e6e6e6;
+  /* Page, header, cards, dialogs, menus */
+  --color-surface: light-dark(#ffffff, #1c2026);
+  --color-area-border-grey: light-dark(#e6e6e6, #333a44);
   /* Borders that should stand out: app header line, unticked circles, the "No label" circle, dialog bands */
-  --color-dark-border-grey: #d7d7d7;
-  --color-background-grey: #f2f2f2; /* done cards, grey message banners */
-  --color-today-yellow: #fffcf5;
-  --color-progress-track: #ffe0cc;
+  --color-dark-border-grey: light-dark(#d7d7d7, #434a55);
+  /* Done cards, grey message banners */
+  --color-background-grey: light-dark(#f2f2f2, #262b33);
+  --color-today-yellow: light-dark(#fffcf5, #2a251c);
+  --color-progress-track: light-dark(#ffe0cc, #4a2e1c);
 
   /* Controls */
-  --color-select-blue: #dbf1ff;
+  --color-select-blue: light-dark(#dbf1ff, #17344c);
   --color-selected-blue: #005b96;
-  --color-button-off-grey: #c0cdd5;
+  --color-button-off-grey: light-dark(#c0cdd5, #2f3640);
   --color-check-green: #06ad06;
-  --color-link-blue: #0078c5; /* blue text and outlines */
-  --color-link-blue-hover: #005b96; /* their hover */
+  /* Blue text and outlines, and their hover; fills use logo-blue and selected-blue */
+  --color-link-blue: light-dark(#0078c5, #6cb8f0);
+  --color-link-blue-hover: light-dark(#005b96, #9dd0f7);
 
   /* Errors */
   --color-error-red: #d94100;
   --color-error-red-dark: #ad3400;
-  --color-error-background: #fff5f5; /* Error banner background */
-  --color-error-text: #ad3400; /* error banner text */
-  --color-delete-red: #d94100; /* red text and outlines: Delete buttons and menu */
-  --color-delete-red-hover: #ad3400;
+  /* Error banner background and text */
+  --color-error-background: light-dark(#fff5f5, #3b2220);
+  --color-error-text: light-dark(#ad3400, #ffb4a1);
+  /* Red text and outlines: Delete buttons and menu; fills use error-red */
+  --color-delete-red: light-dark(#d94100, #ff8a66);
+  --color-delete-red-hover: light-dark(#ad3400, #ffb4a1);
 
   /* Labels */
   --color-tag-green: #72de72;
@@ -70,36 +87,4 @@
 body {
   background: var(--color-surface);
   color: var(--color-text-dark);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Backgrounds */
-    --color-surface: #1c2026;
-    --color-background-grey: #262b33;
-    --color-today-yellow: #2a251c;
-    --color-progress-track: #4a2e1c;
-
-    /* Text: each reaches 4.5:1 contrast on surface */
-    --color-text-dark: #e4e7eb;
-    --color-text-grey: #a3a3a3;
-    --color-text-grey-blue: #9fb1cc;
-
-    /* Borders */
-    --color-area-border-grey: #333a44;
-    --color-dark-border-grey: #434a55;
-
-    /* Errors */
-    --color-error-background: #3b2220;
-    --color-error-text: #ffb4a1;
-    --color-delete-red: #ff8a66;
-    --color-delete-red-hover: #ffb4a1;
-
-    /* Controls */
-    --color-select-blue: #17344c;
-    --color-link-blue: #6cb8f0;
-    --color-link-blue-hover: #9dd0f7;
-    --color-button-off-grey: #2f3640;
-    --color-button-off-text: #7a8390;
-  }
 }
