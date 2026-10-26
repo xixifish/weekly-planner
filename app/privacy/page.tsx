@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ChevronLeftIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "Privacy Policy · Weekly Planner",
@@ -13,9 +14,9 @@ export default function PrivacyPage() {
     <main className="mx-auto w-full max-w-2xl px-10 py-12 text-sm leading-relaxed text-text-dark">
       <Link
         href="/"
-        className="font-bold text-logo-blue hover:text-selected-blue"
+        className="-ml-1.5 inline-flex items-center gap-0.5 font-bold text-logo-blue transition hover:text-selected-blue"
       >
-        ← Weekly Planner
+        <ChevronLeftIcon className="size-4" /> Weekly Planner
       </Link>
 
       <h1 className="mt-6 text-2xl font-extrabold">Privacy Policy</h1>
