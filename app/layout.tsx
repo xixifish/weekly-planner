@@ -6,6 +6,7 @@ import "./globals.css";
 const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://weekly-planner-jing.vercel.app"),
   title: "Weekly Planner",
   description: "Start a productive week.",
 };
