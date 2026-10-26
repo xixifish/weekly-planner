@@ -8,6 +8,7 @@ import { useState, useRef } from "react";
 import { useCloseOnClickOutside } from "@/lib/use-close-on-click-outside";
 import { errorBannerClass } from "./banner-styles";
 import { SignInAgainButton } from "./sign-in-again-button";
+import { ThemeSwitcher } from "./theme-switcher";
 
 import { ChevronDownIcon, AlertIcon } from "./icons";
 import { authClient } from "@/lib/auth-client";
@@ -133,6 +134,8 @@ export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
               <p className="truncate text-xs text-text-grey">{email}</p>
             </div>
           </div>
+          <hr className="my-4 border-area-border-grey" />
+          <ThemeSwitcher />
           <hr className="my-4 border-area-border-grey" />
           <div className="flex flex-col gap-3">
             <button

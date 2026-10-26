@@ -150,6 +150,8 @@ Four, not one, because social sign-in means you need to see _which_ account you 
 
 **There is no settings page.** Those four items make one unnecessary.
 
+**The Colour Theme choice** (System · Light · Dark) sits between the name and **Sign out**; see §9.
+
 **The Privacy Policy** (`/privacy`) is linked in small grey text at the bottom of the dropdown, and from Google's sign-in screen.
 
 **A new user sees the empty week** after signing in, the same as before signing in. No onboarding, no sample data.
@@ -173,15 +175,18 @@ Four, not one, because social sign-in means you need to see _which_ account you 
 
 ## 9. Dark mode
 
-**Dark mode follows the system setting.** There is no toggle, so there is nothing to remember and no flash of the wrong theme while the page loads.
+**The theme follows the system setting by default.** The profile menu has a **Colour Theme** choice, **System · Light · Dark**, for people who want one theme whatever their device is set to. **System** stays the way back to following the device. It is a segmented control, because all three choices and the current one are visible at once; a single sun/moon switch could not show **System**.
 
-**Every colour is a token with a light and a dark value** in `app/globals.css`. Components never name a colour directly, so they need no dark-mode code.
+**The choice is remembered per device,** in a cookie, not in the account: someone may want dark on their laptop and light on their phone. The server reads the cookie and draws the page in that theme straight away, so there is no flash of the wrong theme while the page loads. Signed-out visitors have no profile menu, so they always follow the system.
+
+**Every colour is a token with a light and a dark value** in `app/globals.css`, written as `light-dark(light, dark)`. Components never name a colour directly, so they need no dark-mode code.
 
 **Tokens are named for their role, not their colour.** White backgrounds use `surface`, which is dark in dark mode. When one colour had two roles, it was split, because the roles need different things in the dark:
 
 - **Fills with white text on them** keep their deep colour: `logo-blue` and `selected-blue` (Save, +), `error-red` and `error-red-dark` (the confirm Delete button), `check-green`.
 - **Text and lines** get lighter in the dark: `link-blue` and `link-blue-hover` (links, Cancel, selected days, the app-wide hover), `delete-red` and `delete-red-hover` (Delete buttons and menu), `error-text` (error banners). In light mode they have the same values as the fills, so nothing changed there.
 - **Hovers add contrast in both themes:** darker on white, lighter on dark.
+- **Raised things are lighter in the dark:** the selected Colour Theme option uses `surface-raised`, white in light mode and a step lighter than its grey track in dark mode, so it looks raised in both.
 
 **A disabled button rests on the page:** a flat fill just above the surface, with dimmed text (`button-off-grey`, `button-off-text`), so it never looks clickable.
 

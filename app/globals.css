@@ -40,6 +40,8 @@
   /* Borders and backgrounds */
   /* Page, header, cards, dialogs, menus */
   --color-surface: light-dark(#ffffff, #1c2026);
+  /* Raised above a grey background: the selected Colour Theme option */
+  --color-surface-raised: light-dark(#ffffff, #353c47);
   --color-area-border-grey: light-dark(#e6e6e6, #333a44);
   /* Borders that should stand out: app header line, unticked circles, the "No label" circle, dialog bands */
   --color-dark-border-grey: light-dark(#d7d7d7, #434a55);
