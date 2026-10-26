@@ -193,6 +193,6 @@ Four, not one, because social sign-in means you need to see _which_ account you 
 
 Planned, but not part of the first version.
 
-| To do     | Notes                                                                                                                                                                                                                                                                                        |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| To do                           | Notes                                                                                                                                                         |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Logo on Google's sign-in screen | Needs Google's brand verification: proof of owning the domain in Search Console, and a Privacy Policy link that signed-out visitors can see on the home page. |
