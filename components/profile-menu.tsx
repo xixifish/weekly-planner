@@ -113,7 +113,7 @@ export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
         aria-label="Account menu"
         aria-expanded={open}
         onClick={() => setOpen((isOpen) => !isOpen)}
-        className={`flex items-center gap-1 rounded-lg border px-2.5 py-1 transition hover:border-selected-blue ${open ? "border-selected-blue" : "border-transparent"}`}
+        className={`flex items-center gap-1 rounded-lg border px-2.5 py-1 transition hover:border-link-blue-hover ${open ? "border-link-blue-hover" : "border-transparent"}`}
       >
         <Avatar name={name} image={image} className="size-9 text-sm" />
         <ChevronDownIcon
@@ -138,14 +138,14 @@ export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
             <button
               type="button"
               onClick={handleSignOut}
-              className={`${menuItemClass} hover:text-selected-blue`}
+              className={`${menuItemClass} hover:text-link-blue-hover`}
             >
               Sign out
             </button>
             <button
               type="button"
               onClick={openDeleteConfirm}
-              className={`${menuItemClass} hover:text-error-red-dark`}
+              className={`${menuItemClass} hover:text-delete-red-hover`}
             >
               Delete this account
             </button>
@@ -153,7 +153,7 @@ export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
           <hr className="my-4 border-area-border-grey" />
           <Link
             href="/privacy"
-            className="text-xs font-semibold text-text-grey transition hover:text-selected-blue"
+            className="text-xs font-semibold text-text-grey transition hover:text-link-blue-hover"
           >
             Privacy Policy
           </Link>
@@ -166,7 +166,7 @@ export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
         aria-describedby="delete-account-text"
         className="m-auto w-100 rounded-xl bg-surface px-7.5 py-8 text-center backdrop:bg-black/40"
       >
-        <AlertIcon className="mx-auto size-8 text-error-red" />
+        <AlertIcon className="mx-auto size-8 text-delete-red" />
         <h2
           id="delete-account-title"
           className="mt-3 text-lg font-extrabold text-text-dark"
@@ -197,7 +197,7 @@ export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
           <button
             type="button"
             onClick={() => confirmRef.current?.close()}
-            className="h-9.5 rounded-md border border-logo-blue px-4 font-bold text-logo-blue transition hover:border-selected-blue hover:text-selected-blue"
+            className="h-9.5 rounded-md border border-link-blue px-4 font-bold text-link-blue transition hover:border-link-blue-hover hover:text-link-blue-hover"
           >
             Cancel
           </button>

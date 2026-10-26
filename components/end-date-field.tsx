@@ -16,8 +16,8 @@ type EndDateFieldProps = {
 const pillBaseClass =
   "flex h-8.5 items-center rounded-md border text-sm font-semibold transition";
 const pillIdleClass =
-  "border-area-border-grey bg-surface text-logo-blue hover:border-selected-blue hover:text-selected-blue";
-const pillSelectedClass = "border-select-blue bg-select-blue text-logo-blue";
+  "border-area-border-grey bg-surface text-link-blue hover:border-link-blue-hover hover:text-link-blue-hover";
+const pillSelectedClass = "border-select-blue bg-select-blue text-link-blue";
 
 export function EndDateField({ min, value, onChange }: EndDateFieldProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -43,7 +43,7 @@ export function EndDateField({ min, value, onChange }: EndDateFieldProps) {
             type="button"
             onClick={openPicker}
             aria-label={`Change end date, ${formatLongDate(value)}`}
-            className="h-full pr-1.5 pl-3 transition hover:text-selected-blue"
+            className="h-full pr-1.5 pl-3 transition hover:text-link-blue-hover"
           >
             {formatLongDate(value)}
           </button>
@@ -51,7 +51,7 @@ export function EndDateField({ min, value, onChange }: EndDateFieldProps) {
             type="button"
             onClick={() => onChange("")}
             aria-label="Remove end date"
-            className="flex h-full items-center pr-3 pl-1 transition hover:text-selected-blue"
+            className="flex h-full items-center pr-3 pl-1 transition hover:text-link-blue-hover"
           >
             <CrossIcon className="size-3.5" />
           </button>

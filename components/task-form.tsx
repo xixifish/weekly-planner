@@ -39,23 +39,23 @@ const WEEKDAY_OPTIONS = [
 
 // A pill-shaped option: a hidden checkbox inside a styled label
 const pillClass =
-  "flex h-8 px-4 cursor-pointer items-center justify-center rounded-md border border-area-border-grey text-sm font-semibold text-text-dark has-checked:border-select-blue has-checked:bg-select-blue has-checked:text-logo-blue has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-selected-blue hover:text-selected-blue hover:border-selected-blue transition";
+  "flex h-8 px-4 cursor-pointer items-center justify-center rounded-md border border-area-border-grey text-sm font-semibold text-text-dark has-checked:border-select-blue has-checked:bg-select-blue has-checked:text-link-blue has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-link-blue-hover hover:text-link-blue-hover hover:border-link-blue-hover transition";
 // A form section with a line under it; the space above and below the line is the same
 const sectionClass = "mt-4.5 border-b border-area-border-grey pb-4.5";
 const sectionTitleClass = "mb-3.5 text-sm text-text-grey";
 const sectionLabelClass = "font-bold text-text-dark";
 // A round label option: a hidden radio inside a styled label
 const swatchClass =
-  "group flex size-8 cursor-pointer items-center justify-center rounded-full has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-logo-blue";
+  "group flex size-8 cursor-pointer items-center justify-center rounded-full has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-link-blue";
 // Colour circles: a grey border, blue when selected
-const colourSwatchClass = `${swatchClass} border-2 border-area-border-grey has-checked:border-logo-blue`;
+const colourSwatchClass = `${swatchClass} border-2 border-area-border-grey has-checked:border-link-blue`;
 // Footer buttons (Cancel, Save); each adds its own colours
 const buttonClass = "h-9.5 rounded-md px-4 text-base font-bold transition";
 // Items in the Delete ▾ menu: red text, filled red on hover
 const menuItemClass =
-  "px-3 py-2 text-left text-sm font-bold text-error-red transition hover:bg-error-red hover:text-white";
-const deleteItemClass = `${menuItemClass} text-error-red hover:bg-error-red hover:text-white`;
-const saveItemClass = `${menuItemClass} text-logo-blue hover:bg-logo-blue hover:text-white`;
+  "px-3 py-2 text-left text-sm font-bold text-delete-red transition hover:bg-error-red hover:text-white";
+const deleteItemClass = `${menuItemClass} text-delete-red hover:bg-error-red hover:text-white`;
+const saveItemClass = `${menuItemClass} text-link-blue hover:bg-logo-blue hover:text-white`;
 
 type TaskFormProps = {
   occurrence: TaskOccurrence | null;
@@ -281,7 +281,7 @@ export function TaskForm({
           name="description"
           placeholder="Describe your task"
           maxLength={1000}
-          className="block w-full mt-4 h-18 rounded-md border inset-shadow-xs px-2 py-1.5 text-lg font-semibold text-text-dark placeholder:font-medium placeholder:text-text-grey resize-none border-area-border-grey focus:border-logo-blue focus:outline-none"
+          className="block w-full mt-4 h-18 rounded-md border inset-shadow-xs px-2 py-1.5 text-lg font-semibold text-text-dark placeholder:font-medium placeholder:text-text-grey resize-none border-area-border-grey focus:border-link-blue focus:outline-none"
           aria-label="Task description"
           aria-invalid={textError}
           value={text}
@@ -384,14 +384,14 @@ export function TaskForm({
                 className="sr-only"
                 defaultChecked={occurrence?.label === option.value}
               />
-              <CheckIcon className="hidden size-4.5 text-logo-blue group-has-checked:block" />
+              <CheckIcon className="hidden size-4.5 text-link-blue group-has-checked:block" />
             </label>
           ))}
 
           {/* No label: selected by default */}
           <label
             title="No label"
-            className={`${swatchClass} border-2 border-dark-border-grey text-button-off-grey has-checked:border-logo-blue has-checked:text-logo-blue`}
+            className={`${swatchClass} border-2 border-dark-border-grey text-dark-border-grey has-checked:border-link-blue has-checked:text-link-blue`}
           >
             <input
               type="radio"
@@ -424,7 +424,7 @@ export function TaskForm({
             )}
           </p>
         )}
-        <div className="flex items-center justify-end gap-2">
+        <div className="flex items-center justify-end gap-3">
           {/* Editing only: Delete sits on the left */}
           {occurrence &&
             (occurrence.repeating ? (
@@ -435,13 +435,13 @@ export function TaskForm({
                   aria-expanded={deleteMenuOpen}
                   onClick={() => setDeleteMenuOpen((open) => !open)}
                   disabled={saving}
-                  className={`${buttonClass} flex items-center gap-1 border border-error-red text-error-red hover:border-error-red-dark hover:text-error-red-dark`}
+                  className={`${buttonClass} flex items-center gap-1 border border-delete-red text-delete-red hover:border-delete-red-hover hover:text-delete-red-hover`}
                 >
                   Delete
                   <ChevronDownIcon className="-mr-1 size-4" />
                 </button>
                 {deleteMenuOpen && (
-                  <div className="absolute top-full left-0 z-10 mt-2 flex w-max flex-col overflow-hidden rounded-md border border-error-red bg-surface">
+                  <div className="absolute top-full left-0 z-10 mt-2 flex w-max flex-col overflow-hidden rounded-md border border-delete-red bg-surface">
                     <button
                       type="button"
                       onClick={() => handleDelete(deleteThisTaskOnly)}
@@ -465,7 +465,7 @@ export function TaskForm({
                 type="button"
                 onClick={() => handleDelete(deleteThisTaskOnly)}
                 disabled={saving}
-                className={`${buttonClass} items-center gap-1 border border-error-red text-error-red hover:border-error-red-dark hover:text-error-red-dark`}
+                className={`${buttonClass} items-center gap-1 border border-delete-red text-delete-red hover:border-delete-red-hover hover:text-delete-red-hover`}
               >
                 Delete
               </button>
@@ -473,7 +473,7 @@ export function TaskForm({
           <button
             type="button"
             onClick={onCancel}
-            className={`${buttonClass} ml-auto border border-logo-blue text-logo-blue hover:border-selected-blue hover:text-selected-blue`}
+            className={`${buttonClass} ml-auto border border-link-blue text-link-blue hover:border-link-blue-hover hover:text-link-blue-hover`}
           >
             Cancel
           </button>
@@ -486,7 +486,7 @@ export function TaskForm({
                 handleScopedSave(event, saveThisAndFutureTasks)
               }
               disabled={!canSave || saving}
-              className={`${buttonClass} bg-logo-blue text-white hover:bg-selected-blue disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:hover:bg-button-off-grey`}
+              className={`${buttonClass} bg-logo-blue text-white hover:bg-selected-blue disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:hover:bg-button-off-grey disabled:text-button-off-text`}
             >
               {saving ? "Saving…" : "Save This and Future Tasks"}
             </button>
@@ -498,14 +498,14 @@ export function TaskForm({
                 aria-expanded={saveMenuOpen}
                 onClick={() => setSaveMenuOpen((open) => !open)}
                 disabled={!canSave || saving}
-                className={`${buttonClass} flex items-center gap-1 bg-logo-blue text-white hover:bg-selected-blue disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:hover:bg-button-off-grey`}
+                className={`${buttonClass} flex items-center gap-1 bg-logo-blue text-white hover:bg-selected-blue disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:hover:bg-button-off-grey disabled:text-button-off-text`}
               >
                 Save
                 <ChevronDownIcon className="-mr-1 size-4" />
               </button>
 
               {saveMenuOpen && (
-                <div className="absolute top-full right-0 z-10 mt-2 flex w-max flex-col overflow-hidden rounded-md border border-logo-blue bg-surface">
+                <div className="absolute top-full right-0 z-10 mt-2 flex w-max flex-col overflow-hidden rounded-md border border-link-blue bg-surface">
                   <button
                     type="button"
                     onClick={(event) =>
@@ -532,7 +532,7 @@ export function TaskForm({
             <button
               type="submit"
               disabled={!canSave || saving}
-              className={`${buttonClass} bg-logo-blue text-white hover:bg-selected-blue disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:hover:bg-button-off-grey`}
+              className={`${buttonClass} bg-logo-blue text-white hover:bg-selected-blue disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:hover:bg-button-off-grey disabled:text-button-off-text`}
             >
               {saving ? "Saving..." : "Save"}
             </button>

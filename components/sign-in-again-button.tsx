@@ -10,7 +10,7 @@ export function SignInAgainButton() {
       onClick={() =>
         signInWithGoogle(window.location.pathname + window.location.search)
       }
-      className="font-bold text-logo-blue underline transition hover:text-selected-blue"
+      className="font-bold text-link-blue underline transition hover:text-link-blue-hover"
     >
       Sign in again
     </button>

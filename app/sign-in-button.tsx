@@ -7,7 +7,7 @@ export function SignInButton() {
     <button
       type="button"
       onClick={() => signInWithGoogle()}
-      className="h-9 w-19 rounded-md border border-logo-blue text-[15px] font-extrabold text-logo-blue hover:text-selected-blue hover:border-selected-blue"
+      className="h-9 w-19 rounded-md border border-link-blue text-[15px] font-extrabold text-link-blue hover:text-link-blue-hover hover:border-link-blue-hover"
     >
       Sign in
     </button>

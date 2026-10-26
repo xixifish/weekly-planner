@@ -14,7 +14,7 @@ export default function PrivacyPage() {
     <main className="mx-auto w-full max-w-2xl px-10 py-12 text-sm leading-relaxed text-text-dark">
       <Link
         href="/"
-        className="-ml-1.5 inline-flex items-center gap-0.5 font-bold text-logo-blue transition hover:text-selected-blue"
+        className="-ml-1.5 inline-flex items-center gap-0.5 font-bold text-link-blue transition hover:text-link-blue-hover"
       >
         <ChevronLeftIcon className="size-4" /> Weekly Planner
       </Link>
@@ -68,7 +68,7 @@ export default function PrivacyPage() {
         adheres to the{" "}
         <a
           href="https://developers.google.com/terms/api-services-user-data-policy"
-          className="text-logo-blue underline hover:text-selected-blue"
+          className="text-link-blue underline hover:text-link-blue-hover"
         >
           Google API Services User Data Policy
         </a>

@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Dark mode follows the system setting: the same tokens, with dark values */
+:root {
+  color-scheme: light dark;
+}
+
 /* Fonts: --font-manrope is created by next/font in layout.tsx */
 @theme inline {
   --font-sans: var(--font-manrope);
@@ -15,6 +20,7 @@
   --color-logo-orange: #f86300;
 
   /* Text */
+  --color-button-off-text: #ffffff; /* text on a disabled button */
   --color-text-dark: #303741;
   --color-text-grey: #757575;
   --color-text-grey-blue: #4a5f80;
@@ -33,11 +39,16 @@
   --color-selected-blue: #005b96;
   --color-button-off-grey: #c0cdd5;
   --color-check-green: #06ad06;
+  --color-link-blue: #0078c5; /* blue text and outlines */
+  --color-link-blue-hover: #005b96; /* their hover */
 
   /* Errors */
   --color-error-red: #d94100;
   --color-error-red-dark: #ad3400;
   --color-error-background: #fff5f5; /* Error banner background */
+  --color-error-text: #ad3400; /* error banner text */
+  --color-delete-red: #d94100; /* red text and outlines: Delete buttons and menu */
+  --color-delete-red-hover: #ad3400;
 
   /* Labels */
   --color-tag-green: #72de72;
@@ -59,4 +70,36 @@
 body {
   background: var(--color-surface);
   color: var(--color-text-dark);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Backgrounds */
+    --color-surface: #1c2026;
+    --color-background-grey: #262b33;
+    --color-today-yellow: #2a251c;
+    --color-progress-track: #4a2e1c;
+
+    /* Text: each reaches 4.5:1 contrast on surface */
+    --color-text-dark: #e4e7eb;
+    --color-text-grey: #a3a3a3;
+    --color-text-grey-blue: #9fb1cc;
+
+    /* Borders */
+    --color-area-border-grey: #333a44;
+    --color-dark-border-grey: #434a55;
+
+    /* Errors */
+    --color-error-background: #3b2220;
+    --color-error-text: #ffb4a1;
+    --color-delete-red: #ff8a66;
+    --color-delete-red-hover: #ffb4a1;
+
+    /* Controls */
+    --color-select-blue: #17344c;
+    --color-link-blue: #6cb8f0;
+    --color-link-blue-hover: #9dd0f7;
+    --color-button-off-grey: #2f3640;
+    --color-button-off-text: #7a8390;
+  }
 }

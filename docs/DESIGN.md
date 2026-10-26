@@ -150,6 +150,8 @@ Four, not one, because social sign-in means you need to see _which_ account you 
 
 **There is no settings page.** Those four items make one unnecessary.
 
+**The Privacy Policy** (`/privacy`) is linked in small grey text at the bottom of the dropdown, and from Google's sign-in screen.
+
 **A new user sees the empty week** after signing in, the same as before signing in. No onboarding, no sample data.
 
 ---
@@ -169,10 +171,28 @@ Four, not one, because social sign-in means you need to see _which_ account you 
 
 ---
 
-## 9. To do after v1
+## 9. Dark mode
+
+**Dark mode follows the system setting.** There is no toggle, so there is nothing to remember and no flash of the wrong theme while the page loads.
+
+**Every colour is a token with a light and a dark value** in `app/globals.css`. Components never name a colour directly, so they need no dark-mode code.
+
+**Tokens are named for their role, not their colour.** White backgrounds use `surface`, which is dark in dark mode. When one colour had two roles, it was split, because the roles need different things in the dark:
+
+- **Fills with white text on them** keep their deep colour: `logo-blue` and `selected-blue` (Save, +), `error-red` and `error-red-dark` (the confirm Delete button), `check-green`.
+- **Text and lines** get lighter in the dark: `link-blue` and `link-blue-hover` (links, Cancel, selected days, the app-wide hover), `delete-red` and `delete-red-hover` (Delete buttons and menu), `error-text` (error banners). In light mode they have the same values as the fills, so nothing changed there.
+- **Hovers add contrast in both themes:** darker on white, lighter on dark.
+
+**A disabled button rests on the page:** a flat fill just above the surface, with dimmed text (`button-off-grey`, `button-off-text`), so it never looks clickable.
+
+**Contrast:** every text colour reaches 4.5:1 on the backgrounds it sits on in both themes. Label colours, the logo and the tick are graphics and stay the same in both themes.
+
+---
+
+## 10. To do after v1
 
 Planned, but not part of the first version.
 
 | To do     | Notes                                                                                                                                                                                                                                                                                        |
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Dark mode | Follow the system setting. Every colour is already a named token in `app/globals.css` and a Figma variable, so a dark theme is a second set of values rather than new components. Each text and border pair needs its contrast checked again, and the logo and icon SVGs need dark versions. |
+| Logo on Google's sign-in screen | Needs Google's brand verification: proof of owning the domain in Search Console, and a Privacy Policy link that signed-out visitors can see on the home page. |

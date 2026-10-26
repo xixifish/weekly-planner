@@ -17,7 +17,7 @@ type WeekHeaderProps = {
 };
 
 const navButtonClass =
-  "flex h-7.5 items-center justify-center rounded-[5px] border border-area-border-grey bg-surface text-logo-blue transition hover:border-selected-blue hover:text-selected-blue";
+  "flex h-7.5 items-center justify-center rounded-[5px] border border-area-border-grey bg-surface text-link-blue transition hover:border-link-blue-hover hover:text-link-blue-hover";
 
 export function WeekHeader({
   weekStart,
