@@ -122,7 +122,7 @@ export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
       </button>
 
       {open && (
-        <div className="absolute top-full right-0 z-20 mt-1.5 w-65 rounded-xl border border-area-border-grey bg-white p-4 shadow-md">
+        <div className="absolute top-full right-0 z-20 mt-1.5 w-65 rounded-xl border border-area-border-grey bg-surface p-4 shadow-md">
           <p className="text-xs font-semibold text-text-grey-blue">
             Google Account
           </p>
@@ -164,7 +164,7 @@ export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
         ref={confirmRef}
         aria-labelledby="delete-account-title"
         aria-describedby="delete-account-text"
-        className="m-auto w-100 rounded-xl bg-white px-7.5 py-8 text-center backdrop:bg-black/40"
+        className="m-auto w-100 rounded-xl bg-surface px-7.5 py-8 text-center backdrop:bg-black/40"
       >
         <AlertIcon className="mx-auto size-8 text-error-red" />
         <h2

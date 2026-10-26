@@ -17,7 +17,7 @@ type WeekHeaderProps = {
 };
 
 const navButtonClass =
-  "flex h-7.5 items-center justify-center rounded-[5px] border border-area-border-grey bg-white text-logo-blue transition hover:border-selected-blue hover:text-selected-blue";
+  "flex h-7.5 items-center justify-center rounded-[5px] border border-area-border-grey bg-surface text-logo-blue transition hover:border-selected-blue hover:text-selected-blue";
 
 export function WeekHeader({
   weekStart,
@@ -30,7 +30,7 @@ export function WeekHeader({
   const nextWeek = toDateString(addDays(weekStart, 7));
 
   return (
-    <section className="flex h-[121px] items-center justify-between border-b border-area-border-grey bg-white px-10">
+    <section className="flex h-[121px] items-center justify-between border-b border-area-border-grey bg-surface px-10">
       {/* Left: week number, dates, navigation */}
       <div className="flex-1">
         <p className="text-xs font-bold text-text-grey-blue">

@@ -26,7 +26,7 @@ export function DayRow({ date, isToday, occurrences }: DayRowProps) {
 
   return (
     <section
-      className={`flex min-h-25 px-10 py-7 border-b border-area-border-grey relative ${isToday ? "bg-today-yellow" : "bg-white"}`}
+      className={`flex min-h-25 px-10 py-7 border-b border-area-border-grey relative ${isToday ? "bg-today-yellow" : "bg-surface"}`}
     >
       {/* Today: orange edge on the left */}
       {isToday && (

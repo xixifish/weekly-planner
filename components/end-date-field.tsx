@@ -16,7 +16,7 @@ type EndDateFieldProps = {
 const pillBaseClass =
   "flex h-8.5 items-center rounded-md border text-sm font-semibold transition";
 const pillIdleClass =
-  "border-area-border-grey bg-white text-logo-blue hover:border-selected-blue hover:text-selected-blue";
+  "border-area-border-grey bg-surface text-logo-blue hover:border-selected-blue hover:text-selected-blue";
 const pillSelectedClass = "border-select-blue bg-select-blue text-logo-blue";
 
 export function EndDateField({ min, value, onChange }: EndDateFieldProps) {

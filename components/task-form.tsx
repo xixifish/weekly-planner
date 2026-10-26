@@ -441,7 +441,7 @@ export function TaskForm({
                   <ChevronDownIcon className="-mr-1 size-4" />
                 </button>
                 {deleteMenuOpen && (
-                  <div className="absolute top-full left-0 z-10 mt-2 flex w-max flex-col overflow-hidden rounded-md border border-error-red bg-white">
+                  <div className="absolute top-full left-0 z-10 mt-2 flex w-max flex-col overflow-hidden rounded-md border border-error-red bg-surface">
                     <button
                       type="button"
                       onClick={() => handleDelete(deleteThisTaskOnly)}
@@ -505,7 +505,7 @@ export function TaskForm({
               </button>
 
               {saveMenuOpen && (
-                <div className="absolute top-full right-0 z-10 mt-2 flex w-max flex-col overflow-hidden rounded-md border border-logo-blue bg-white">
+                <div className="absolute top-full right-0 z-10 mt-2 flex w-max flex-col overflow-hidden rounded-md border border-logo-blue bg-surface">
                   <button
                     type="button"
                     onClick={(event) =>
