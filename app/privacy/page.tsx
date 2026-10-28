@@ -76,7 +76,7 @@ export default function PrivacyPage() {
       </p>
 
       <h2 className={headingClass}>Contact</h2>
-      <p>Questions about your data: jing1234chen@gmail.com</p>
+      <p>Questions about your data: jing.chen.devn@gmail.com</p>
     </main>
   );
 }
