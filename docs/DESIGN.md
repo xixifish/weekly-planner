@@ -144,11 +144,9 @@ Signing in again leaves the page, so the dialog's draft is lost. The user comes 
 
 **Sign in with social accounts only.** No email and password.
 
-**The profile dropdown has four things**: name, email, **Sign out**, **Delete this account**.
+**The profile dropdown always has four account items**: name, email, Sign out, **Delete this account**. It also holds the Colour Theme choice and the Privacy Policy link.
 
 Four, not one, because social sign-in means you need to see _which_ account you are in, and because storing someone's data means giving them a way to remove it. The avatar itself must never sign you out — the dropdown is the safety.
-
-**There is no settings page.** Those four items make one unnecessary.
 
 **The Colour Theme choice** (System · Light · Dark) sits between the name and **Sign out**; see §9.
 
