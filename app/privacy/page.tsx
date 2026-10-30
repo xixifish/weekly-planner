@@ -11,7 +11,7 @@ const listClass = "list-disc space-y-1 pl-5";
 
 export default function PrivacyPage() {
   return (
-    <main className="mx-auto w-full max-w-2xl px-10 py-12 text-sm leading-relaxed text-text-dark">
+    <main className="mx-auto w-full max-w-2xl px-4 py-8 md:px-10 md:py-12 text-sm leading-relaxed text-text-dark">
       <Link
         href="/"
         className="-ml-1.5 inline-flex items-center gap-0.5 font-bold text-link-blue transition hover:text-link-blue-hover"
@@ -76,7 +76,7 @@ export default function PrivacyPage() {
       </p>
 
       <h2 className={headingClass}>Contact</h2>
-      <p>Questions about your data: jing.chen.devn@gmail.com</p>
+      <p>Questions about your data: jing.chen.dev@gmail.com</p>
     </main>
   );
 }
