@@ -62,7 +62,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         totalCount={occurrences.length}
       />
       <TaskDialogProvider weekStart={weekStart}>
-        <main>
+        <main className="pb-24 md:pb-0">
           {weekDates.map((date) => (
             <DayRow
               key={date.toISOString()}
