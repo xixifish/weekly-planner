@@ -7,7 +7,7 @@ export function ProgressBar({ done, total }: ProgressBarProps) {
   const percent = total === 0 ? 0 : (done / total) * 100;
 
   return (
-    <div className="w-62.5">
+    <div className="w-full md:w-62.5">
       <div className="flex justify-between text-xs font-bold">
         <span className="text-text-grey-blue">WEEKLY PROGRESS</span>
         <span className="text-text-dark">
