@@ -30,18 +30,21 @@ export function WeekHeader({
   const nextWeek = toDateString(addDays(weekStart, 7));
 
   return (
-    <section className="flex h-[121px] items-center justify-between border-b border-area-border-grey bg-surface px-10">
+    <section className="flex flex-col gap-4 border-b border-area-border-grey bg-surface px-4 py-5 md:h-[121px] md:flex-row md:items-center md:justify-between md:gap-0 md:py-0 md:px-10">
       {/* Left: week number, dates, navigation */}
       <div className="flex-1">
         <p className="text-xs font-bold text-text-grey-blue">
           WEEK <span className="text-logo-orange">{week}</span> OF {weeksInYear}{" "}
           · {year}
         </p>
-        <div className="flex items-center">
-          <h1 className="w-52 text-[30px] font-extrabold text-text-dark">
+        <div className="flex flex-wrap items-center">
+          <h1 className="text-[24px] font-extrabold text-text-dark md:w-52 md:text-[30px]">
             {formatWeekRange(weekStart)}
           </h1>
-          <nav aria-label="Week" className="ml-6 flex items-center gap-1.5">
+          <nav
+            aria-label="Week"
+            className="ml-auto flex items-center gap-1.5 md:ml-6"
+          >
             <Link
               href={`/?week=${previousWeek}`}
               aria-label="Previous week"
@@ -58,14 +61,14 @@ export function WeekHeader({
             </Link>
             <Link
               href="/"
-              className={`${navButtonClass} ml-3.5 w-16 text-sm font-semibold`}
+              className={`${navButtonClass} md:ml-3.5 w-16 text-sm font-semibold`}
             >
               Today
             </Link>
           </nav>
           {/* An empty week: a prompt, in line with the navigation */}
           {totalCount === 0 && (
-            <p className="ml-auto text-base font-bold text-logo-orange">
+            <p className="mt-3 w-full text-sm font-bold text-logo-orange md:mt-0 md:ml-auto md:w-auto md:text-base">
               Add a task to start a productive week!
             </p>
           )}
