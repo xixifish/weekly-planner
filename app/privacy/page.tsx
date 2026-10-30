@@ -20,7 +20,7 @@ export default function PrivacyPage() {
       </Link>
 
       <h1 className="mt-6 text-2xl font-extrabold">Privacy Policy</h1>
-      <p className="text-text-grey">Last updated: October 28, 2026</p>
+      <p className="text-text-grey">Last updated: October 30, 2026</p>
 
       <h2 className={headingClass}>What Weekly Planner stores</h2>
       <ul className={listClass}>
