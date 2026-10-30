@@ -114,7 +114,7 @@ export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
         aria-label="Account menu"
         aria-expanded={open}
         onClick={() => setOpen((isOpen) => !isOpen)}
-        className={`flex items-center gap-1 rounded-lg border px-2.5 py-1 transition hover:border-link-blue-hover ${open ? "border-link-blue-hover" : "border-transparent"}`}
+        className={`flex items-center gap-1 rounded-lg border px-2.5 py-1 transition hover:border-link-blue-hover ${open ? "border-link-blue-hover" : "border-area-border-grey"}`}
       >
         <Avatar name={name} image={image} className="size-9 text-sm" />
         <ChevronDownIcon
