@@ -36,7 +36,7 @@ export function TaskCard({ occurrence }: TaskCardProps) {
       {/* Tick: always shown when done; otherwise on hover or keyboard focus */}
       <form
         action={toggleTaskCompletion}
-        className={`relative z-10 flex shrink-0 overflow-hidden transition-[width] motion-reduce:transition-none ${
+        className={`relative z-10 flex shrink-0 overflow-hidden pointer-coarse:overflow-visible transition-[width] motion-reduce:transition-none ${
           completed
             ? "w-7.5"
             : "w-0 pointer-coarse:w-7.5 group-has-focus-visible:w-7.5 group-hover:w-7.5"
@@ -49,7 +49,7 @@ export function TaskCard({ occurrence }: TaskCardProps) {
           aria-label={
             completed ? `Mark "${text}" as not done` : `Mark "${text}" as done`
           }
-          className={`flex size-5 shrink-0 items-center justify-center rounded-full border transition ${
+          className={`relative flex size-5 shrink-0 items-center justify-center rounded-full border transition before:absolute before:-inset-2 ${
             completed
               ? "border-check-green bg-check-green text-white"
               : "border-dark-border-grey opacity-0 pointer-coarse:opacity-100 group-hover:opacity-100 hover:border-check-green focus-visible:opacity-100"
