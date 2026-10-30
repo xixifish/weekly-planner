@@ -26,7 +26,7 @@ export function DayRow({ date, isToday, occurrences }: DayRowProps) {
 
   return (
     <section
-      className={`flex min-h-25 px-10 py-7 border-b border-area-border-grey relative ${isToday ? "bg-today-yellow" : "bg-surface"}`}
+      className={`relative flex flex-col gap-3 border-b border-area-border-grey px-4 py-5 md:min-h-25 md:px-10 md:flex-row md:gap-0 md:py-7 ${isToday ? "bg-today-yellow" : "bg-surface"}`}
     >
       {/* Today: orange edge on the left */}
       {isToday && (
@@ -34,7 +34,7 @@ export function DayRow({ date, isToday, occurrences }: DayRowProps) {
       )}
 
       {/* Left: day name, number and summary */}
-      <div className="w-[138px] shrink-0">
+      <div className="shrink-0 md:w-[138px]">
         <p
           className={`text-[18px] ${isToday ? "text-logo-orange" : "text-text-dark"}`}
         >
@@ -46,7 +46,7 @@ export function DayRow({ date, isToday, occurrences }: DayRowProps) {
       </div>
 
       {/* Right: cards, wrapping onto new lines */}
-      <ul className="flex flex-wrap gap-x-3 gap-y-[17px]">
+      <ul className="flex flex-col gap-3 empty:hidden md:flex-row md:flex-wrap md:gap-x-3 md:gap-y-4">
         {occurrences.map((occurrence) => (
           <TaskCard key={occurrence.taskId} occurrence={occurrence} />
         ))}
