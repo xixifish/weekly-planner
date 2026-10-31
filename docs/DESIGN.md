@@ -116,11 +116,11 @@ The dialog contains the task text, **Days**, a **Repeating Task** option, an opt
 - No end date means the task repeats indefinitely. An end date is inclusive and cannot be before the task starts. Removing it returns the task to indefinite repetition.
 - Text and a day are required; label and end date are optional. Save stays disabled until the required fields are valid.
 - The text box scrolls for long text. Titles contain no line breaks, spaces alone are invalid, and text is limited to 1000 characters.
-- Closing the add dialog with **Cancel** or Esc keeps what was typed, so an accidental close loses nothing. The draft lasts until the page reloads or a card is opened for editing, since adding and editing share one dialog. Saving closes the dialog and clears the form.
+- Closing the add dialog with the **✕** or Esc keeps what was typed, so an accidental close loses nothing. The draft lasts until the page reloads or a card is opened for editing, since adding and editing share one dialog. Saving closes the dialog and clears the form.
 
 Creating a task and editing a non-repeating task use a direct **Save** action. When editing a repeating task, **Save** and **Delete** each open a menu with two scopes: **This Task Only** and **This and Future Tasks**.
 
-**Layout.** The title sits in a header band and the buttons in a footer band, each separated from the form by a full-width line. Each section has a bold heading with a short grey hint:
+**Layout.** The title sits in a header band, with a **✕** on the right that closes the dialog, and the buttons sit in a footer band: **Delete** on the left (when editing), **Save** on the right. Each band is separated from the form by a full-width line. There is no **Cancel** button: on a phone, **Save This and Future Tasks** needs the room, and the **✕** is where people expect to close a sheet. Each section has a bold heading with a short grey hint:
 
 - **Weekdays:** only repeating tasks can have several days. **Repeating** comes first in the row, before Mon–Sun, separated by a thin divider, because it is a mode switch rather than a day and people decide it first.
 - **End Date:** leave blank to repeat indefinitely (shown only for a repeating task).
@@ -138,6 +138,8 @@ Creating a task and editing a non-repeating task use a direct **Save** action. W
 | Your session has expired. **Sign in again**                                            | above the buttons  | the session ended; the link signs in with Google                |
 
 Signing in again leaves the page, so the dialog's draft is lost. The user comes back to the same week they were viewing.
+
+**On phones** (narrower than 768px) the dialog is a bottom sheet: full width, pinned to the bottom of the screen, with rounded top corners and 16px padding (30px and a centred 700px box on wider screens). The weekdays wrap into two rows, Mon–Thu and Fri–Sun, with **Repeating** still first. The **Save** and **Delete** menus open upward, because there is no room below the footer; on wider screens they open downward.
 ---
 
 ## 7. Accounts
@@ -182,7 +184,7 @@ Four, not one, because social sign-in means you need to see _which_ account you 
 **Tokens are named for their role, not their colour.** White backgrounds use `surface`, which is dark in dark mode. When one colour had two roles, it was split, because the roles need different things in the dark:
 
 - **Fills with white text on them** keep their deep colour: `logo-blue` and `selected-blue` (Save, +), `error-red` and `error-red-dark` (the confirm Delete button), `check-green`.
-- **Text and lines** get lighter in the dark: `link-blue` and `link-blue-hover` (links, Cancel, selected days, the app-wide hover), `delete-red` and `delete-red-hover` (Delete buttons and menu), `error-text` (error banners). In light mode they have the same values as the fills, so nothing changed there.
+- **Text and lines** get lighter in the dark: `link-blue` and `link-blue-hover` (links, the dialog's ✕, selected days, the app-wide hover), `delete-red` and `delete-red-hover` (Delete buttons and menu), `error-text` (error banners). In light mode they have the same values as the fills, so nothing changed there.
 - **Hovers add contrast in both themes:** darker on white, lighter on dark.
 - **Raised things are lighter in the dark:** the selected Colour Theme option uses `surface-raised`, white in light mode and a step lighter than its grey track in dark mode, so it looks raised in both.
 - **The dialog backdrop always dims:** `backdrop` is the text colour at 60% in light mode, but black at 60% in dark mode, because a grey lighter than the dark page would brighten it instead.
