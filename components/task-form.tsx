@@ -49,7 +49,7 @@ const swatchClass =
   "group flex size-8 cursor-pointer items-center justify-center rounded-full has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-link-blue";
 // Colour circles: a grey border, blue when selected
 const colourSwatchClass = `${swatchClass} border-2 border-area-border-grey has-checked:border-link-blue`;
-// Footer buttons (Cancel, Save); each adds its own colours
+// Footer buttons (Delete, Save); each adds its own colours
 const buttonClass = "h-9.5 rounded-md px-4 text-base font-bold transition";
 // Items in the Delete ▾ menu: red text, filled red on hover
 const menuItemClass =
@@ -307,7 +307,7 @@ export function TaskForm({
       <fieldset className={`relative ${sectionClass}`}>
         <legend className={sectionTitleClass}>
           <span className={sectionLabelClass}>Weekdays:</span> only repeating
-          task can have several days
+          tasks can have several days
         </legend>
         {daysError && (
           <p role="alert" className={`${errorBannerClass} mb-3`}>
@@ -452,7 +452,7 @@ export function TaskForm({
                   <ChevronDownIcon className="-mr-1 size-4" />
                 </button>
                 {deleteMenuOpen && (
-                  <div className="absolute top-full left-0 z-10 mt-2 flex w-max flex-col overflow-hidden rounded-md border border-delete-red bg-surface">
+                  <div className="absolute bottom-full left-0 z-10 mb-2 md:top-full md:bottom-auto md:mt-2 md:mb-0 flex w-max flex-col overflow-hidden rounded-md border border-delete-red bg-surface">
                     <button
                       type="button"
                       onClick={() => handleDelete(deleteThisTaskOnly)}
@@ -509,7 +509,7 @@ export function TaskForm({
               </button>
 
               {saveMenuOpen && (
-                <div className="absolute top-full right-0 z-10 mt-2 flex w-max flex-col overflow-hidden rounded-md border border-link-blue bg-surface">
+                <div className="absolute bottom-full md:top-full md:bottom-auto md:mt-2 right-0 z-10 mb-2 md:mb-0 flex w-max flex-col overflow-hidden rounded-md border border-link-blue bg-surface">
                   <button
                     type="button"
                     onClick={(event) =>
