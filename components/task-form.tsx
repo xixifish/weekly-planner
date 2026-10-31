@@ -262,12 +262,21 @@ export function TaskForm({
   return (
     <form onSubmit={handleSubmit}>
       <input type="hidden" name="date" value={toDateString(taskDate)} />
-      <div className="-mx-4 -mt-4 border-b border-dark-border-grey px-4 py-4 md:-mt-5 md:-mx-7.5 md:px-7.5 md:py-5">
+      <div className="flex items-center justify-between -mx-4 -mt-4 border-b border-dark-border-grey px-4 py-4 md:-mt-5 md:-mx-7.5 md:px-7.5 md:py-5">
         {/* Form title */}
         <h2 id="task-dialog-title" className="text-lg text-text-dark">
           <span className="font-bold">{titleText}</span>
           <span className="text-text-grey"> · {titleDate}</span>
         </h2>
+        {/* Closes like Cancel did: an unsaved Add draft is kept */}
+        <button
+          type="button"
+          onClick={onCancel}
+          aria-label="Close"
+          className="-m-2.5 p-2.5 text-link-blue transition hover:text-link-blue-hover"
+        >
+          <CrossIcon className="size-6 stroke-[1.33]" />
+        </button>
       </div>
 
       {/* Task fields */}
