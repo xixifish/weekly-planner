@@ -39,10 +39,12 @@ const WEEKDAY_OPTIONS = [
 
 // A pill-shaped option: a hidden checkbox inside a styled label
 const pillClass =
-  "flex h-8 px-4 cursor-pointer items-center justify-center rounded-md border border-area-border-grey text-sm font-semibold text-text-dark has-checked:border-select-blue has-checked:bg-select-blue has-checked:text-link-blue has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-link-blue-hover hover:text-link-blue-hover hover:border-link-blue-hover transition";
+  "flex h-8 px-4 cursor-pointer items-center justify-center rounded-md border border-area-border-grey text-xs md:text-sm font-semibold text-text-dark has-checked:border-select-blue has-checked:bg-select-blue has-checked:text-link-blue has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-link-blue-hover hover:text-link-blue-hover hover:border-link-blue-hover transition";
 // A form section with a line under it; the space above and below the line is the same
-const sectionClass = "mt-4.5 border-b border-area-border-grey pb-4.5";
-const sectionTitleClass = "mb-3.5 text-sm text-text-grey";
+const sectionClass =
+  "mt-4 md:mt-4.5 border-b border-area-border-grey pb-4 md:pb-4.5";
+const sectionTitleClass =
+  "mb-3 md:mb-3.5 text-[13px] md:text-sm text-text-grey";
 const sectionLabelClass = "font-bold text-text-dark";
 // A round label option: a hidden radio inside a styled label
 const swatchClass =
@@ -264,7 +266,10 @@ export function TaskForm({
       <input type="hidden" name="date" value={toDateString(taskDate)} />
       <div className="flex items-center justify-between -mx-4 -mt-4 border-b border-dark-border-grey px-4 py-4 md:-mt-5 md:-mx-7.5 md:px-7.5 md:py-5">
         {/* Form title */}
-        <h2 id="task-dialog-title" className="text-lg text-text-dark">
+        <h2
+          id="task-dialog-title"
+          className="text-base md:text-lg text-text-dark"
+        >
           <span className="font-bold">{titleText}</span>
           <span className="text-text-grey"> · {titleDate}</span>
         </h2>
@@ -292,7 +297,7 @@ export function TaskForm({
           name="description"
           placeholder="Describe your task"
           maxLength={1000}
-          className="block w-full mt-4 h-18 rounded-md border inset-shadow-xs px-2 py-1.5 text-lg font-semibold text-text-dark placeholder:font-medium placeholder:text-text-grey resize-none border-area-border-grey focus:border-link-blue focus:outline-none"
+          className="block w-full mt-4 h-18 rounded-md border inset-shadow-xs px-2 py-1.5 text-base md:text-lg font-semibold text-text-dark placeholder:font-medium placeholder:text-text-grey resize-none border-area-border-grey focus:border-link-blue focus:outline-none"
           aria-label="Task description"
           aria-invalid={textError}
           value={text}
@@ -322,7 +327,7 @@ export function TaskForm({
             <span className="font-bold">Delete This and Future Tasks</span>.
           </p>
         )}
-        <div className="flex gap-2">
+        <div className="flex">
           <label className={`${pillClass} group gap-2`}>
             <input
               type="checkbox"
@@ -340,21 +345,24 @@ export function TaskForm({
           {/* A mode switch, not a day: keep it visually apart */}
           <span
             aria-hidden="true"
-            className="mx-3 w-px self-stretch bg-area-border-grey"
+            className="mx-3 md:mx-4 w-px self-stretch bg-area-border-grey"
           />
-          {WEEKDAY_OPTIONS.map((day) => (
-            <label key={day.value} className={`${pillClass} flex-1`}>
-              <input
-                type="checkbox"
-                name="days"
-                value={day.value}
-                checked={days.includes(day.value)}
-                onChange={() => toggleDay(day.value)}
-                className="sr-only"
-              />
-              {day.label}
-            </label>
-          ))}
+          {/* Days: a 4-column grid on phones, one row on wider screens */}
+          <div className="grid flex-1 grid-cols-4 gap-2 md:flex">
+            {WEEKDAY_OPTIONS.map((day) => (
+              <label key={day.value} className={`${pillClass} flex-1`}>
+                <input
+                  type="checkbox"
+                  name="days"
+                  value={day.value}
+                  checked={days.includes(day.value)}
+                  onChange={() => toggleDay(day.value)}
+                  className="sr-only"
+                />
+                {day.label}
+              </label>
+            ))}
+          </div>
         </div>
       </fieldset>
 
@@ -376,11 +384,11 @@ export function TaskForm({
       )}
 
       {/* LABEL: no line under it; the footer draws that one */}
-      <fieldset className="mt-5">
+      <fieldset className="mt-4 md:mt-5">
         <legend className={sectionTitleClass}>
           <span className={sectionLabelClass}>Label:</span> optional
         </legend>
-        <div className="flex gap-3">
+        <div className="flex gap-2 md:gap-3">
           {LABEL_OPTIONS.map((option) => (
             <label
               key={option.value}
