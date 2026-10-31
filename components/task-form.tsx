@@ -52,7 +52,8 @@ const swatchClass =
 // Colour circles: a grey border, blue when selected
 const colourSwatchClass = `${swatchClass} border-2 border-area-border-grey has-checked:border-link-blue`;
 // Footer buttons (Delete, Save); each adds its own colours
-const buttonClass = "h-9.5 rounded-md px-4 text-base font-bold transition";
+const buttonClass =
+  "h-9 md:h-9.5 rounded-md px-3 md:px-4 text-sm md:text-base font-bold transition";
 // Items in the Delete ▾ menu: red text, filled red on hover
 const menuItemClass =
   "px-3 py-2 text-left text-sm font-bold text-delete-red transition hover:bg-error-red hover:text-white";
@@ -262,9 +263,9 @@ export function TaskForm({
       days.some((day) => !occurrence.days.includes(day)));
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="flex min-h-0 flex-col">
       <input type="hidden" name="date" value={toDateString(taskDate)} />
-      <div className="flex items-center justify-between -mx-4 -mt-4 border-b border-dark-border-grey px-4 py-3 md:-mt-5 md:-mx-7.5 md:px-7.5 md:py-5">
+      <div className="shrink-0 flex items-center justify-between -mx-4 -mt-4 border-b border-dark-border-grey px-4 py-3 md:-mt-5 md:-mx-7.5 md:px-7.5 md:py-5">
         {/* Form title */}
         <h2
           id="task-dialog-title"
@@ -285,148 +286,150 @@ export function TaskForm({
           <CrossIcon className="size-6 stroke-[1.33]" />
         </button>
       </div>
-
-      {/* Task fields */}
-      <div className="mt-3 md:mt-4 space-y-2">
-        {textError && (
-          <p role="alert" className={errorBannerClass}>
-            Enter a task description
-          </p>
-        )}
-        <textarea
-          name="description"
-          placeholder="Describe your task"
-          maxLength={1000}
-          className="block w-full mt-3 md:mt-4 h-14 md:h-18 rounded-md border inset-shadow-xs px-2 py-1.5 text-base md:text-lg font-semibold text-text-dark placeholder:font-medium placeholder:text-text-grey resize-none border-area-border-grey focus:border-link-blue focus:outline-none"
-          aria-label="Task description"
-          aria-invalid={textError}
-          value={text}
-          onChange={(event) => {
-            setText(event.target.value);
-            setTextTouched(true);
-          }}
-        />
-      </div>
-
-      {/* DAYS: seven weekday checkboxes and the Repeating Task toggle */}
-      <fieldset className={`relative ${sectionClass}`}>
-        <legend className={sectionTitleClass}>
-          <span className={sectionLabelClass}>Weekdays:</span> only repeating
-          tasks can have several days
-        </legend>
-        {daysError && (
-          <p role="alert" className={`${errorBannerClass} mb-2 md:mb-3`}>
-            {daysError}
-          </p>
-        )}
-        {/* Information, not an error: it doesn't stop saving */}
-        {stopRepeatingBlocked && (
-          <p aria-live="polite" className={`${infoBannerClass} mb-2 md:mb-3`}>
-            To stop repeating, add an{" "}
-            <span className="font-bold">End Date</span> or use{" "}
-            <span className="font-bold">Delete This and Future Tasks</span>.
-          </p>
-        )}
-        <div className="flex">
-          <label className={`${pillClass} group gap-2`}>
-            <input
-              type="checkbox"
-              name="repeating"
-              value="true"
-              className="sr-only"
-              checked={repeating}
-              onChange={(event) => changeRepeating(event.target.checked)}
-            />
-            <span className="flex size-5 items-center justify-center rounded-full border border-dark-border-grey text-white group-has-checked:border-check-green group-has-checked:bg-check-green">
-              <CheckIcon className="hidden size-4 group-has-checked:block" />
-            </span>
-            Repeating
-          </label>
-          {/* A mode switch, not a day: keep it visually apart */}
-          <span
-            aria-hidden="true"
-            className="mx-3 md:mx-4 w-px self-stretch bg-area-border-grey"
+      {/* The fields scroll when the sheet is taller than the screen */}
+      <div className="-mx-4 min-h-0 overflow-y-auto px-4 pb-3 md:pb-5 md:-mx-7.5 md:px-7.5">
+        {/* Task fields */}
+        <div className="mt-3 md:mt-4 space-y-2">
+          {textError && (
+            <p role="alert" className={errorBannerClass}>
+              Enter a task description
+            </p>
+          )}
+          <textarea
+            name="description"
+            placeholder="Describe your task"
+            maxLength={1000}
+            className="block w-full mt-3 md:mt-4 h-14 md:h-18 rounded-md border inset-shadow-xs px-2 py-1.5 text-base md:text-lg font-semibold text-text-dark placeholder:font-medium placeholder:text-text-grey resize-none border-area-border-grey focus:border-link-blue focus:outline-none"
+            aria-label="Task description"
+            aria-invalid={textError}
+            value={text}
+            onChange={(event) => {
+              setText(event.target.value);
+              setTextTouched(true);
+            }}
           />
-          {/* Days: a 4-column grid on phones, one row on wider screens */}
-          <div className="grid flex-1 grid-cols-4 gap-2 md:flex">
-            {WEEKDAY_OPTIONS.map((day) => (
-              <label key={day.value} className={`${pillClass} flex-1`}>
+        </div>
+
+        {/* DAYS: seven weekday checkboxes and the Repeating Task toggle */}
+        <fieldset className={`relative ${sectionClass}`}>
+          <legend className={sectionTitleClass}>
+            <span className={sectionLabelClass}>Weekdays:</span> only repeating
+            tasks can have several days
+          </legend>
+          {daysError && (
+            <p role="alert" className={`${errorBannerClass} mb-2 md:mb-3`}>
+              {daysError}
+            </p>
+          )}
+          {/* Information, not an error: it doesn't stop saving */}
+          {stopRepeatingBlocked && (
+            <p aria-live="polite" className={`${infoBannerClass} mb-2 md:mb-3`}>
+              To stop repeating, add an{" "}
+              <span className="font-bold">End Date</span> or use{" "}
+              <span className="font-bold">Delete This and Future Tasks</span>.
+            </p>
+          )}
+          <div className="flex">
+            <label className={`${pillClass} group gap-2`}>
+              <input
+                type="checkbox"
+                name="repeating"
+                value="true"
+                className="sr-only"
+                checked={repeating}
+                onChange={(event) => changeRepeating(event.target.checked)}
+              />
+              <span className="flex size-5 items-center justify-center rounded-full border border-dark-border-grey text-white group-has-checked:border-check-green group-has-checked:bg-check-green">
+                <CheckIcon className="hidden size-4 group-has-checked:block" />
+              </span>
+              Repeating
+            </label>
+            {/* A mode switch, not a day: keep it visually apart */}
+            <span
+              aria-hidden="true"
+              className="mx-3 md:mx-4 w-px self-stretch bg-area-border-grey"
+            />
+            {/* Days: a 4-column grid on phones, one row on wider screens */}
+            <div className="grid flex-1 grid-cols-4 gap-2 md:flex">
+              {WEEKDAY_OPTIONS.map((day) => (
+                <label key={day.value} className={`${pillClass} flex-1`}>
+                  <input
+                    type="checkbox"
+                    name="days"
+                    value={day.value}
+                    checked={days.includes(day.value)}
+                    onChange={() => toggleDay(day.value)}
+                    className="sr-only"
+                  />
+                  {day.label}
+                </label>
+              ))}
+            </div>
+          </div>
+        </fieldset>
+
+        {/* ENDS: only for a repeating task */}
+        {repeating && (
+          <fieldset className={sectionClass}>
+            <legend className={sectionTitleClass}>
+              <span className={sectionLabelClass}>End Date:</span>{" "}
+              {endDate
+                ? `Repeats until ${formatLongDate(endDate)}`
+                : "leave blank to repeat indefinitely"}
+            </legend>
+            <EndDateField
+              min={toDateString(occurrence ? occurrence.date : weekStart)}
+              value={endDate}
+              onChange={setEndDate}
+            />
+          </fieldset>
+        )}
+
+        {/* LABEL: no line under it; the footer draws that one */}
+        <fieldset className="mt-3 md:mt-5">
+          <legend className={sectionTitleClass}>
+            <span className={sectionLabelClass}>Label:</span> optional
+          </legend>
+          <div className="flex gap-2 md:gap-3">
+            {LABEL_OPTIONS.map((option) => (
+              <label
+                key={option.value}
+                title={option.label}
+                className={`${colourSwatchClass} ${option.className}`}
+              >
                 <input
-                  type="checkbox"
-                  name="days"
-                  value={day.value}
-                  checked={days.includes(day.value)}
-                  onChange={() => toggleDay(day.value)}
+                  type="radio"
+                  name="label"
+                  value={option.value}
+                  aria-label={option.label}
                   className="sr-only"
+                  defaultChecked={occurrence?.label === option.value}
                 />
-                {day.label}
+                <CheckIcon className="hidden size-4.5 text-link-blue group-has-checked:block" />
               </label>
             ))}
-          </div>
-        </div>
-      </fieldset>
 
-      {/* ENDS: only for a repeating task */}
-      {repeating && (
-        <fieldset className={sectionClass}>
-          <legend className={sectionTitleClass}>
-            <span className={sectionLabelClass}>End Date:</span>{" "}
-            {endDate
-              ? `Repeats until ${formatLongDate(endDate)}`
-              : "leave blank to repeat indefinitely"}
-          </legend>
-          <EndDateField
-            min={toDateString(occurrence ? occurrence.date : weekStart)}
-            value={endDate}
-            onChange={setEndDate}
-          />
-        </fieldset>
-      )}
-
-      {/* LABEL: no line under it; the footer draws that one */}
-      <fieldset className="mt-3 md:mt-5">
-        <legend className={sectionTitleClass}>
-          <span className={sectionLabelClass}>Label:</span> optional
-        </legend>
-        <div className="flex gap-2 md:gap-3">
-          {LABEL_OPTIONS.map((option) => (
+            {/* No label: selected by default */}
             <label
-              key={option.value}
-              title={option.label}
-              className={`${colourSwatchClass} ${option.className}`}
+              title="No label"
+              className={`${swatchClass} border-2 border-dark-border-grey text-dark-border-grey has-checked:border-link-blue has-checked:text-link-blue`}
             >
               <input
                 type="radio"
                 name="label"
-                value={option.value}
-                aria-label={option.label}
+                value=""
+                defaultChecked={!occurrence?.label}
+                aria-label="No label"
                 className="sr-only"
-                defaultChecked={occurrence?.label === option.value}
               />
-              <CheckIcon className="hidden size-4.5 text-link-blue group-has-checked:block" />
+              <CrossIcon className="size-4.5" />
             </label>
-          ))}
-
-          {/* No label: selected by default */}
-          <label
-            title="No label"
-            className={`${swatchClass} border-2 border-dark-border-grey text-dark-border-grey has-checked:border-link-blue has-checked:text-link-blue`}
-          >
-            <input
-              type="radio"
-              name="label"
-              value=""
-              defaultChecked={!occurrence?.label}
-              aria-label="No label"
-              className="sr-only"
-            />
-            <CrossIcon className="size-4.5" />
-          </label>
-        </div>
-      </fieldset>
+          </div>
+        </fieldset>
+      </div>
 
       {/* Footer */}
-      <div className="-mx-4 mt-3 border-t border-dark-border-grey px-4 pt-3 pb-4 md:mt-5 md:py-5 md:-mx-7.5 md:px-7.5 md:pb-0">
+      <div className="shrink-0 -mx-4 border-t border-dark-border-grey px-4 pt-3 pb-4 md:py-5 md:-mx-7.5 md:px-7.5 md:pb-0">
         {saveError && (
           <p role="alert" className={`${errorBannerClass} mb-3`}>
             {saveError}
@@ -457,7 +460,7 @@ export function TaskForm({
                   className={`${buttonClass} flex items-center gap-1 border border-delete-red text-delete-red hover:border-delete-red-hover hover:text-delete-red-hover`}
                 >
                   Delete
-                  <ChevronDownIcon className="-mr-1 size-4" />
+                  <ChevronDownIcon className="-mr-1 size-3.5 md:size-4" />
                 </button>
                 {deleteMenuOpen && (
                   <div className="absolute bottom-full left-0 z-10 mb-2 md:top-full md:bottom-auto md:mt-2 md:mb-0 flex w-max flex-col overflow-hidden rounded-md border border-delete-red bg-surface">
@@ -513,7 +516,7 @@ export function TaskForm({
                 className={`${buttonClass} flex items-center gap-1 bg-logo-blue text-white hover:bg-selected-blue disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:hover:bg-button-off-grey disabled:text-button-off-text`}
               >
                 Save
-                <ChevronDownIcon className="-mr-1 size-4" />
+                <ChevronDownIcon className="-mr-1 size-3.5 md:size-4" />
               </button>
 
               {saveMenuOpen && (
