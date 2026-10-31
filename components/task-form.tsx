@@ -262,7 +262,7 @@ export function TaskForm({
   return (
     <form onSubmit={handleSubmit}>
       <input type="hidden" name="date" value={toDateString(taskDate)} />
-      <div className="-mx-7.5 -mt-5 border-b border-dark-border-grey px-7.5 py-5">
+      <div className="-mx-4 -mt-4 border-b border-dark-border-grey px-4 py-4 md:-mt-5 md:-mx-7.5 md:px-7.5 md:py-5">
         {/* Form title */}
         <h2 id="task-dialog-title" className="text-lg text-text-dark">
           <span className="font-bold">{titleText}</span>
@@ -407,7 +407,7 @@ export function TaskForm({
       </fieldset>
 
       {/* Footer */}
-      <div className="-mx-7.5 mt-5 border-t border-dark-border-grey px-7.5 pt-5">
+      <div className="-mx-4 mt-4 border-t border-dark-border-grey px-4 py-4 md:mt-5 md:py-5 md:-mx-7.5 md:px-7.5 md:pb-0">
         {saveError && (
           <p role="alert" className={`${errorBannerClass} mb-3`}>
             {saveError}
