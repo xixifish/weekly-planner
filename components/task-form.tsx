@@ -460,7 +460,9 @@ export function TaskForm({
                   className={`${buttonClass} flex items-center gap-1 border border-delete-red text-delete-red hover:border-delete-red-hover hover:text-delete-red-hover`}
                 >
                   Delete
-                  <ChevronDownIcon className="-mr-1 size-3.5 md:size-4" />
+                  <ChevronDownIcon
+                    className={`-mr-1 size-3.5 transition md:size-4 ${deleteMenuOpen ? "rotate-180" : ""}`}
+                  />
                 </button>
                 {deleteMenuOpen && (
                   <div className="absolute bottom-full left-0 z-10 mb-2 md:top-full md:bottom-auto md:mt-2 md:mb-0 flex w-max flex-col overflow-hidden rounded-md border border-delete-red bg-surface">
@@ -516,7 +518,9 @@ export function TaskForm({
                 className={`${buttonClass} flex items-center gap-1 bg-logo-blue text-white hover:bg-selected-blue disabled:cursor-not-allowed disabled:bg-button-off-grey disabled:hover:bg-button-off-grey disabled:text-button-off-text`}
               >
                 Save
-                <ChevronDownIcon className="-mr-1 size-3.5 md:size-4" />
+                <ChevronDownIcon
+                  className={`-mr-1 size-3.5 transition md:size-4 ${saveMenuOpen ? "rotate-180" : ""}`}
+                />
               </button>
 
               {saveMenuOpen && (
