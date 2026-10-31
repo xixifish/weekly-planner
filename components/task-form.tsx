@@ -42,9 +42,9 @@ const pillClass =
   "flex h-8 px-4 cursor-pointer items-center justify-center rounded-md border border-area-border-grey text-xs md:text-sm font-semibold text-text-dark has-checked:border-select-blue has-checked:bg-select-blue has-checked:text-link-blue has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-link-blue-hover hover:text-link-blue-hover hover:border-link-blue-hover transition";
 // A form section with a line under it; the space above and below the line is the same
 const sectionClass =
-  "mt-4 md:mt-4.5 border-b border-area-border-grey pb-4 md:pb-4.5";
+  "mt-3 md:mt-4.5 border-b border-area-border-grey pb-3 md:pb-4.5";
 const sectionTitleClass =
-  "mb-3 md:mb-3.5 text-[13px] md:text-sm text-text-grey";
+  "mb-2 md:mb-3.5 text-[13px] md:text-sm text-text-grey";
 const sectionLabelClass = "font-bold text-text-dark";
 // A round label option: a hidden radio inside a styled label
 const swatchClass =
@@ -264,7 +264,7 @@ export function TaskForm({
   return (
     <form onSubmit={handleSubmit}>
       <input type="hidden" name="date" value={toDateString(taskDate)} />
-      <div className="flex items-center justify-between -mx-4 -mt-4 border-b border-dark-border-grey px-4 py-4 md:-mt-5 md:-mx-7.5 md:px-7.5 md:py-5">
+      <div className="flex items-center justify-between -mx-4 -mt-4 border-b border-dark-border-grey px-4 py-3 md:-mt-5 md:-mx-7.5 md:px-7.5 md:py-5">
         {/* Form title */}
         <h2
           id="task-dialog-title"
@@ -287,7 +287,7 @@ export function TaskForm({
       </div>
 
       {/* Task fields */}
-      <div className="mt-4 space-y-2">
+      <div className="mt-3 md:mt-4 space-y-2">
         {textError && (
           <p role="alert" className={errorBannerClass}>
             Enter a task description
@@ -297,7 +297,7 @@ export function TaskForm({
           name="description"
           placeholder="Describe your task"
           maxLength={1000}
-          className="block w-full mt-4 h-18 rounded-md border inset-shadow-xs px-2 py-1.5 text-base md:text-lg font-semibold text-text-dark placeholder:font-medium placeholder:text-text-grey resize-none border-area-border-grey focus:border-link-blue focus:outline-none"
+          className="block w-full mt-3 md:mt-4 h-14 md:h-18 rounded-md border inset-shadow-xs px-2 py-1.5 text-base md:text-lg font-semibold text-text-dark placeholder:font-medium placeholder:text-text-grey resize-none border-area-border-grey focus:border-link-blue focus:outline-none"
           aria-label="Task description"
           aria-invalid={textError}
           value={text}
@@ -315,13 +315,13 @@ export function TaskForm({
           tasks can have several days
         </legend>
         {daysError && (
-          <p role="alert" className={`${errorBannerClass} mb-3`}>
+          <p role="alert" className={`${errorBannerClass} mb-2 md:mb-3`}>
             {daysError}
           </p>
         )}
         {/* Information, not an error: it doesn't stop saving */}
         {stopRepeatingBlocked && (
-          <p aria-live="polite" className={`${infoBannerClass} mb-3`}>
+          <p aria-live="polite" className={`${infoBannerClass} mb-2 md:mb-3`}>
             To stop repeating, add an{" "}
             <span className="font-bold">End Date</span> or use{" "}
             <span className="font-bold">Delete This and Future Tasks</span>.
@@ -384,7 +384,7 @@ export function TaskForm({
       )}
 
       {/* LABEL: no line under it; the footer draws that one */}
-      <fieldset className="mt-4 md:mt-5">
+      <fieldset className="mt-3 md:mt-5">
         <legend className={sectionTitleClass}>
           <span className={sectionLabelClass}>Label:</span> optional
         </legend>
@@ -426,7 +426,7 @@ export function TaskForm({
       </fieldset>
 
       {/* Footer */}
-      <div className="-mx-4 mt-4 border-t border-dark-border-grey px-4 py-4 md:mt-5 md:py-5 md:-mx-7.5 md:px-7.5 md:pb-0">
+      <div className="-mx-4 mt-3 border-t border-dark-border-grey px-4 pt-3 pb-4 md:mt-5 md:py-5 md:-mx-7.5 md:px-7.5 md:pb-0">
         {saveError && (
           <p role="alert" className={`${errorBannerClass} mb-3`}>
             {saveError}
