@@ -13,6 +13,11 @@ type TaskDialogContextValue = {
 
 const TaskDialogContext = createContext<TaskDialogContextValue | null>(null);
 
+// Phones: the sheet slides up from the bottom and the page behind fades darker when it opens,
+// and both reverse when it closes (closing animates in Chrome only). Desktop and "Reduce motion": no animation
+const sheetAnimationClass =
+  "translate-y-full open:translate-y-0 starting:open:translate-y-full transition-[translate,display,overlay] transition-discrete duration-200 ease-out md:transition-none motion-reduce:transition-none backdrop:opacity-0 open:backdrop:opacity-100 starting:open:backdrop:opacity-0 backdrop:transition-[opacity,display,overlay] backdrop:transition-discrete backdrop:duration-200 md:backdrop:transition-none motion-reduce:backdrop:transition-none";
+
 // Lets a component inside TaskDialogProvider open the dialog
 export function useTaskDialog() {
   const value = useContext(TaskDialogContext);
@@ -55,7 +60,7 @@ export function TaskDialogProvider({
       <dialog
         ref={dialogRef}
         aria-labelledby="task-dialog-title"
-        className="mx-0 mt-auto mb-0 w-full max-w-none rounded-t-xl bg-surface px-4 pt-4 md:px-7.5 md:py-5 backdrop:bg-backdrop overflow-visible md:m-auto md:w-[700px] md:rounded-xl open:flex open:flex-col"
+        className={`mx-0 mt-auto mb-0 w-full max-w-none rounded-t-xl bg-surface px-4 pt-4 md:px-7.5 md:py-5 backdrop:bg-backdrop overflow-visible md:m-auto md:w-[700px] md:rounded-xl open:flex open:flex-col ${sheetAnimationClass}`}
       >
         <TaskForm
           key={
