@@ -185,6 +185,7 @@ Four, not one, because social sign-in means you need to see _which_ account you 
 - **Text and lines** get lighter in the dark: `link-blue` and `link-blue-hover` (links, Cancel, selected days, the app-wide hover), `delete-red` and `delete-red-hover` (Delete buttons and menu), `error-text` (error banners). In light mode they have the same values as the fills, so nothing changed there.
 - **Hovers add contrast in both themes:** darker on white, lighter on dark.
 - **Raised things are lighter in the dark:** the selected Colour Theme option uses `surface-raised`, white in light mode and a step lighter than its grey track in dark mode, so it looks raised in both.
+- **The dialog backdrop always dims:** `backdrop` is the text colour at 60% in light mode, but black at 60% in dark mode, because a grey lighter than the dark page would brighten it instead.
 
 **A disabled button rests on the page:** a flat fill just above the surface, with dimmed text (`button-off-grey`, `button-off-text`), so it never looks clickable.
 

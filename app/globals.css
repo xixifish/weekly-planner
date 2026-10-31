@@ -49,6 +49,8 @@
   --color-background-grey: light-dark(#f2f2f2, #262b33);
   --color-today-yellow: light-dark(#fffcf5, #2a251c);
   --color-progress-track: light-dark(#ffe0cc, #4a2e1c);
+  /* Behind open dialogs: always darker than the page, so black in dark mode */
+  --color-backdrop: light-dark(rgb(48 55 65 / 0.6), rgb(0 0 0 / 0.6));
 
   /* Controls */
   --color-select-blue: light-dark(#dbf1ff, #17344c);

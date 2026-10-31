@@ -167,7 +167,7 @@ export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
         ref={confirmRef}
         aria-labelledby="delete-account-title"
         aria-describedby="delete-account-text"
-        className="m-auto w-100 rounded-xl bg-surface px-7.5 py-8 text-center backdrop:bg-black/40"
+        className="m-auto w-100 rounded-xl bg-surface px-7.5 py-8 text-center backdrop:bg-backdrop"
       >
         <AlertIcon className="mx-auto size-8 text-delete-red" />
         <h2
