@@ -268,11 +268,13 @@ export function TaskForm({
           <span className="font-bold">{titleText}</span>
           <span className="text-text-grey"> · {titleDate}</span>
         </h2>
-        {/* Closes like Cancel did: an unsaved Add draft is kept */}
+        {/* Closes the dialog: an unsaved Add draft is kept */}
         <button
           type="button"
           onClick={onCancel}
           aria-label="Close"
+          title="Close (Esc)"
+          aria-keyshortcuts="Escape"
           className="-m-2.5 p-2.5 text-link-blue transition hover:text-link-blue-hover"
         >
           <CrossIcon className="size-6 stroke-[1.33]" />
@@ -438,7 +440,7 @@ export function TaskForm({
           {occurrence &&
             (occurrence.repeating ? (
               // Repeating: Delete opens a menu with the two scopes
-              <div ref={deleteMenuRef} className="relative">
+              <div ref={deleteMenuRef} className="relative mr-auto">
                 <button
                   type="button"
                   aria-expanded={deleteMenuOpen}
@@ -474,18 +476,11 @@ export function TaskForm({
                 type="button"
                 onClick={() => handleDelete(deleteThisTaskOnly)}
                 disabled={saving}
-                className={`${buttonClass} items-center gap-1 border border-delete-red text-delete-red hover:border-delete-red-hover hover:text-delete-red-hover`}
+                className={`${buttonClass} mr-auto items-center gap-1 border border-delete-red text-delete-red hover:border-delete-red-hover hover:text-delete-red-hover`}
               >
                 Delete
               </button>
             ))}
-          <button
-            type="button"
-            onClick={onCancel}
-            className={`${buttonClass} ml-auto border border-link-blue text-link-blue hover:border-link-blue-hover hover:text-link-blue-hover`}
-          >
-            Cancel
-          </button>
 
           {occurrence?.repeating && scheduleChanged ? (
             // Only one scope is possible after a schedule change: save straight away
