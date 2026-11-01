@@ -2,8 +2,6 @@
 
 A planner for one week at a time. Seven day rows, one per day. Tasks are small cards you add, tick off, and repeat.
 
-Initial design finished **23 August 2026**. Recurrence rules were revised **7 September 2026**.
-
 Figma file: https://www.figma.com/design/PMOiVwojpmtcMso4lWKBma/weekly-planner
 
 ---
@@ -14,12 +12,11 @@ One week fills the screen. Seven day rows, stacked.
 
 Each row has the day name and a "N/M done" count on the left, and the task cards to the right.
 
-- Cards are 220px wide, in a row that wraps. Five fit at 1440px, four at 1200, three at 1024.
-- A row grows taller when its cards wrap: 100px by default, plus 61px for each extra line.
+- Cards have a fixed width and wrap onto more lines when a day has more than fit; the row grows taller to fit them.
 - Today's row has an orange left edge, a pale yellow background, and an orange day name.
 - A weekly progress bar sits top right, with a done/total count.
 - Arrows next to the week's dates move to the previous or next week. **Today** returns to the current week.
-- Minimum width is 1024px. Below that is phone territory, which v1 does not cover.
+- This layout is for screens 768px and wider. Narrower screens get a phone layout: the progress bar sits under the dates, day names sit above full-width cards, and the dialog is a bottom sheet.
 
 **Old undone tasks stay in their past week.** Nothing rolls forward. This works like a paper planner — last week stays last week.
 
@@ -31,7 +28,7 @@ A task has text, selected days, a repeating flag, an optional end date, and an o
 
 **Text and a day are required.** A non-repeating task has one day. A repeating task may have one or more weekdays.
 
-**Text.** One line on the card, cut off with "…" when it is too long. Hovering the card shows the full text. The edit box shows all of it.
+**Text.** One line on the card, cut off with "…" when it is too long. With a mouse, hovering the card shows the full text. The edit box always shows all of it, which is the way to read it on a touch screen.
 
 **Days.** These define when the task appears. A repeating task can occur several times in the current week, future weeks, or both.
 
@@ -43,7 +40,7 @@ A task has text, selected days, a repeating flag, an optional end date, and an o
 
 ## 3. Repeats
 
-Turning on **Repeating Task** makes the selected weekdays a repeating pattern. A new repeating task starts on the Monday of the week it is added to. For example, adding a Mon/Wed/Fri task on Wednesday also shows it on that week's Monday, which has already passed. The user plans the whole week, not just the days left in it. Dates before the start are never created. The optional end date is the last date on which an occurrence may appear.
+Turning on **Repeating** makes the selected weekdays a repeating pattern. A new repeating task starts on the Monday of the week it is added to. For example, adding a Mon/Wed/Fri task on Wednesday also shows it on that week's Monday, which has already passed. The user plans the whole week, not just the days left in it. Dates before the start are never created. The end date is optional. If one is set, the task appears up to and including that date, and never after it.
 
 Occurrences are worked out when a week is opened rather than stored in advance. Changes to a single occurrence are stored separately from the repeating rule.
 
@@ -57,13 +54,13 @@ Occurrences are worked out when a week is opened rather than stored in advance. 
 
 A non-repeating task uses direct **Save** and **Delete** actions. For a repeating task, each action opens a menu with **This Task Only** and **This and Future Tasks**.
 
-Deleting a non-repeating task removes its one card, the same as **This Task Only**. Turning **Repeating Task** on while editing a non-repeating task makes it a repeating task that starts on the Monday of the card's week, the same as adding one.
+Deleting a non-repeating task removes its one card, the same as **This Task Only**. Turning **Repeating** on while editing a non-repeating task makes it a repeating task that starts on the Monday of the card's week, the same as adding one.
 
 **This Task Only** changes or deletes only the selected card. The repeating pattern remains unchanged.
 
 **This and Future Tasks** includes later occurrences in the same week and in later weeks. Earlier occurrences remain unchanged. Saving splits the repeating rule at the selected card; deleting stops it there.
 
-Later cards changed with **This Task Only** keep that change when **This and Future Tasks** is saved: a deleted card stays deleted, and an edited card keeps its own text and label. _To be checked in user testing._
+**Single-card changes survive a This and Future change.** If a later card was edited or deleted with **This Task Only**, it keeps that change when **This and Future Tasks** is saved from an earlier card. For example, if Thursday's card was renamed, changing the task from Monday onwards renames every card except Thursday's. A deleted card stays deleted. _To be checked in user testing: some people may expect the later change to overwrite everything._
 
 Save scope depends on the fields changed:
 
@@ -85,15 +82,13 @@ Task deletion has no confirmation box and, in v1, no Undo: a deleted card is gon
 
 ## 5. The card
 
-States: plain, done, hover.
+States: plain, done, hover (mouse only).
 
 **The coloured left bar is the label the user picked.** It never changes to show state. A done task keeps its own colour.
 
 - **Done**: green filled tick, greyed and struck-through text, and a grey background with no shadow. The left bar stays the label colour.
 - **Hover**: the tick slides in from the left, and the text moves right to make room. The card's border turns blue. A done card always shows its tick and has no hover effect.
-- **Full text**: v1 uses the browser's built-in tooltip (the `title` attribute) on the card text.
-
-_To do: replace it with a custom tooltip._ After about 400ms of hover, the full text appears above the card, but only when the text is actually cut off. The delay stops it flashing as the mouse crosses a row. It is at most 280px wide, ignores the mouse, and flips sides near the edge of the window. It also appears on keyboard focus.
+- **Touch screens**: there is no hover, so the empty circle is always shown, whatever the screen width; a tablet uses the wide layout but still needs a visible circle. Tapping the circle ticks the task; tapping the text opens it for editing. On phones, where cards stack in one column, cards without a label are indented to match labelled ones, so the circles line up.
 
 The end date controls recurrence only. It is not a deadline and does not create an overdue card state.
 
@@ -107,18 +102,16 @@ When editing, the title shows the card's own date, such as **Edit Task · Sep 1*
 
 There are only two titles, **Add Task** and **Edit Task**. The title never says "Repeating": the **Repeating** toggle shows it, and when editing, so do the **Save** and **Delete** menus. This also keeps the title from changing while the user clicks the toggle.
 
-The dialog contains the task text, **Days**, a **Repeating Task** option, an optional label colour, and—when repeating is on—an optional **End Date**.
+The dialog contains the task text, **Weekdays**, a **Repeating** option, an optional label colour, and—when repeating is on—an optional **End Date**.
 
 - A task that is not repeating has exactly one selected day.
 - A repeating task may have one or more weekdays. Its occurrences can be within the current week, later weeks, or both.
 - Turning repeating on keeps the selected day and allows more days. When adding a task (or editing a non-repeating one), turning it off again requires leaving only one day selected first. If they try sooner, the option stays on and the dialog asks them to choose one day. Turning it off automatically removes the end date.
-- Selecting a second day while repeating is off never unselects the first one. Both stay selected, Save is disabled, and the dialog asks the user to turn on **Repeating Task** or choose one day. Nothing changes behind the user's back.
+- Selecting a second day while repeating is off never unselects the first one. Both stay selected, Save is disabled, and the dialog asks the user to turn on **Repeating** or choose one day. Nothing changes behind the user's back.
 - No end date means the task repeats indefinitely. An end date is inclusive and cannot be before the task starts. Removing it returns the task to indefinite repetition.
 - Text and a day are required; label and end date are optional. Save stays disabled until the required fields are valid.
-- The text box scrolls for long text. Titles contain no line breaks, spaces alone are invalid, and text is limited to 1000 characters.
+- The text box scrolls for long text. Task text has no line breaks, spaces alone are invalid, and text is limited to 1000 characters.
 - Closing the add dialog with the **✕** or Esc keeps what was typed, so an accidental close loses nothing. The draft lasts until the page reloads or a card is opened for editing, since adding and editing share one dialog. Saving closes the dialog and clears the form.
-
-Creating a task and editing a non-repeating task use a direct **Save** action. When editing a repeating task, **Save** and **Delete** each open a menu with two scopes: **This Task Only** and **This and Future Tasks**.
 
 **Layout.** The title sits in a header band, with a **✕** on the right that closes the dialog, and the buttons sit in a footer band: **Delete** on the left (when editing), **Save** on the right. Each band is separated from the form by a full-width line. There is no **Cancel** button: on a phone, **Save This and Future Tasks** needs the room, and the **✕** is where people expect to close a sheet. Each section has a bold heading with a short grey hint:
 
@@ -139,7 +132,10 @@ Creating a task and editing a non-repeating task use a direct **Save** action. W
 
 Signing in again leaves the page, so the dialog's draft is lost. The user comes back to the same week they were viewing.
 
-**On phones** (narrower than 768px) the dialog is a bottom sheet: full width, pinned to the bottom of the screen, with rounded top corners and 16px padding (30px and a centred 700px box on wider screens). The weekdays wrap into two rows, Mon–Thu and Fri–Sun, with **Repeating** still first. The **Save** and **Delete** menus open upward, because there is no room below the footer; on wider screens they open downward.
+**On phones** (narrower than 768px) the dialog is a bottom sheet: full width, pinned to the bottom of the screen, with rounded top corners. It slides up as it opens while the page behind fades darker; on wider screens, and for people who turn on Reduce motion, it simply appears. The weekdays wrap into two rows, Mon–Thu and Fri–Sun, with **Repeating** still first. The **Save** and **Delete** menus open upward, because there is no room below the footer; on wider screens they open downward.
+
+**On a short screen**, of any width, the fields scroll while the title and the buttons stay in place, so **Save** is always reachable.
+
 ---
 
 ## 7. Accounts
@@ -162,14 +158,12 @@ Four, not one, because social sign-in means you need to see _which_ account you 
 
 | Cut                            | Why                                                                                                                                                                                                                                                  |
 | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Phone layout                   | Below 1024px is a different design, not a smaller one. v1 is desktop.                                                                                                                                                                                |
 | Drag a card to another day     | Drag moves one occurrence, while the day picker changes the repeating pattern. They are different actions.                                                                                                                                           |
 | Move one card to another day   | "Working late this Monday, so gym moves to Tuesday." For now: delete that card, then add a non-repeating task on Tuesday.                                                                                                                            |
 | Label names                    | Colours are enough to group things. Labels are stored as named values, so names can be added later in code.                                                                                                                                          |
 | Carry unfinished tasks forward | A paper planner does not do it, and it hides the fact you did not do the thing.                                                                                                                                                                      |
 | Settings page                  | The four dropdown items cover everything a settings page would hold.                                                                                                                                                                                 |
 | Undo after deleting a task     | Planned as a bar that appears for a few seconds after a delete. Left out of v1 to keep the first version small; deletes are immediate instead. Worth revisiting if user testing shows accidental deletes, especially with **This and Future Tasks**. |
-| Clickable Figma prototype      | A prototype exists to show an idea to someone before it is built. I am both the designer and the builder, and the live app is the demo.                                                                                                              |
 
 ---
 
