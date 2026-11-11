@@ -3,6 +3,10 @@ import { prismaAdapter } from "@better-auth/prisma-adapter";
 
 import { prisma } from "@/lib/prisma";
 
+import { anonymous } from "better-auth/plugins";
+import { getToday, resolveTimeZone } from "@/lib/dates/today";
+import { seedGuestTasks } from "@/lib/tasks/seed-guest-tasks";
+
 function requireEnvironmentVariable(name: string) {
   const value = process.env[name];
 
@@ -33,6 +37,31 @@ export const auth = betterAuth({
   user: {
     deleteUser: {
       enabled: true,
+    },
+  },
+
+  plugins: [anonymous({ generateName: () => "Guest" })],
+
+  databaseHooks: {
+    user: {
+      create: {
+        // A new guest starts with a week of sample tasks
+        after: async (user, context) => {
+          if (!user.isAnonymous) return;
+
+          // Today in the visitor's time zone, the same way the home page finds it
+          const timeZone = resolveTimeZone(
+            context?.request?.headers.get("x-vercel-ip-timezone") ?? null,
+          );
+
+          try {
+            await seedGuestTasks(user.id, getToday(timeZone));
+          } catch (error) {
+            // An empty week is better than a failed sign-in
+            console.error("Could not create the guest's sample tasks", error);
+          }
+        },
+      },
     },
   },
 });

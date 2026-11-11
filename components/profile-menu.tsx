@@ -17,6 +17,7 @@ type ProfileMenuProps = {
   name: string;
   email: string;
   image?: string | null;
+  isGuest?: boolean;
 };
 
 // The user's photo, or their first initial when they have none
@@ -35,11 +36,11 @@ function Avatar({
       alt=""
       width={64}
       height={64}
-      className={`${className} rounded-full object-cover`}
+      className={`${className} shrink-0 rounded-full object-cover`}
     />
   ) : (
     <span
-      className={`${className} flex items-center justify-center rounded-full bg-logo-blue font-extrabold text-white`}
+      className={`${className} flex shrink-0 items-center justify-center rounded-full bg-logo-blue font-extrabold text-white`}
     >
       {name.charAt(0)}
     </span>
@@ -50,7 +51,7 @@ function Avatar({
 const menuItemClass =
   "block w-full text-left text-sm font-semibold text-text-dark transition";
 
-export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
+export function ProfileMenu({ name, email, image, isGuest }: ProfileMenuProps) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   useCloseOnClickOutside(menuRef, open, () => setOpen(false));
@@ -75,6 +76,12 @@ export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
   // Ends the session, then reloads the page's data as a signed-out visitor
   async function handleSignOut() {
     await authClient.signOut();
+    router.refresh();
+  }
+
+  // Deletes the guest account and its tasks, then shows the signed-out page
+  async function handleExitGuest() {
+    await authClient.deleteAnonymousUser();
     router.refresh();
   }
 
@@ -125,33 +132,47 @@ export function ProfileMenu({ name, email, image }: ProfileMenuProps) {
       {open && (
         <div className="absolute top-full right-0 z-20 mt-1.5 w-65 rounded-xl border border-area-border-grey bg-surface p-4 shadow-md">
           <p className="text-xs font-semibold text-text-grey-blue">
-            Google Account
+            {isGuest ? "Guest Account" : "Google Account"}
           </p>
           <div className="mt-3 flex items-center gap-3">
             <Avatar name={name} image={image} className="size-16 text-xl" />
             <div className="min-w-0">
               <p className="truncate font-bold text-text-dark">{name}</p>
-              <p className="truncate text-xs text-text-grey">{email}</p>
+              <p className="truncate text-xs text-text-grey">
+                {isGuest ? "Tasks are kept for 7 days" : email}
+              </p>
             </div>
           </div>
           <hr className="my-4 border-area-border-grey" />
           <ThemeSwitcher />
           <hr className="my-4 border-area-border-grey" />
           <div className="flex flex-col gap-3">
-            <button
-              type="button"
-              onClick={handleSignOut}
-              className={`${menuItemClass} hover:text-link-blue-hover`}
-            >
-              Sign out
-            </button>
-            <button
-              type="button"
-              onClick={openDeleteConfirm}
-              className={`${menuItemClass} hover:text-delete-red-hover`}
-            >
-              Delete this account
-            </button>
+            {isGuest ? (
+              <button
+                type="button"
+                onClick={handleExitGuest}
+                className={`${menuItemClass} hover:text-link-blue-hover`}
+              >
+                Exit guest mode
+              </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className={`${menuItemClass} hover:text-link-blue-hover`}
+                >
+                  Sign out
+                </button>
+                <button
+                  type="button"
+                  onClick={openDeleteConfirm}
+                  className={`${menuItemClass} hover:text-delete-red-hover`}
+                >
+                  Delete this account
+                </button>
+              </>
+            )}
           </div>
           <hr className="my-4 border-area-border-grey" />
           <Link

@@ -2,12 +2,14 @@ import Image from "next/image";
 
 import { SignInButton } from "@/app/sign-in-button";
 import { ProfileMenu } from "./profile-menu";
+import { GuestButton } from "@/app/guest-button";
 
 type AppHeaderProps = {
   user?: {
     name: string;
     email: string;
     image?: string | null;
+    isAnonymous?: boolean | null;
   };
 };
 
@@ -23,9 +25,17 @@ export function AppHeader({ user }: AppHeaderProps) {
       </div>
       {/* Account: avatar when signed in, Sign in button when not */}
       {user ? (
-        <ProfileMenu name={user.name} email={user.email} image={user.image} />
+        <ProfileMenu
+          name={user.name}
+          email={user.email}
+          image={user.isAnonymous ? "/guest-avatar.jpg" : user.image}
+          isGuest={Boolean(user.isAnonymous)}
+        />
       ) : (
-        <SignInButton />
+        <div className="flex items-center gap-3">
+          <GuestButton />
+          <SignInButton />
+        </div>
       )}
     </header>
   );

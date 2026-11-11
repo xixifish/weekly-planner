@@ -23,6 +23,7 @@ model User {
   tasks         Task[]
   sessions      Session[]
   accounts      Account[]
+  isAnonymous   Boolean?  @default(false)
 }
 
 enum LabelColour {
