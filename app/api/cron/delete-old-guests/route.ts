@@ -11,5 +11,7 @@ export async function GET(request: Request) {
 
   const deleted = await deleteOldGuests(new Date());
 
+  console.log(`Deleted ${deleted} old guest accounts`);
+
   return Response.json({ deleted });
 }
