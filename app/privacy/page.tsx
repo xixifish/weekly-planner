@@ -20,7 +20,7 @@ export default function PrivacyPage() {
       </Link>
 
       <h1 className="mt-6 text-2xl font-extrabold">Privacy Policy</h1>
-      <p className="text-text-grey">Last updated: October 30, 2026</p>
+      <p className="text-text-grey">Last updated: November 11, 2026</p>
 
       <h2 className={headingClass}>What Weekly Planner stores</h2>
       <ul className={listClass}>
@@ -30,13 +30,19 @@ export default function PrivacyPage() {
           requested from Google.
         </li>
         <li>
+          <span className="font-bold">If you try it as a guest</span>: no name
+          or email address is asked for. A guest account is created for you,
+          with a set of sample tasks.
+        </li>
+        <li>
           <span className="font-bold">What you create</span>: your tasks, their
           days, end dates and labels, and which ones you have ticked.
         </li>
         <li>
-          <span className="font-bold">To keep you signed in</span>: a session
-          cookie, the sign-in tokens Google returns, and the IP address and
-          browser type of each session.
+          <span className="font-bold">To keep you signed in</span>, with Google
+          or as a guest: a session cookie, and the IP address and browser type
+          of each session. For Google accounts, also the sign-in tokens Google
+          returns.
         </li>
       </ul>
 
@@ -60,6 +66,12 @@ export default function PrivacyPage() {
         Open the profile menu and choose{" "}
         <span className="font-bold">Delete this account</span>. Your account and
         all your tasks are removed at once and cannot be recovered.
+      </p>
+      <p className="mt-2">
+        As a guest, choose <span className="font-bold">Exit guest mode</span> in
+        the profile menu to remove the guest account and its tasks at once.
+        Guest accounts that are not removed this way are deleted automatically
+        about 7 days after they were created.
       </p>
 
       <h2 className={headingClass}>Google user data</h2>

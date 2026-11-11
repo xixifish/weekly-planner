@@ -140,9 +140,9 @@ Signing in again leaves the page, so the dialog's draft is lost. The user comes 
 
 ## 7. Accounts
 
-**Sign in with social accounts only.** No email and password.
+**Sign in with social accounts only.** No email and password. Visitors who don't want to sign in can use a guest account; see **Guests** below.
 
-**The profile dropdown always has four account items**: name, email, Sign out, **Delete this account**. It also holds the Colour Theme choice and the Privacy Policy link.
+**For a Google account, the profile dropdown always has four account items**: name, email, Sign out, **Delete this account**. It also holds the Colour Theme choice and the Privacy Policy link.
 
 Four, not one, because social sign-in means you need to see _which_ account you are in, and because storing someone's data means giving them a way to remove it. The avatar itself must never sign you out — the dropdown is the safety.
 
@@ -150,7 +150,19 @@ Four, not one, because social sign-in means you need to see _which_ account you 
 
 **The Privacy Policy** (`/privacy`) is linked in small grey text at the bottom of the dropdown, and from Google's sign-in screen.
 
-**A new user sees the empty week** after signing in, the same as before signing in. No onboarding, no sample data.
+**A new user sees the empty week** after signing in, the same as before signing in. No onboarding, no sample data. Guests are the exception.
+
+### Guests
+
+**The signed-out header has two buttons: Try as guest and Sign in.** **Try as guest** is the filled button, because most visitors arrive from a portfolio link and want to look around without signing in. **Sign in** stays as the outline button beside it.
+
+**A guest starts with a full week of sample tasks**, not the empty week: repeating tasks that began two weeks earlier, a few one-off tasks in the current week, and some cards already ticked. An empty planner shows a visitor nothing, and the sample week lets them tick, edit and delete straight away. The sample tasks are ordinary tasks, and the previous and next weeks have cards too.
+
+**The guest's profile dropdown says who they are and how long it lasts:** **Guest Account**, the name **Guest** with a guest avatar, and **Tasks are kept for 7 days** where the email would be.
+
+**A guest has one account item, Exit guest mode,** in place of **Sign out** and **Delete this account**. It deletes the guest account and its tasks at once, with no confirmation, because the data is a demo. There is no **Sign out** because a guest could never sign back in to that account.
+
+**Guest accounts are deleted after 7 days.** Most guests close the tab without choosing **Exit guest mode**, so a daily job removes guest accounts more than 7 days old, along with their tasks. Until then, a guest who comes back on the same device still has their tasks.
 
 ---
 
@@ -171,7 +183,7 @@ Four, not one, because social sign-in means you need to see _which_ account you 
 
 **The theme follows the system setting by default.** The profile menu has a **Colour Theme** choice, **System · Light · Dark**, for people who want one theme whatever their device is set to. **System** stays the way back to following the device. It is a segmented control, because all three choices and the current one are visible at once; a single sun/moon switch could not show **System**.
 
-**The choice is remembered per device,** in a cookie, not in the account: someone may want dark on their laptop and light on their phone. The server reads the cookie and draws the page in that theme straight away, so there is no flash of the wrong theme while the page loads. Signed-out visitors have no profile menu, so they always follow the system.
+**The choice is remembered per device,** in a cookie, not in the account: someone may want dark on their laptop and light on their phone. The server reads the cookie and draws the page in that theme straight away, so there is no flash of the wrong theme while the page loads. Signed-out visitors have no profile menu, so they always follow the system. Guests have the menu, and can choose.
 
 **Every colour is a token with a light and a dark value** in `app/globals.css`, written as `light-dark(light, dark)`. Components never name a colour directly, so they need no dark-mode code.
 
@@ -193,6 +205,7 @@ Four, not one, because social sign-in means you need to see _which_ account you 
 
 Planned, but not part of the first version.
 
-| To do                           | Notes                                                                                                                                                         |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Logo on Google's sign-in screen | Needs Google's brand verification: proof of owning the domain in Search Console, and a Privacy Policy link that signed-out visitors can see on the home page. |
+| To do                           | Notes                                                                                                                                                                                                  |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Sign in with Google as a guest  | A **Sign in with Google** item in the guest's profile dropdown, for a visitor who wants a real account. The guest account and its sample tasks are deleted when they sign in; nothing is carried over. |
+| Logo on Google's sign-in screen | Needs Google's brand verification: proof of owning the domain in Search Console, and a Privacy Policy link that signed-out visitors can see on the home page.                                          |
