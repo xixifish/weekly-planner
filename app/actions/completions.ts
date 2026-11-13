@@ -13,7 +13,7 @@ export async function toggleTaskCompletion(formData: FormData) {
     occurrence = await requireOwnedOccurrence(formData);
   } catch (error) {
     if (error instanceof SignedOutError) {
-      // Signed out meanwhile: show the signed-out page instad of crashing
+      // Signed out meanwhile: show the signed-out page instead of crashing
       revalidatePath("/");
       return;
     }
