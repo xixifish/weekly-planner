@@ -4,23 +4,32 @@ import { toggleTaskCompletion } from "@/app/actions/completions";
 import { toDateString } from "@/lib/dates/week";
 import type { TaskOccurrence } from "@/lib/tasks/build-occurrences";
 import { LABEL_OPTIONS } from "@/lib/tasks/labels";
-
 import { useTaskDialog } from "./task-dialog-provider";
-
 import { CheckIcon } from "./icons";
+
+import { useOptimistic } from "react";
 
 type TaskCardProps = {
   occurrence: TaskOccurrence;
 };
 
 export function TaskCard({ occurrence }: TaskCardProps) {
-  const { taskId, date, text, completed, label } = occurrence;
+  const { taskId, date, text, completed: savedCompleted, label } = occurrence;
+  // What the card shows: the saved value, or the new value while a save is running
+  const [completed, setCompleted] = useOptimistic(savedCompleted);
   const { openEdit } = useTaskDialog();
 
   // The label's colour class, e.g. "bg-tag-green"; undefined when there is no label
   const labelClass = LABEL_OPTIONS.find(
     (option) => option.value === label,
   )?.className;
+
+  // The form calls this instead of the server action directly,
+  // so the tick can be shown before the save finishes (next step)
+  async function handleToggle(formData: FormData) {
+    setCompleted(!completed);
+    await toggleTaskCompletion(formData);
+  }
 
   return (
     <li
@@ -35,7 +44,7 @@ export function TaskCard({ occurrence }: TaskCardProps) {
       )}
       {/* Tick: always shown when done; otherwise on hover or keyboard focus */}
       <form
-        action={toggleTaskCompletion}
+        action={handleToggle}
         className={`relative z-10 flex shrink-0 overflow-hidden pointer-coarse:overflow-visible transition-[width] motion-reduce:transition-none ${
           completed
             ? "w-7.5"
