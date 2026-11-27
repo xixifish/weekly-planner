@@ -1,0 +1,90 @@
+import { prisma } from "@/lib/prisma";
+
+import { getWeekDates } from "../dates/get-week-dates";
+import { buildOccurrences } from "./build-occurrences";
+
+// Loads one user's cards for a week. Callers must already know who the
+// user is: the web app gets it from the sign-in cookie, the MCP server
+// from its settings.
+export async function getWeekOccurrencesForUser(
+  userId: string,
+  weekStart: Date,
+) {
+  // 1. Get the current week's dates
+  const weekDates = getWeekDates(weekStart);
+
+  // 3. Load that user's relevant task rules
+  const weekEnd = weekDates.at(-1);
+  if (!weekEnd) {
+    throw new Error("Unable to calculate the week end");
+  }
+
+  const tasks = await prisma.task.findMany({
+    where: {
+      userId: userId,
+    },
+    include: {
+      rules: {
+        where: {
+          AND: [
+            { effectiveFrom: { lte: weekEnd } },
+            {
+              OR: [
+                { effectiveTo: null },
+                {
+                  effectiveTo: {
+                    gte: weekStart,
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        orderBy: {
+          effectiveFrom: "asc",
+        },
+      },
+      // Add loading completions
+      completions: {
+        where: {
+          date: {
+            gte: weekStart,
+            lte: weekEnd,
+          },
+        },
+        select: {
+          date: true,
+        },
+      },
+      // Add loading taskskips
+      skips: {
+        where: {
+          date: {
+            gte: weekStart,
+            lte: weekEnd,
+          },
+        },
+        select: {
+          date: true,
+        },
+      },
+      // Add loading this week's overrides
+      overrides: {
+        where: {
+          date: {
+            gte: weekStart,
+            lte: weekEnd,
+          },
+        },
+        select: {
+          date: true,
+          text: true,
+          label: true,
+        },
+      },
+    },
+  });
+
+  // 4. Generate occurrences for the seven dates
+  return buildOccurrences(tasks, weekDates);
+}
