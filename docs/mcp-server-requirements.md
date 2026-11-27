@@ -69,14 +69,14 @@ Dates are `YYYY-MM-DD`. A single task on a single day is identified by `taskId` 
 the same as in the app (`lib/tasks/require-owned-occurrence.ts`). Weeks follow the app's
 week rules (`lib/dates/`).
 
-| Tool | Phase | Inputs | Returns |
-| --- | --- | --- | --- |
-| `get_week` | 1 | `weekStart` (optional; default this week) | Each day with its tasks: `taskId`, `date`, text, label, repeating or not, done or not |
-| `get_today` | 1 (optional) | none | Today's tasks, same fields |
-| `create_task` | 2 | `text`, `days` (weekdays), `repeating`, `startDate`, `endDate` (optional), `label` (optional) | The new task |
-| `set_task_done` | 2 | `taskId`, `date`, `done` (true or false) | The task's new state |
-| `edit_task` | 4 | `taskId`, `date`, `scope` (`this_only` or `this_and_future`), new text, days and/or label | The changed task |
-| `delete_task` | 4 | `taskId`, `date`, `scope`, `confirm` | First call: what would be deleted. With `confirm: true`: the result |
+| Tool            | Phase        | Inputs                                                                                        | Returns                                                                               |
+| --------------- | ------------ | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `get_week`      | 1            | `weekStart` (optional; default this week)                                                     | Each day with its tasks: `taskId`, `date`, text, label, repeating or not, done or not |
+| `get_today`     | 1 (optional) | none                                                                                          | Today's tasks, same fields                                                            |
+| `create_task`   | 2            | `text`, `days` (weekdays), `repeating`, `startDate`, `endDate` (optional), `label` (optional) | The new task                                                                          |
+| `set_task_done` | 2            | `taskId`, `date`, `done` (true or false)                                                      | The task's new state                                                                  |
+| `edit_task`     | 4            | `taskId`, `date`, `scope` (`this_only` or `this_and_future`), new text, days and/or label     | The changed task                                                                      |
+| `delete_task`   | 4            | `taskId`, `date`, `scope`, `confirm`                                                          | First call: what would be deleted. With `confirm: true`: the result                   |
 
 Rules for every tool:
 
